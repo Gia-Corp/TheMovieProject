@@ -1,0 +1,23 @@
+version: "3"
+services:
+  backend:
+    build: ./backend
+    container_name: 'movie_project_backend'
+    command: sh -c 'python -u app.py'
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./backend:/backend
+
+  frontend:
+    build: ./frontend
+    container_name: 'movie_project_frontend'
+    command: sh -c 'npm install; npm start'
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/frontend
+    depends_on:
+      - "backend"
+    stdin_open: true
+    tty: true
