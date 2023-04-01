@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const herolistAll = () => {
+const listall = () => {
     return axios
-        .get("http://localhost:5000/hero")
+        .get("http://localhost:5000/listall")
         .then(res => {
             return res.data
         })
@@ -29,4 +29,9 @@ const searchAPImovie = (query) => {
             return res.data
         })
         .catch(err => { throw err.response.data })
+}
+
+export {
+    listall,
+    searchAPImovie
 }

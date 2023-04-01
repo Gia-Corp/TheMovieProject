@@ -1,12 +1,11 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+  import React from 'react';
+  import {Link} from 'react-router-dom';
 
-const MovieDetail = () => {
-    return (
-        <div className="App">
-      <div>holi detail</div>
-    </div>
-    )
-}
+  const MovieDetail = () => {
+      return (
+            <div>
+            </div>
+      )
+  }
 
-export default MovieDetail;
+  export default MovieDetail;
