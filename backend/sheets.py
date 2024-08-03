@@ -1,3 +1,4 @@
+from config import CREDENTIALS 
 import gspread
 
 def next_available_row(worksheet):
@@ -5,9 +6,8 @@ def next_available_row(worksheet):
     return str(len(str_list))
 
 SHEET_NAME = 'test_movieproject'
-CREDENTIALS = 'credentials.json'
 
-gc = gspread.service_account(filename=CREDENTIALS)
+gc = gspread.service_account_from_dict(CREDENTIALS)
 sheet = gc.open(SHEET_NAME).sheet1
 
 def list_all_movies ():
