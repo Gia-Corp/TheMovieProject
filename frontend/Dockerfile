@@ -1,10 +1,9 @@
-FROM node:latest
+FROM node:22.5.1
 
 WORKDIR /frontend
 COPY package.json .
 
 RUN npm install 
-RUN npm install react-scripts@3.0.1 -g --silent
 
 EXPOSE 3000
 

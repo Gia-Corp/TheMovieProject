@@ -1,8 +1,10 @@
-FROM python:latest
+FROM python:3.12.4
 
 WORKDIR /backend
-COPY . ./backend
+COPY requirements.txt .
 
-RUN pip3 install flask flask-cors gspread 
+RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
+
+COPY . .
 
 EXPOSE 5000
