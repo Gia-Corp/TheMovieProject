@@ -7,6 +7,8 @@ def next_available_row(worksheet):
 
 SHEET_NAME = 'test_movieproject'
 
+print(CREDENTIALS)
+
 gc = gspread.service_account_from_dict(CREDENTIALS)
 sheet = gc.open(SHEET_NAME).sheet1
 
