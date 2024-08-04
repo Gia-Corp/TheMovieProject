@@ -1,8 +1,12 @@
 import axios from 'axios';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+console.log(backendUrl)
+
 const listall = () => {
     return axios
-        .get("https://0.0.0.0:5000/listall")
+        .get(backendUrl+"/listall")
         .then(res => {
             return res.data
         })
@@ -11,7 +15,7 @@ const listall = () => {
 
 const movieget = (id) => {
     return axios
-        .post("https://0.0.0.0:5000/movie/get", {
+        .post(backendUrl+"/movie/get", {
             id
         })
         .then(res => {

@@ -25,6 +25,8 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile.prod
+      args:
+        REACT_APP_BACKEND_URL: https://0.0.0.0:5000
     container_name: 'movie_project_frontend'
     ports:
       - '3000:3000'
