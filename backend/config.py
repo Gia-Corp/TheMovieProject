@@ -1,7 +1,7 @@
 from os import getenv,environ
 from dotenv import load_dotenv
 
-#load_dotenv()
+load_dotenv()
 
 # Google Sheets config
 
