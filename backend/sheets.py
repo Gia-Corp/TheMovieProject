@@ -1,5 +1,8 @@
 from config import CREDENTIALS 
 import gspread
+import os
+
+print (os.environ.get("KOYEB_APP_NAME"),flush=True)
 
 def next_available_row(worksheet):
     str_list = list(filter(None, worksheet.col_values(1)))
