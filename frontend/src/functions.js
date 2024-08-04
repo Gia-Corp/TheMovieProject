@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const listall = () => {
     return axios
-        .get("http://0.0.0.0:5000/listall")
+        .get("https://0.0.0.0:5000/listall")
         .then(res => {
             return res.data
         })
@@ -11,7 +11,7 @@ const listall = () => {
 
 const movieget = (id) => {
     return axios
-        .post("http://0.0.0.0:5000/movie/get", {
+        .post("https://0.0.0.0:5000/movie/get", {
             id
         })
         .then(res => {
