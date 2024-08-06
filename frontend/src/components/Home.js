@@ -39,6 +39,7 @@ const Home = () => {
         .catch((err)=>{
             setLoading (false)
             setError (true)
+            console.log(err);
             return
         })
     },[])

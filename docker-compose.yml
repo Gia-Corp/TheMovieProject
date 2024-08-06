@@ -26,7 +26,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        REACT_APP_BACKEND_URL: https://movie-project-sani0199.koyeb.app:5000
+        REACT_APP_BACKEND_URL: ${KOYEB_PUBLIC_DOMAIN}
     container_name: 'movie_project_frontend'
     ports:
       - '3000:3000'
