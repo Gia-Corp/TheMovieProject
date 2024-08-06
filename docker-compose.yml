@@ -20,7 +20,6 @@ services:
       - TOKEN_URI
       - AUTH_PROVIDER_X509_CERT_URL
       - CLIENT_X509_CERT_URL
-      - SELF_URL=${KOYEB_PUBLIC_DOMAIN}
 
   frontend:
     build: 
