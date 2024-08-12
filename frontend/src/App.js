@@ -1,4 +1,4 @@
-import React,{Fragment,useState} from 'react';
+import React from 'react';
 import MovieDetail from './components/MovieDetail';
 import {Routes, Route, BrowserRouter} from 'react-router-dom';
 import Home from './components/Home';

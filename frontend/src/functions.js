@@ -13,16 +13,16 @@ const getMovies = () => {
         .catch(err => { throw err.response.data })
 }
 
-const movieget = (id) => {
-    return axios
-        .post(backendUrl+"/movie/get", {
-            id
-        })
-        .then(res => {
-            return res.data
-        })
-        .catch(err => { throw err.response.data })
-}
+// const movieget = (id) => {
+//     return axios
+//         .post(backendUrl+"/movie/get", {
+//             id
+//         })
+//         .then(res => {
+//             return res.data
+//         })
+//         .catch(err => { throw err.response.data })
+// }
 
 //API functions
 

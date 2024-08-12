@@ -3,7 +3,7 @@ import Pagination from 'react-bootstrap/Pagination';
 
 function PagMenu({listPerPage, totalList, paginate, currentPage}) {
 
-    const [pageNumbers,setPageNumbers] = useState ([])
+    const [pageNumbers] = useState ([])
 
     for(let i=1; i <= Math.ceil(totalList / listPerPage); i++) {
         pageNumbers.push(i);

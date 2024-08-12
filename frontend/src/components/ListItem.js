@@ -6,7 +6,6 @@ const ListItem = ({item}) => {
     const [info,setInfo] = useState ({});
     const [error,setError] = useState (false);
     const [loading,setLoading] = useState (false);
-    // const [retry,setRetry] = useState(false);
 
     useEffect (()=>{
 
