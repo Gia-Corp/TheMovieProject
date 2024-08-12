@@ -4,9 +4,9 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 console.log(backendUrl)
 
-const listall = () => {
+const getMovies = () => {
     return axios
-        .get(backendUrl+"/listall")
+        .get(backendUrl+"/movies")
         .then(res => {
             return res.data
         })
@@ -36,6 +36,6 @@ const searchAPImovie = (query) => {
 }
 
 export {
-    listall,
+    getMovies,
     searchAPImovie
 }

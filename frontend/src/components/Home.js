@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import Navbar from './Navbar';
 import {Link} from 'react-router-dom';
-import { listall } from '../functions';
+import { getMovies } from '../functions';
 import List from './List';
 import PagMenu from './PagMenu';
 
@@ -23,7 +23,7 @@ const Home = () => {
         setError (false)
         setLoading (true)
 
-        listall()
+        getMovies()
         .then ((res)=>{
             if (res !== null){
                 setList(res)

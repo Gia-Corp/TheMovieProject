@@ -1,5 +1,4 @@
 from sheets import list_all_movies,update_movie,add_movie
-
 from flask import Flask,render_template, jsonify, request, redirect, url_for,send_file
 import json
 from flask_cors import CORS
@@ -10,10 +9,10 @@ CORS(app)
 
 @app.route("/")
 def hello_world():
-    return jsonify ("hello world")
+    return jsonify ("Hello World!")
 
-@app.route("/listall")
-def listall():
+@app.route("/movies")
+def get_movies():
     try:
         data = list_all_movies()
         return jsonify (data)
