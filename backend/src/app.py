@@ -11,6 +11,14 @@ CORS(app)
 def hello_world():
     return jsonify ("Hello World!")
 
+"""
+{
+    title: The Big Short,
+    director: Adam McKay,
+    watched: True/False
+}
+"""
+
 @app.route("/movies")
 def get_movies():
     try:
@@ -18,15 +26,6 @@ def get_movies():
         return jsonify (data)
     except (Exception) as err:
         return str(err), 500
-
-"""
-{
-    id: 'A12',
-    title: The Big Short,
-    director: Adam McKay,
-    watched: True/False
-}
-"""
 
 @app.route("/update", methods=['POST'])
 def update():
@@ -42,14 +41,6 @@ def update():
     except (Exception) as err:
         return str(err), 500
     
-"""
-{
-    title: The Big Short,
-    director: Adam McKay,
-    watched: True/False
-}
-"""
-
 @app.route("/add", methods=['POST'])
 def add():
     try:

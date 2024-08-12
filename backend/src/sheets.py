@@ -11,10 +11,6 @@ for key,value in config.SHEET_CREDENTIALS.items():
 gc = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
 sheet = gc.open(config.SHEET_NAME).sheet1
 
-def next_available_row(worksheet):
-    str_list = list(filter(None, worksheet.col_values(1)))
-    return str(len(str_list))
-
 def translate_key_names(movie):
     watched = True if movie['Vista'] == 'TRUE' else False
     return {'title': movie['Película'], 'director': movie['Director'], 'watched': watched}
