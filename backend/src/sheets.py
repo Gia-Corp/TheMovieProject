@@ -2,11 +2,10 @@ import config
 from os import getenv
 import gspread
 
-print(f"koyeb app name = {config.KOYEB_APP_NAME}", flush=True)
-print(f"sheet name = {config.SHEET_NAME}", flush=True)
-
-for key,value in config.SHEET_CREDENTIALS.items():
-    print(f"{key} = {value}", flush=True)
+# print(f"koyeb app name = {config.KOYEB_APP_NAME}", flush=True)
+# print(f"sheet name = {config.SHEET_NAME}", flush=True)
+# for key,value in config.SHEET_CREDENTIALS.items():
+#     print(f"{key} = {value}", flush=True)
 
 gc = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
 sheet = gc.open(config.SHEET_NAME).sheet1
