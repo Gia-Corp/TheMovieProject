@@ -1,5 +1,4 @@
 import React,{useEffect,useState} from 'react';
-import {Link} from 'react-router-dom';
 import { searchAPImovie } from '../functions';
 
 const ListItem = ({item}) => {
@@ -7,14 +6,14 @@ const ListItem = ({item}) => {
     const [info,setInfo] = useState ({});
     const [error,setError] = useState (false);
     const [loading,setLoading] = useState (false);
-    const [retry,setRetry] = useState(false);
+    // const [retry,setRetry] = useState(false);
 
     useEffect (()=>{
 
         setError (false)
         setLoading (true)
 
-        searchAPImovie(item[0])
+        searchAPImovie(item['title'])
         .then ((res)=>{
             if (res !== null){
                 setInfo(res.results[0])
@@ -52,10 +51,10 @@ const ListItem = ({item}) => {
                     <text x="50%" y="50%" fill="#dee2e6" dy=".3em">No Image</text>
                 </svg>
                 }     
-                <h3 class="card-title p-3">{item[0]}</h3>
+                <h3 class="card-title p-3">{item['title']}</h3>
             </div>
             <div class="card-footer p-3 d-flex justify-content-between">
-                <h6 class="card-subtitle text-muted " id="inlineText">{item[1]}</h6>
+                <h6 class="card-subtitle text-muted " id="inlineText">{item['director']}</h6>
             </div>
         </div>
         }
