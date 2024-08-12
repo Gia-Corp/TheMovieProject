@@ -1,14 +1,15 @@
-from os import getenv
 from dotenv import load_dotenv
+from os import getenv
 
 load_dotenv()
 
-# Koyeb
+# General
+PORT = getenv("PORT")
 
+# Koyeb
 KOYEB_APP_NAME = getenv("KOYEB_APP_NAME")
 
 # Google Sheets
-
 SHEET_NAME = getenv("SHEET_NAME")
 
 SHEET_CREDENTIALS = {
