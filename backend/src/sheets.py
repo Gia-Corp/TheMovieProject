@@ -11,18 +11,6 @@ for key,value in config.SHEET_CREDENTIALS.items():
 gc = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
 sheet = gc.open(config.SHEET_NAME).sheet1
 
-def translate_key_names(movie):
-    watched = True if movie['Vista'] == 'TRUE' else False
-    return {'title': movie['Película'], 'director': movie['Director'], 'watched': watched}
-
-def list_all_movies():
-    try:
-        movies = sheet.get_all_records(expected_headers=['Película','Director','Vista'])[0:11]
-        movies = list(map(translate_key_names, movies))
-        return movies
-    except(Exception) as err:
-        return err
-
 def update_movie(id, title, director, watched):
     try:
         title_cell = id

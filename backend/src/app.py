@@ -1,7 +1,8 @@
-from sheets import list_all_movies,update_movie,add_movie
 from flask import Flask,render_template, jsonify, request, redirect, url_for,send_file
-import json
+from sheets import list_all_movies,update_movie,add_movie
+from google_sheet_connector import GoogleSheetConnector
 from flask_cors import CORS
+import json
 import os
 
 app = Flask(__name__)
@@ -9,7 +10,7 @@ CORS(app)
 
 @app.route("/")
 def hello_world():
-    return jsonify ("Hello World!")
+    return jsonify("Hello World!")
 
 """
 {
@@ -22,9 +23,9 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        data = list_all_movies()
-        return jsonify (data)
-    except (Exception) as err:
+        movies = GoogleSheetConnector().get_movies(5)
+        return jsonify(movies)
+    except(Exception) as err:
         return str(err), 500
 
 @app.route("/update", methods=['POST'])
@@ -35,7 +36,7 @@ def update():
         director = request.json ["director"]
         watched = request.json ["watched"]
         
-        update_movie (id,title,director,watched)
+        update_movie(id,title,director,watched)
         
         return 'Success'
     except (Exception) as err:
