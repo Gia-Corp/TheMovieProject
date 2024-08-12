@@ -15,13 +15,16 @@ def next_available_row(worksheet):
     str_list = list(filter(None, worksheet.col_values(1)))
     return str(len(str_list))
 
+def translate_key_names(movie):
+    watched = True if movie['Vista'] == 'TRUE' else False
+    return {'title': movie['Película'], 'director': movie['Director'], 'watched': watched}
+
 def list_all_movies():
     try:
-        row = str(int(next_available_row(sheet))-1)
-        list = sheet.get(f'2:{row}')
-        #list = sheet.get_all_records()
-        return list
-    except (Exception) as err:
+        movies = sheet.get_all_records(expected_headers=['Película','Director','Vista'])[0:11]
+        movies = list(map(translate_key_names, movies))
+        return movies
+    except(Exception) as err:
         return err
 
 def update_movie(id, title, director, watched):
