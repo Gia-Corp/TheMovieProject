@@ -1,5 +1,7 @@
 .git
 .gitignore
+.dockerignore
 README.md
 node_modules
 npm_debug.log
+Dockerfile*

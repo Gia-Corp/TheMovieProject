@@ -6,8 +6,6 @@ services:
     container_name: 'movie_project_backend'
     ports:
       - '5000:5000'
-    volumes:
-      - ./backend:/backend
     environment:
       - TYPE
       - PROJECT_ID
@@ -29,8 +27,6 @@ services:
     container_name: 'movie_project_frontend'
     ports:
       - '3000:3000'
-    volumes:
-      - ./frontend:/frontend
     depends_on:
       - "backend"
     stdin_open: true
