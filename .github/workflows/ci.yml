@@ -19,9 +19,11 @@ jobs:
       - name: Build docker image
         run: docker build -t themovieproject-backend -f Dockerfile.dev .
       - name: Run docker image on interactive mode
-        run: docker run -i --name themovieproject-backend -v $PWD:/backend -w /backend themovieproject-backend /bin/bash
+        run: docker run -d --name themovieproject-backend -v $PWD:/backend -w /backend themovieproject-backend /bin/bash
       - name: Check running containers
-        run: docker ps
+        run: docker ps -a
+      - name: Run arbitrary code inside the container
+        run: docker exec themovieproject-backend ruff check
       # - name: Run linter
       #   run: docker exec -i container-name sh ruff check
       #   run: ruff check
