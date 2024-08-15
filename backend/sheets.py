@@ -28,7 +28,8 @@ def update_movie(id, title, director, watched):
 
 def add_movie(title, director, watched):
     try:
-        row = next_available_row(sheet)
+        # row = next_available_row(sheet)
+        row = 1
 
         title_cell = f"A{row}"
         sheet.update(title_cell, title)
