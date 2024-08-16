@@ -1,3 +1,5 @@
+[![Backend CI](https://github.com/Gia-Corp/TheMovieProject/actions/workflows/backend_ci.yml/badge.svg?branch=master)](https://github.com/Gia-Corp/TheMovieProject/actions/workflows/backend_ci.yml)
+
 ## Local development
 
 🚀 To start the app locally, execute this:
