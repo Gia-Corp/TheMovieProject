@@ -5,14 +5,8 @@ COPY package.json .
 
 RUN npm install 
 
-ARG REACT_APP_BACKEND_URL
-
-ENV REACT_APP_BACKEND_URL $REACT_APP_BACKEND_URL
-
-# Copy app files
 COPY . .
 
-# Build the app
 RUN npm run build
 
 # Bundle static assets with nginx
