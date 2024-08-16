@@ -1,0 +1,26 @@
+name: Backend CI
+run-name: ${{ github.actor }} wants to check if the backend is alright 😉
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+defaults:
+  run:
+    working-directory: ./backend
+
+jobs:
+  Lint-And-Test:
+    runs-on: ubuntu-latest
+    container: python:3.12.4-slim
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        uses: pip3 install --no-cache-dir --upgrade -r requirements.txt
+      - name: Run linter
+        run: ruff check
+      # - name: Run tests
+      #   run: pytest
+
