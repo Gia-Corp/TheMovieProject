@@ -2,9 +2,16 @@ name: Backend CI
 run-name: ${{ github.actor }} wants to check if the backend is alright 😉
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+      - test
+      - develop
   pull_request:
-    branches: [master]
+    branches:
+      - master
+      - test
+      - develop
+
 
 defaults:
   run:
