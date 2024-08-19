@@ -2,31 +2,23 @@ services:
   backend:
     build: 
       context: ./backend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
     container_name: 'movie_project_backend'
     ports:
       - '5000:5000'
-    environment:
-      - TYPE
-      - PROJECT_ID
-      - PRIVATE_KEY_ID
-      - PRIVATE_KEY
-      - CLIENT_EMAIL
-      - CLIENT_ID
-      - AUTH_URI
-      - TOKEN_URI
-      - AUTH_PROVIDER_X509_CERT_URL
-      - CLIENT_X509_CERT_URL
+    volumes:
+      - ./backend:/backend
 
   frontend:
     build: 
       context: ./frontend
-      dockerfile: Dockerfile.prod
-      args:
-        REACT_APP_BACKEND_URL: ${KOYEB_SERVICE_PRIVATE_DOMAIN}/api
+      dockerfile: Dockerfile.dev
     container_name: 'movie_project_frontend'
     ports:
       - '3000:3000'
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
     depends_on:
       - "backend"
     stdin_open: true
