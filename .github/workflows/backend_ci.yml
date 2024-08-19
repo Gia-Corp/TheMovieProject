@@ -37,6 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Check out code
+        uses: actions/checkout@v4
       - name: Deploy
         env:
           deploy_url: ${{ secrets.RENDER_TEST_DEPLOY_HOOK_URL }}
