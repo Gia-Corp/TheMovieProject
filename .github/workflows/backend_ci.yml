@@ -12,7 +12,6 @@ on:
       - test
       - develop
 
-
 defaults:
   run:
     working-directory: backend
@@ -28,8 +27,8 @@ jobs:
         run: pip3 install --no-cache-dir --upgrade -r requirements.txt
       - name: Run linter
         run: ruff check
-      # - name: Run tests
-      #   run: pytest
+      - name: Run tests
+        run: pytest
       
   test-deploy:
     # Only run this job if the branch is test and build job has passed
