@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["flask","run", "--host=backend"]
+CMD ["/bin/bash"]
