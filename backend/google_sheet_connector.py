@@ -1,11 +1,6 @@
-import config
-import gspread
-
-
 class GoogleSheetConnector:
-    def __init__(self):
-        gc = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
-        self.sheet = gc.open(config.SHEET_NAME).sheet1
+    def __init__(self, sheet):
+        self.sheet = sheet
 
     def get_movies(self, limit):
         raw_movies = self.sheet.get_all_records(

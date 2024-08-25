@@ -3,9 +3,12 @@ from google_sheet_connector import GoogleSheetConnector
 from sheets import update_movie, add_movie
 from flask_cors import CORS
 import config
+import gspread
 
 app = Flask(__name__)
 CORS(app)
+gc = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
+sheet = gc.open(config.SHEET_NAME).sheet1
 
 
 @app.route("/")
@@ -16,7 +19,7 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        movies = GoogleSheetConnector().get_movies(5)
+        movies = GoogleSheetConnector(sheet).get_movies(5)
         return jsonify(movies)
     except Exception as err:
         return str(err), 500
