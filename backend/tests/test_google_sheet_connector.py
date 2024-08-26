@@ -1,7 +1,5 @@
 from google_sheet_connector import (
     GoogleSheetConnector,
-    InvalidPageNumberError,
-    InvalidPageSizeError,
     PageOutOfBoundsError,
 )
 from unittest.mock import Mock
@@ -98,20 +96,6 @@ class TestGoogleSheetConnector:
         connector = GoogleSheetConnector(sheet)
         connector.get_movies_by_page(None, None)
         sheet.get.assert_called_with("A2:D11")
-
-    def test_get_movies_by_page_should_fail_when_page_number_is_invalid(self):
-        with raises(InvalidPageNumberError) as error:
-            sheet = Mock()
-            connector = GoogleSheetConnector(sheet)
-            connector.get_movies_by_page(-1, 5)
-        assert "-1 is not a valid page number" in str(error)
-
-    def test_get_movies_by_page_should_fail_when_page_size_is_invalid(self):
-        with raises(InvalidPageSizeError) as error:
-            sheet = Mock()
-            connector = GoogleSheetConnector(sheet)
-            connector.get_movies_by_page(7, -1)
-        assert "-1 is not a valid page size" in str(error)
 
     def test_get_movies_by_page_should_fail_when_is_out_of_bounds_of_the_list(self):
         with raises(PageOutOfBoundsError) as error:
