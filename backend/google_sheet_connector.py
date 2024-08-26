@@ -12,8 +12,10 @@ class GoogleSheetConnector:
         page_number = self.DEFAULT_PAGE_NUMBER if not page_number else int(page_number)
         page_size = self.DEFAULT_PAGE_SIZE if not page_size else int(page_size)
 
-        if page_number < 0:
+        if page_number < 1:
             raise InvalidPageNumberError(page_number)
+        if page_size < 1:
+            raise InvalidPageSizeError(page_size)
 
         page_first_row = ((page_number * page_size) - (page_size - 1)) + 1
         page_last_row = (page_number * page_size) + 1
@@ -34,3 +36,8 @@ class GoogleSheetConnector:
 class InvalidPageNumberError(Exception):
     def __init__(self, page_number):
         super().__init__(f"{page_number} is not a valid page number")
+
+
+class InvalidPageSizeError(Exception):
+    def __init__(self, page_size):
+        super().__init__(f"{page_size} is not a valid page size")

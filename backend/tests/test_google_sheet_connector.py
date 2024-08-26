@@ -1,4 +1,8 @@
-from google_sheet_connector import GoogleSheetConnector, InvalidPageNumberError
+from google_sheet_connector import (
+    GoogleSheetConnector,
+    InvalidPageNumberError,
+    InvalidPageSizeError,
+)
 from unittest.mock import Mock
 from pytest import raises
 
@@ -63,4 +67,11 @@ class TestGoogleSheetConnector:
             sheet = Mock()
             connector = GoogleSheetConnector(sheet)
             connector.get_movies_by_page(-1, 5)
-        assert "-1 is not a valid page number" in str(error.value)
+        assert "-1 is not a valid page number" in str(error)
+
+    def test_get_movies_by_page_should_fail_when_page_size_is_invalid(self):
+        with raises(InvalidPageSizeError) as error:
+            sheet = Mock()
+            connector = GoogleSheetConnector(sheet)
+            connector.get_movies_by_page(7, -1)
+        assert "-1 is not a valid page size" in str(error)
