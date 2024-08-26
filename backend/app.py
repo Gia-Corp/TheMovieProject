@@ -19,7 +19,9 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        movies = GoogleSheetConnector(sheet).get_movies(5)
+        page_number = request.args.get("page_number")
+        page_size = request.args.get("page_size")
+        movies = GoogleSheetConnector(sheet).get_movies_by_page(page_number, page_size)
         return jsonify(movies)
     except Exception as err:
         return str(err), 500
