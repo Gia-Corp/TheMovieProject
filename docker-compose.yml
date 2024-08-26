@@ -8,6 +8,7 @@ services:
       - '5000:5000'
     volumes:
       - ./backend:/backend
+      - /etc/localtime:/etc/localtime:ro
     stdin_open: true
     tty: true
 
