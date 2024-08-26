@@ -23,6 +23,7 @@ def get_movies():
         page_size = request.args.get("page_size")
         movies = GoogleSheetConnector(sheet).get_movies_by_page(page_number, page_size)
         return jsonify(movies)
+    # Handle different exceptions in an elegant way!
     except Exception as err:
         return str(err), 500
 

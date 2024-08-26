@@ -20,12 +20,18 @@ class GoogleSheetConnector:
         page_first_row = ((page_number * page_size) - (page_size - 1)) + 1
         page_last_row = (page_number * page_size) + 1
 
+        if self.next_available_row() <= page_first_row:
+            raise PageOutOfBoundsError
+
         raw_movies = self.sheet.get(f"A{page_first_row}:D{page_last_row }")
         raw_movies = utils.to_records(
             ["director", "title", "year", "watched"], raw_movies
         )
         movies = list(map(self.transform_into_movie, raw_movies))
         return movies
+
+    def next_available_row(self):
+        return len(list(filter(None, self.sheet.col_values(1)))) + 1
 
     def transform_into_movie(self, raw_movie):
         raw_movie["watched"] = True if raw_movie["watched"] == "TRUE" else False
@@ -41,3 +47,8 @@ class InvalidPageNumberError(Exception):
 class InvalidPageSizeError(Exception):
     def __init__(self, page_size):
         super().__init__(f"{page_size} is not a valid page size")
+
+
+class PageOutOfBoundsError(Exception):
+    def __init__(self):
+        super().__init__("Selected page is out of bounds")
