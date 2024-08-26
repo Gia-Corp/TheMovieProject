@@ -28,9 +28,8 @@ def get_movies():
         page_number = request.args.get("page")
         page_size = request.args.get("size")
         connector = GoogleSheetConnector(sheet)
-        # movie_count = connector.get_movie_count()
         movies = connector.get_movies_by_page(page_number, page_size)
-        # metadata = PaginationMetadataCalculator().calculate(page_number, page_size, movie_count)
+        # metadata = connector.get_pagination_metadata(page_number, page_size)
         # return {"metadata": metadata, "movies": movies}
         return jsonify(movies)
     except Exception as error:

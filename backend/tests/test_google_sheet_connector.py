@@ -137,3 +137,9 @@ class TestGoogleSheetConnector:
         sheet.col_values.return_value = ["Director", ""]
         movie_count = GoogleSheetConnector(sheet).get_movie_count()
         assert movie_count == 0
+
+    def test_get_pagination_metadata_xxx(self):
+        sheet = Mock()
+        sheet.col_values.return_value = ["Director", ""]
+        movie_count = GoogleSheetConnector(sheet).get_movie_count()
+        assert movie_count == 0
