@@ -125,3 +125,9 @@ class TestGoogleSheetConnector:
             connector = GoogleSheetConnector(sheet)
             connector.get_movies_by_page(3, 2)
         assert "Selected page is out of bounds" in str(error)
+
+    def test_get_movie_count_with_existing_movies(self):
+        sheet = Mock()
+        sheet.col_values.return_value = ["James Cameron", "John Lasseter"]
+        movie_count = GoogleSheetConnector(sheet).get_movie_count()
+        assert movie_count == 2

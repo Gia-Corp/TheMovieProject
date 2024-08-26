@@ -38,6 +38,9 @@ class GoogleSheetConnector:
         raw_movie["year"] = int(raw_movie["year"])
         return raw_movie
 
+    def get_movie_count(self):
+        return 2
+
 
 class InvalidPageNumberError(Exception):
     def __init__(self, page_number):

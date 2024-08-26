@@ -25,9 +25,13 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        page_number = request.args.get("page_number")
-        page_size = request.args.get("page_size")
-        movies = GoogleSheetConnector(sheet).get_movies_by_page(page_number, page_size)
+        page_number = request.args.get("page")
+        page_size = request.args.get("size")
+        connector = GoogleSheetConnector(sheet)
+        # movie_count = connector.get_movie_count()
+        movies = connector.get_movies_by_page(page_number, page_size)
+        # metadata = PaginationMetadataCalculator().calculate(page_number, page_size, movie_count)
+        # return {"metadata": metadata, "movies": movies}
         return jsonify(movies)
     except Exception as error:
         match error:
