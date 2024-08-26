@@ -128,6 +128,12 @@ class TestGoogleSheetConnector:
 
     def test_get_movie_count_with_existing_movies(self):
         sheet = Mock()
-        sheet.col_values.return_value = ["James Cameron", "John Lasseter"]
+        sheet.col_values.return_value = ["Director", "James Cameron", "John Lasseter"]
         movie_count = GoogleSheetConnector(sheet).get_movie_count()
         assert movie_count == 2
+
+    def test_get_movie_count_with_no_movies(self):
+        sheet = Mock()
+        sheet.col_values.return_value = ["Director", ""]
+        movie_count = GoogleSheetConnector(sheet).get_movie_count()
+        assert movie_count == 0

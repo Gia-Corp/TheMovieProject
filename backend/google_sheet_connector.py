@@ -39,7 +39,7 @@ class GoogleSheetConnector:
         return raw_movie
 
     def get_movie_count(self):
-        return 2
+        return self.next_available_row() - 2
 
 
 class InvalidPageNumberError(Exception):
