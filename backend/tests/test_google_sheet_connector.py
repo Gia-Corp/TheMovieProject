@@ -46,3 +46,13 @@ class TestGoogleSheetConnector:
         connector = GoogleSheetConnector(sheet)
         connector.get_movies_by_page(2, 10)
         sheet.get.assert_called_with("A12:D21")
+
+    def test_connector_to_fetch_first_default_page_size_when_not_determined(self):
+        sheet = Mock()
+        sheet.get.return_value = [
+            ["James Cameron", "Titanic", 1998, "TRUE"],
+            ["John Lasseter", "Cars", 2006, "FALSE"],
+        ]
+        connector = GoogleSheetConnector(sheet)
+        connector.get_movies_by_page(None, None)
+        sheet.get.assert_called_with("A2:D11")
