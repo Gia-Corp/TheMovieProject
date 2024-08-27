@@ -5,6 +5,9 @@ class MoviesPage:
         if size < 1:
             raise InvalidPageSizeError(size)
 
+    def get_first_index(self):
+        return 1
+
 
 class InvalidPageNumberError(Exception):
     def __init__(self, page_number):

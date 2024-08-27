@@ -12,3 +12,7 @@ class TestMoviesPage:
         with raises(InvalidPageSizeError) as error:
             MoviesPage(2, -1)
         assert "-1 is not a valid page size" in str(error)
+
+    def test_get_first_index_when_it_is_the_first_page(self):
+        page = MoviesPage(1, 10)
+        assert page.get_first_index() == 1
