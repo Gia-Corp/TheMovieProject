@@ -24,3 +24,7 @@ class TestMoviesPage:
     def test_get_last_index_when_it_is_the_first_page(self):
         page = MoviesPage(1, 10)
         assert page.get_last_index() == 10
+
+    def test_get_last_index_when_it_is_not_the_first_page(self):
+        page = MoviesPage(2, 7)
+        assert page.get_last_index() == 14
