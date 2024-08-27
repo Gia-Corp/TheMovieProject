@@ -1,10 +1,9 @@
 from flask import Flask, jsonify, request
 from google_sheet_connector import (
     GoogleSheetConnector,
-    InvalidPageNumberError,
-    InvalidPageSizeError,
     PageOutOfBoundsError,
 )
+from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
 from datetime import datetime
 from sheets import update_movie, add_movie
 from flask_cors import CORS
@@ -25,10 +24,9 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        page_number = request.args.get("page")
-        page_size = request.args.get("size")
         connector = GoogleSheetConnector(sheet)
-        movies = connector.get_movies_by_page(page_number, page_size)
+        page = MoviesPage(int(request.args.get("page")), int(request.args.get("size")))
+        movies = connector.get_movies_by_page(page)
         # metadata = connector.get_pagination_metadata(page_number, page_size)
         # return {"metadata": metadata, "movies": movies}
         return jsonify(movies)
