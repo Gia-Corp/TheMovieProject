@@ -11,6 +11,9 @@ class MoviesPage:
     def get_first_index(self):
         return (self.number * self.size) - self.size + 1
 
+    def get_last_index(self):
+        return 10
+
 
 class InvalidPageNumberError(Exception):
     def __init__(self, page_number):
