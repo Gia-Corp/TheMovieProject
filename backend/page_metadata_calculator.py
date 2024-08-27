@@ -1,14 +1,20 @@
+import math
+
+
 class PageMetadataCalculator:
     def calculate(self, page, movie_count, endpoint):
+        page_count = math.ceil(movie_count / page.size)
         return {
-            "page": 1,
-            "size": 2,
-            "page_count": 250,
-            "movie_count": 500,
+            "page": page.number,
+            "size": page.size,
+            "page_count": page_count,
+            "movie_count": movie_count,
             "links": {
-                "first": "/movies?page=1&size=2",
-                "previous": None,
-                "next": "/movies?page=2&size=2",
-                "last": "/movies?page=250&size=2",
+                "first": f"/movies?page=1&size={page.size}",
+                "previous": f"/movies?page={(page.number - 1)}&size={page.size}"
+                if page.number > 1
+                else None,
+                "next": f"/movies?page={(page.number + 1)}&size={page.size}",
+                "last": f"/movies?page={page_count}&size={page.size}",
             },
         }
