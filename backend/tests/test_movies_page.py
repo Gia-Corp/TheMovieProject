@@ -16,3 +16,7 @@ class TestMoviesPage:
     def test_get_first_index_when_it_is_the_first_page(self):
         page = MoviesPage(1, 10)
         assert page.get_first_index() == 1
+
+    def test_get_first_index_when_it_is_not_the_first_page(self):
+        page = MoviesPage(3, 10)
+        assert page.get_first_index() == 21
