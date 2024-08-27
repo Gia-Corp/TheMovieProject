@@ -4,6 +4,7 @@ from google_sheet_connector import (
     PageOutOfBoundsError,
 )
 from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
+from page_metadata_calculator import PageMetadataCalculator
 from datetime import datetime
 from sheets import update_movie, add_movie
 from flask_cors import CORS
@@ -29,10 +30,9 @@ def get_movies():
             int(request.args.get("page") or "1"), int(request.args.get("size") or "10")
         )
         movies = connector.get_movies_by_page(page)
-        # movie_count = connector.get_movie_count()
-        # metadata = PageMetadataCalculator().calculate(page, movie_count, "/movie")
-        # return {"metadata": metadata, "movies": movies}
-        return jsonify(movies)
+        movie_count = connector.get_movie_count()
+        metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
+        return {"metadata": metadata, "movies": movies}
     except Exception as error:
         match error:
             case InvalidPageNumberError() | InvalidPageSizeError():
