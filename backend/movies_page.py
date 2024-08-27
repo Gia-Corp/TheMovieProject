@@ -1,5 +1,8 @@
 class MoviesPage:
-    def __init__(self, number, size):
+    DEFAULT_NUMBER = 1
+    DEFAULT_SIZE = 10
+
+    def __init__(self, number=DEFAULT_NUMBER, size=DEFAULT_SIZE):
         if number < 1:
             raise InvalidPageNumberError(number)
         if size < 1:

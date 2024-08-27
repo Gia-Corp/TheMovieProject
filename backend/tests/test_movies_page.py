@@ -28,3 +28,7 @@ class TestMoviesPage:
     def test_get_last_index_when_it_is_not_the_first_page(self):
         page = MoviesPage(2, 7)
         assert page.get_last_index() == 14
+
+    def test_movies_page_sets_default_number_and_size_when_not_given(self):
+        page = MoviesPage()
+        assert page.number == 1 and page.size == 10
