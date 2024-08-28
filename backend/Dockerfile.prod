@@ -9,4 +9,6 @@ COPY . .
 
 EXPOSE 5000
 
+RUN chmod +x start_prod
+
 CMD ["./start_prod"]
