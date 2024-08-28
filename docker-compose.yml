@@ -4,7 +4,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: 'backend'
-    command: ./start
+    command: ./start_dev
     ports:
       - '5000:5000'
     volumes:
@@ -18,7 +18,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: 'frontend'
-    command: ./start
+    command: ./start_dev
     ports:
       - '3000:3000'
     volumes:
