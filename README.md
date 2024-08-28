@@ -2,14 +2,19 @@
 
 ## Local development
 
-🚀 To start the app locally, execute this:
+🚀 To start app locally, run this:
 
 ```
-./start_app_dev
+./start_app
 ```
 
-⚠️ If your OS doesn't allow you to run the script, execute this and try starting the app again:
+⚙️ To start development containers for back & front end, run this:
 
 ```
-chmod +x start_app_dev
+./start_dev_containers
+```
+⚠️ If your OS doesn't allow you to run a certain script, execute this and try running it again:
+
+```
+chmod +x <your_script_file>
 ```
