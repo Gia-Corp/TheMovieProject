@@ -1,5 +1,5 @@
-from google_sheet_connector import (
-    GoogleSheetConnector,
+from movies_sheet_connector import (
+    MoviesSheetConnector,
     PageOutOfBoundsError,
 )
 from movies_page import MoviesPage
@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from pytest import raises
 
 
-class TestGoogleSheetConnector:
+class TestMoviesSheetConnector:
     def test_connector_to_transform_sheet_data_format_in_intended_way(self):
         sheet = Mock()
         sheet.col_values.return_value = [
@@ -34,7 +34,7 @@ class TestGoogleSheetConnector:
                 "year": 2006,
             },
         ]
-        connector = GoogleSheetConnector(sheet)
+        connector = MoviesSheetConnector(sheet)
         movies = connector.get_movies_by_page(MoviesPage(1, 2))
         assert movies == expected_movies
 
@@ -51,7 +51,7 @@ class TestGoogleSheetConnector:
             ["James Cameron", "Titanic", 1998, "TRUE"],
             ["John Lasseter", "Cars", 2006, "FALSE"],
         ]
-        connector = GoogleSheetConnector(sheet)
+        connector = MoviesSheetConnector(sheet)
         connector.get_movies_by_page(MoviesPage(2, 2))
         sheet.get.assert_called_with("A4:D5")
 
@@ -83,7 +83,7 @@ class TestGoogleSheetConnector:
             ["James Cameron", "Titanic", 1998, "TRUE"],
             ["John Lasseter", "Cars", 2006, "FALSE"],
         ]
-        connector = GoogleSheetConnector(sheet)
+        connector = MoviesSheetConnector(sheet)
         connector.get_movies_by_page(MoviesPage(2, 10))
         sheet.get.assert_called_with("A12:D21")
 
@@ -96,24 +96,24 @@ class TestGoogleSheetConnector:
                 "Tim Burton",
                 "",
             ]
-            connector = GoogleSheetConnector(sheet)
+            connector = MoviesSheetConnector(sheet)
             connector.get_movies_by_page(MoviesPage(3, 2))
         assert "Selected page is out of bounds" in str(error)
 
     def test_get_movie_count_with_existing_movies(self):
         sheet = Mock()
         sheet.col_values.return_value = ["Director", "James Cameron", "John Lasseter"]
-        movie_count = GoogleSheetConnector(sheet).get_movie_count()
+        movie_count = MoviesSheetConnector(sheet).get_movie_count()
         assert movie_count == 2
 
     def test_get_movie_count_with_no_movies(self):
         sheet = Mock()
         sheet.col_values.return_value = ["Director", ""]
-        movie_count = GoogleSheetConnector(sheet).get_movie_count()
+        movie_count = MoviesSheetConnector(sheet).get_movie_count()
         assert movie_count == 0
 
     def test_get_pagination_metadata_xxx(self):
         sheet = Mock()
         sheet.col_values.return_value = ["Director", ""]
-        movie_count = GoogleSheetConnector(sheet).get_movie_count()
+        movie_count = MoviesSheetConnector(sheet).get_movie_count()
         assert movie_count == 0

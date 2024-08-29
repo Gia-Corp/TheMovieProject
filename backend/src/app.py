@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
-from google_sheet_connector import (
-    GoogleSheetConnector,
+from movies_sheet_connector import (
+    MoviesSheetConnector,
     PageOutOfBoundsError,
 )
 from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
@@ -13,8 +13,8 @@ import gspread
 
 app = Flask(__name__)
 CORS(app)
-gc = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
-sheet = gc.open(config.SHEET_NAME).sheet1
+client = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
+movies_sheet = client.open(config.SHEET_NAME).sheet1
 
 
 @app.route("/")
@@ -25,7 +25,7 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        connector = GoogleSheetConnector(sheet)
+        connector = MoviesSheetConnector(movies_sheet)
         page = MoviesPage(
             int(request.args.get("page") or "1"), int(request.args.get("size") or "10")
         )

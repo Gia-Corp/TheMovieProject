@@ -1,7 +1,7 @@
 from gspread import utils
 
 
-class GoogleSheetConnector:
+class MoviesSheetConnector:
     def __init__(self, sheet):
         self.sheet = sheet
 
