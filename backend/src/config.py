@@ -20,4 +20,5 @@ SHEET_CREDENTIALS = {
     "token_uri": getenv("TOKEN_URI"),
     "auth_provider_x509_cert_url": getenv("AUTH_PROVIDER_X509_CERT_URL"),
     "client_x509_cert_url": getenv("CLIENT_X509_CERT_URL"),
+    "universe_domain": getenv("UNIVERSE_DOMAIN"),
 }

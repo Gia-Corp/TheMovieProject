@@ -26,9 +26,11 @@ def hello_world():
 def get_movies():
     try:
         connector = MoviesSheetConnector(movies_sheet)
-        page = MoviesPage(
-            int(request.args.get("page") or "1"), int(request.args.get("size") or "10")
-        )
+        page_number = request.args.get("page")
+        page_size = request.args.get("size")
+        page_number = int(page_number) if page_number and page_number.isnumeric() else 1
+        page_size = int(page_size) if page_size and page_size.isnumeric() else 10
+        page = MoviesPage(page_number, page_size)
         movies = connector.get_movies_by_page(page)
         movie_count = connector.get_movie_count()
         metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
