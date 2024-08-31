@@ -1,11 +1,13 @@
-import React,{useEffect,useState} from 'react';
+import React,{useContext, useEffect,useState} from 'react';
 import Navbar from './Navbar';
 import {Link} from 'react-router-dom';
-import { getMovies } from '../functions';
 import List from './List';
 import PagMenu from './PagMenu';
+import { MovieServiceContext } from './MovieServiceProvider';
 
-const Home = () => {
+const Home = ({movie}) => {
+
+    const movieService = useContext(MovieServiceContext);
 
     const [list,setList] = useState ([]);
     const [error,setError] = useState (false);
@@ -23,24 +25,23 @@ const Home = () => {
         setError (false)
         setLoading (true)
 
-        getMovies()
-        .then ((res)=>{
-            if (res !== null){
-                setList(res)
-                setCurrentList (list.slice(indexOfFirstList, indexOfLastList))
+        movieService.getList({
+            page: 1,
+            size: 10
+        })
+        .then(res=>{
+            if (res !== null){    
+                setList(res.movies);
+                //setCurrentList (list.slice(indexOfFirstList, indexOfLastList))
                 setLoading(false)
 
             }else{
                 setLoading(false)
                 setError(true)
             }
-            return
         })
         .catch((err)=>{
-            setLoading (false)
-            setError (true)
-            console.log(err);
-            return
+            console.error(err);
         })
     },[])
 
@@ -66,7 +67,6 @@ const Home = () => {
                 currentPage={currentPage}
                 />
             </div>
-            
             }
         </div>
     )

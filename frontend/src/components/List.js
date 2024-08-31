@@ -1,5 +1,6 @@
 import React from 'react';
 import ListItem from './ListItem';
+import { v1 as uuidv1 } from 'uuid';
 
 const List = ({list}) => {
 	return (
@@ -7,7 +8,7 @@ const List = ({list}) => {
             <div className="row row-cols-1 row-cols-md-6 mt-1 mb-3 g-3">
                         {list.map(item => (
                                 <ListItem 
-                                key = {item[0]}
+                                key = {uuidv1()}
                                 item = {item}
                                 />
                         ))}
