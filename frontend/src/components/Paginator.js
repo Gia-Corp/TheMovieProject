@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 function Paginator({selectPageEvent,pageNumber,pageCount,disabled}) {
 
     const [currentPage, setCurrentPage] = useState(pageNumber);
     const maxVisiblePages = 5;
+
+    useEffect(()=>setCurrentPage(pageNumber),[pageNumber])
 
     const selectPage = (page) =>{
       setCurrentPage(page);
