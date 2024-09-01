@@ -2,7 +2,7 @@ import React,{useContext, useEffect,useState} from 'react';
 import Navbar from './Navbar';
 import {Link} from 'react-router-dom';
 import List from './List';
-import PagMenu from './PagMenu';
+import Paginator from './Paginator';
 import { MovieServiceContext } from './MovieServiceProvider';
 
 const Home = ({movie}) => {
@@ -11,14 +11,10 @@ const Home = ({movie}) => {
 
     const [list,setList] = useState ([]);
     const [error,setError] = useState (false);
-    const [refresh,setRefresh] = useState (false);
     const [loading,setLoading] = useState (false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [listPerPage] = useState(1);
-    const [indexOfLastList,setIndexOfLastList] = useState(currentPage * listPerPage)
-    const [indexOfFirstList,setIndexOfFirstList] = useState(indexOfLastList - listPerPage)
-    const [currentList,setCurrentList] = useState([])
+    const [totalPageCount, setTotalPageCount] = useState(0);
 
     useEffect (()=>{
 
@@ -26,13 +22,13 @@ const Home = ({movie}) => {
         setLoading (true)
 
         movieService.getList({
-            page: 1,
+            page: currentPage,
             size: 10
         })
         .then(res=>{
             if (res !== null){    
                 setList(res.movies);
-                //setCurrentList (list.slice(indexOfFirstList, indexOfLastList))
+                setTotalPageCount(res.metadata.page_count);
                 setLoading(false)
 
             }else{
@@ -43,31 +39,35 @@ const Home = ({movie}) => {
         .catch((err)=>{
             console.error(err);
         })
-    },[])
-
-    //Cambiar de pagina
-    const paginate = pageNumber => setCurrentPage(pageNumber);
+    },[currentPage])
 
     return (
         <div>
+            <Paginator
+                pageCount={totalPageCount}
+                pageNumber={currentPage}
+                disabled={loading}
+                selectPageEvent={(pageNumber)=>setCurrentPage(pageNumber)}
+            />
             {(loading)?
             <h3>cargando</h3>
             :
             <div>
+                
                 {(error)?
                 <h3>ERROR</h3>
                 :
                 <List list={list}/>
                 }
-                <PagMenu
-                listPerPage={listPerPage} 
-                totalList={list.length} 
-                paginate={paginate} 
-                setCurrentPage={setCurrentPage} 
-                currentPage={currentPage}
-                />
+                
             </div>
             }
+            <Paginator
+                pageCount={totalPageCount}
+                pageNumber={currentPage}
+                disabled={loading}
+                selectPageEvent={(pageNumber)=>setCurrentPage(pageNumber)}
+            />
         </div>
     )
 }
