@@ -25,11 +25,17 @@ def hello_world():
 @app.route("/movies")
 def get_movies():
     try:
-        connector = MoviesSheetConnector(movies_sheet)
         page_number = request.args.get("page")
+        if not page_number or not page_number.isnumeric():
+            raise InvalidPageNumberError(page_number)
+        page_number = int(page_number)
+
         page_size = request.args.get("size")
-        page_number = int(page_number) if page_number and page_number.isnumeric() else 1
-        page_size = int(page_size) if page_size and page_size.isnumeric() else 10
+        if not page_size or not page_size.isnumeric():
+            raise InvalidPageSizeError(page_size)
+        page_size = int(page_size)
+
+        connector = MoviesSheetConnector(movies_sheet)
         page = MoviesPage(page_number, page_size)
         movies = connector.get_movies_by_page(page)
         movie_count = connector.get_movie_count()
