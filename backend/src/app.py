@@ -1,11 +1,9 @@
 from flask import Flask, jsonify, request
 from movies_sheet_connector import (
     MoviesSheetConnector,
-    PageOutOfBoundsError,
 )
 from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
 from page_metadata_calculator import PageMetadataCalculator
-from datetime import datetime
 from sheets import update_movie, add_movie
 from flask_cors import CORS
 import config
@@ -22,42 +20,34 @@ def hello_world():
     return jsonify("Hello World!")
 
 
+@app.errorhandler(InvalidPageNumberError)
+def invalid_page_number(error):
+    return jsonify(error.to_dict()), error.status_code
+
+
+@app.errorhandler(InvalidPageSizeError)
+def invalid_page_size(error):
+    return jsonify(error.to_dict()), error.status_code
+
+
 @app.route("/movies")
 def get_movies():
-    try:
-        page_number = request.args.get("page")
-        if not page_number or not page_number.isnumeric():
-            raise InvalidPageNumberError(page_number)
-        page_number = int(page_number)
+    page_number = request.args.get("page")
+    if not page_number or not page_number.isnumeric():
+        raise InvalidPageNumberError(page_number)
+    page_number = int(page_number)
 
-        page_size = request.args.get("size")
-        if not page_size or not page_size.isnumeric():
-            raise InvalidPageSizeError(page_size)
-        page_size = int(page_size)
+    page_size = request.args.get("size")
+    if not page_size or not page_size.isnumeric():
+        raise InvalidPageSizeError(page_size)
+    page_size = int(page_size)
 
-        connector = MoviesSheetConnector(movies_sheet)
-        page = MoviesPage(page_number, page_size)
-        movies = connector.get_movies_by_page(page)
-        movie_count = connector.get_movie_count()
-        metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
-        return {"metadata": metadata, "movies": movies}
-    except Exception as error:
-        match error:
-            case InvalidPageNumberError() | InvalidPageSizeError():
-                status_code = 400
-                status_code_title = "Bad Request"
-            case PageOutOfBoundsError():
-                status_code = 404
-                status_code_title = "Not Found"
-
-        response = {
-            "timestamp": str(datetime.now()),
-            "status": status_code,
-            "error": status_code_title,
-            "message": str(error),
-            "path": request.path,
-        }
-        return response, status_code
+    connector = MoviesSheetConnector(movies_sheet)
+    page = MoviesPage(page_number, page_size)
+    movies = connector.get_movies_by_page(page)
+    movie_count = connector.get_movie_count()
+    metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
+    return {"metadata": metadata, "movies": movies}
 
 
 @app.route("/update", methods=["POST"])
