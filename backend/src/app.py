@@ -21,12 +21,8 @@ def hello_world():
 
 
 @app.errorhandler(InvalidPageNumberError)
-def invalid_page_number(error):
-    return jsonify(error.to_dict()), error.status_code
-
-
 @app.errorhandler(InvalidPageSizeError)
-def invalid_page_size(error):
+def invalid_page(error):
     return jsonify(error.to_dict()), error.status_code
 
 
