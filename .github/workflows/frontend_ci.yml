@@ -1,0 +1,43 @@
+name: Frontend CI
+run-name: Verifying that frontend is in good conditions 👨‍🎨
+on:
+  push:
+    branches:
+      - master
+      - test
+      - develop
+    paths:
+      - frontend/**
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: node:22.5.1
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Run linter
+        run: npm run lint
+      # - name: Run tests
+      #   run: pytest
+      
+  # test-deploy:
+  #   # Only run this job if the branch is test and build job has passed
+  #   if: github.ref == 'refs/heads/test'
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Check out code
+  #       uses: actions/checkout@v4
+  #     - name: Deploy
+  #       env:
+  #         deploy_url: ${{ secrets.RENDER_TEST_DEPLOY_HOOK_URL }}
+  #       run: |
+  #         curl "$deploy_url"
+
