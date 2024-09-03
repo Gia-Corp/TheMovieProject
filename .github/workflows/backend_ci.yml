@@ -1,5 +1,5 @@
 name: Backend CI
-run-name: Verifying that backend is in good conditions 👨‍🔧
+run-name: Verifying that backend is in good conditions 🏭
 on:
   push:
     branches:
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Deploy
         env:
-          deploy_url: ${{ secrets.RENDER_TEST_DEPLOY_HOOK_URL }}
+          deploy_url: ${{ secrets.BACKEND_TEST_DEPLOY_HOOK }}
         run: |
           curl "$deploy_url"
 
