@@ -1,4 +1,5 @@
 [![Backend CI](https://github.com/Gia-Corp/TheMovieProject/actions/workflows/backend_ci.yml/badge.svg?branch=master)](https://github.com/Gia-Corp/TheMovieProject/actions/workflows/backend_ci.yml)
+[![Frontend CI](https://github.com/Gia-Corp/TheMovieProject/actions/workflows/frontend_ci.yml/badge.svg?branch=master)](https://github.com/Gia-Corp/TheMovieProject/actions/workflows/frontend_ci.yml)
 
 ## Local development
 

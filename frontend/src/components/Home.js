@@ -1,75 +1,62 @@
-import React,{useEffect,useState} from 'react';
-import Navbar from './Navbar';
-import {Link} from 'react-router-dom';
-import { getMovies } from '../functions';
-import List from './List';
-import PagMenu from './PagMenu';
+import React, { useContext, useEffect, useState } from "react";
+import List from "./List";
+import Paginator from "./Paginator";
+import { MovieServiceContext } from "./MovieServiceProvider";
 
-const Home = () => {
+const Home = ({ movie }) => {
+  const movieService = useContext(MovieServiceContext);
+  const [list, setList] = useState([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const [list,setList] = useState ([]);
-    const [error,setError] = useState (false);
-    const [refresh,setRefresh] = useState (false);
-    const [loading,setLoading] = useState (false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPageCount, setTotalPageCount] = useState(0);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [listPerPage] = useState(1);
-    const [indexOfLastList,setIndexOfLastList] = useState(currentPage * listPerPage)
-    const [indexOfFirstList,setIndexOfFirstList] = useState(indexOfLastList - listPerPage)
-    const [currentList,setCurrentList] = useState([])
+  useEffect(() => {
+    setError(false);
+    setLoading(true);
 
-    useEffect (()=>{
+    movieService
+      .getList({
+        page: currentPage,
+        size: 10,
+      })
+      .then((res) => {
+        if (res !== null) {
+          setList(res.movies);
+          setTotalPageCount(res.metadata.page_count);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setError(true);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [currentPage, movieService]);
 
-        setError (false)
-        setLoading (true)
-
-        getMovies()
-        .then ((res)=>{
-            if (res !== null){
-                setList(res)
-                setCurrentList (list.slice(indexOfFirstList, indexOfLastList))
-                setLoading(false)
-
-            }else{
-                setLoading(false)
-                setError(true)
-            }
-            return
-        })
-        .catch((err)=>{
-            setLoading (false)
-            setError (true)
-            console.log(err);
-            return
-        })
-    },[])
-
-    //Cambiar de pagina
-    const paginate = pageNumber => setCurrentPage(pageNumber);
-
-    return (
-        <div>
-            {(loading)?
-            <h3>cargando</h3>
-            :
-            <div>
-                {(error)?
-                <h3>ERROR</h3>
-                :
-                <List list={list}/>
-                }
-                <PagMenu
-                listPerPage={listPerPage} 
-                totalList={list.length} 
-                paginate={paginate} 
-                setCurrentPage={setCurrentPage} 
-                currentPage={currentPage}
-                />
-            </div>
-            
-            }
-        </div>
-    )
-}
+  return (
+    <div>
+      <Paginator
+        pageCount={totalPageCount}
+        pageNumber={currentPage}
+        disabled={loading}
+        selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
+      />
+      {loading ? (
+        <h3>cargando</h3>
+      ) : (
+        <div>{error ? <h3>ERROR</h3> : <List list={list} />}</div>
+      )}
+      <Paginator
+        pageCount={totalPageCount}
+        pageNumber={currentPage}
+        disabled={loading}
+        selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
+      />
+    </div>
+  );
+};
 
 export default Home;

@@ -1,5 +1,5 @@
-name: Backend CI
-run-name: Verifying that backend is in good conditions 🏭
+name: Frontend CI
+run-name: Verifying that frontend is in good conditions 🖼️
 on:
   push:
     branches:
@@ -7,25 +7,25 @@ on:
       - test
       - develop
     paths:
-      - backend/**
+      - frontend/**
 
 defaults:
   run:
-    working-directory: backend
+    working-directory: frontend
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: python:3.12.4-slim
+    container: node:22.5.1
     steps:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Install dependencies
-        run: pip3 install --no-cache-dir --upgrade -r requirements.txt
+        run: npm install
       - name: Run linter
-        run: ruff check
+        run: npm run lint
       - name: Run tests
-        run: pytest
+        run: npm run test
       
   test-deploy:
     # Only run this job if the branch is test and build job has passed
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Deploy
         env:
-          deploy_url: ${{ secrets.BACKEND_TEST_DEPLOY_HOOK }}
+          deploy_url: ${{ secrets.FRONTEND_TEST_DEPLOY_HOOK }}
         run: |
           curl "$deploy_url"
 

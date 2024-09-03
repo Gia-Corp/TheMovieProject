@@ -4,9 +4,13 @@ import {Routes, Route, BrowserRouter} from 'react-router-dom';
 import Home from './components/Home';
 import Navbar from './components/Navbar';
 import './bootstrap.min.css'
+import MovieServiceProvider from './components/MovieServiceProvider';
+import MovieApiServiceProvider from './components/MovieApiServiceProvider';
 
 const App = () => {
   return (
+    <MovieServiceProvider>
+      <MovieApiServiceProvider>
       <BrowserRouter>
       <Navbar/>
         <Routes>
@@ -14,6 +18,8 @@ const App = () => {
             <Route exact path="/movie" element={<MovieDetail/>} />
         </Routes>
       </BrowserRouter>
+      </MovieApiServiceProvider>
+    </MovieServiceProvider>
   );
 }
 

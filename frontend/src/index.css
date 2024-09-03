@@ -3,3 +3,10 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.disabled-div {
+  pointer-events: none;
+  opacity: 0.5;
+  color: #999;
+  cursor: not-allowed;
+}

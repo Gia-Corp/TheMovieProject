@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class MoviesPage:
     DEFAULT_NUMBER = 1
     DEFAULT_SIZE = 10
@@ -21,10 +24,34 @@ class MoviesPage:
 
 
 class InvalidPageNumberError(Exception):
-    def __init__(self, page_number):
-        super().__init__(f"{page_number} is not a valid page number")
+    status_code = 400
+
+    def __init__(self, page_number, status_code=None, payload=None):
+        self.message = f"{page_number} is not a valid page number"
+        super().__init__(self.message)
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv["message"] = self.message
+        rv["timestamp"] = str(datetime.now())
+        return rv
 
 
 class InvalidPageSizeError(Exception):
-    def __init__(self, page_size):
-        super().__init__(f"{page_size} is not a valid page size")
+    status_code = 400
+
+    def __init__(self, page_size, status_code=None, payload=None):
+        self.message = f"{page_size} is not a valid page size"
+        super().__init__(self.message)
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv["message"] = self.message
+        rv["timestamp"] = str(datetime.now())
+        return rv

@@ -1,2 +1,2 @@
 #!/bin/bash
-flask --app src/app run --host=backend
+flask --app src/app --debug run --host=backend
