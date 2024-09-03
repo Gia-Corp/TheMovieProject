@@ -24,8 +24,8 @@ jobs:
         run: npm install
       - name: Run linter
         run: npm run lint
-      # - name: Run tests
-      #   run: pytest
+      - name: Run tests
+        run: npm run test
       
   # test-deploy:
   #   # Only run this job if the branch is test and build job has passed

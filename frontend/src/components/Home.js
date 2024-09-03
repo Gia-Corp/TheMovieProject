@@ -5,7 +5,6 @@ import { MovieServiceContext } from "./MovieServiceProvider";
 
 const Home = ({ movie }) => {
   const movieService = useContext(MovieServiceContext);
-
   const [list, setList] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,7 +34,7 @@ const Home = ({ movie }) => {
       .catch((err) => {
         console.error(err);
       });
-  }, [currentPage]);
+  }, [currentPage, movieService]);
 
   return (
     <div>

@@ -4,7 +4,9 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        <a className="navbar-brand">Navbar</a>
+        <a href="/#" className="navbar-brand">
+          Navbar
+        </a>
         <button
           className="navbar-toggler"
           type="button"
@@ -19,19 +21,25 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarColor01">
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <a className="nav-link active">
+              <a href="/#" className="nav-link active">
                 Home
                 <span className="visually-hidden">(current)</span>
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link">Features</a>
+              <a href="/#" className="nav-link">
+                Features
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link">Pricing</a>
+              <a href="/#" className="nav-link">
+                Pricing
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link">About</a>
+              <a href="/#" className="nav-link">
+                About
+              </a>
             </li>
           </ul>
           <form className="d-flex">

@@ -24,11 +24,7 @@ export class MovieApiService {
         if (res.data.results.length !== 0) {
           return res.data.results[0];
         } else {
-          throw {
-            response: {
-              data: "no results",
-            },
-          };
+          throw new Error("no results");
         }
       })
       .catch((err) => {

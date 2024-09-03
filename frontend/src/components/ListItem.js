@@ -5,11 +5,9 @@ const ListItem = ({ item }) => {
   const movieApiService = useContext(MovieApiServiceContext);
 
   const [info, setInfo] = useState({});
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setError(false);
     setLoading(true);
 
     movieApiService
@@ -23,16 +21,14 @@ const ListItem = ({ item }) => {
           setLoading(false);
         } else {
           setLoading(false);
-          setError(true);
         }
         return;
       })
       .catch((err) => {
         setLoading(false);
-        setError(true);
         return;
       });
-  }, []);
+  }, [item, movieApiService]);
 
   return (
     <div>
@@ -57,7 +53,7 @@ const ListItem = ({ item }) => {
                 className="card-img-top"
                 width="268.16px"
                 height="402.23px"
-                alt="NO IMAGE"
+                alt=""
               ></img>
             ) : (
               <svg
