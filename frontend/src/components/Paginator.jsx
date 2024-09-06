@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
+import PropTypes from "prop-types";
 
 function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
   const [currentPage, setCurrentPage] = useState(pageNumber);
@@ -82,5 +83,12 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
     </Pagination>
   );
 }
+
+Paginator.propTypes = {
+  selectPageEvent: PropTypes.func,
+  pageNumber: PropTypes.number,
+  pageCount: PropTypes.number,
+  disabled: PropTypes.bool,
+};
 
 export default Paginator;

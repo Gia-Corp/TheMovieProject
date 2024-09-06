@@ -1,9 +1,10 @@
-import React, { createContext } from "react";
+import { createContext } from "react";
 import { MovieApiService } from "../services/movieApiService";
+import PropTypes from "prop-types";
 
 export const MovieApiServiceContext = createContext(null);
 
-const MovieApiServiceProvider = ({ children }) => {
+function MovieApiServiceProvider({ children }) {
   const movieApiService = new MovieApiService();
 
   return (
@@ -11,6 +12,10 @@ const MovieApiServiceProvider = ({ children }) => {
       {children}
     </MovieApiServiceContext.Provider>
   );
+}
+
+MovieApiServiceProvider.propTypes = {
+  children: PropTypes.any,
 };
 
 export default MovieApiServiceProvider;

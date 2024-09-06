@@ -6,9 +6,9 @@ export class MovieApiService {
 
   constructor() {
     this.#service = axios.create({
-      baseURL: process.env.REACT_APP_MOVIE_API_URL,
+      baseURL: import.meta.env.VITE_MOVIE_API_URL,
       params: {
-        api_key: process.env.REACT_APP_MOVIE_API_KEY,
+        api_key: import.meta.env.VITE_MOVIE_API_KEY,
       },
     });
   }
