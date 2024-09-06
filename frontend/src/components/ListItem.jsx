@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MovieApiServiceContext } from "./MovieApiServiceProvider";
+import PropTypes from "prop-types";
 
-const ListItem = ({ item }) => {
+function ListItem({ item }) {
   const movieApiService = useContext(MovieApiServiceContext);
 
   const [info, setInfo] = useState({});
@@ -24,7 +25,7 @@ const ListItem = ({ item }) => {
         }
         return;
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
         return;
       });
@@ -49,7 +50,7 @@ const ListItem = ({ item }) => {
           <div className="card-body">
             {info !== undefined ? (
               <img
-                src={`${process.env.REACT_APP_MOVIE_API_IMAGES_URL}${info.poster_path}`}
+                src={`${import.meta.env.VITE_MOVIE_API_IMAGES_URL}${info.poster_path}`}
                 className="card-img-top"
                 width="268.16px"
                 height="402.23px"
@@ -85,6 +86,10 @@ const ListItem = ({ item }) => {
       )}
     </div>
   );
+}
+
+ListItem.propTypes = {
+  item: PropTypes.object,
 };
 
 export default ListItem;

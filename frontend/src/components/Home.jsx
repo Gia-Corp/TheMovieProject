@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import List from "./List";
 import Paginator from "./Paginator";
 import { MovieServiceContext } from "./MovieServiceProvider";
 
-const Home = ({ movie }) => {
+function Home() {
   const movieService = useContext(MovieServiceContext);
   const [list, setList] = useState([]);
   const [error, setError] = useState(false);
@@ -57,6 +57,6 @@ const Home = ({ movie }) => {
       />
     </div>
   );
-};
+}
 
 export default Home;
