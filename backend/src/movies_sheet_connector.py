@@ -12,9 +12,9 @@ class MoviesSheetConnector:
         if self.next_available_row() <= page_first_row:
             raise PageOutOfBoundsError
 
-        raw_movies = self.sheet.get(f"A{page_first_row}:D{page_last_row }")
+        raw_movies = self.sheet.get(f"A{page_first_row}:E{page_last_row }")
         raw_movies = utils.to_records(
-            ["director", "title", "year", "watched"], raw_movies
+            ["director", "title", "year", "watched", "id"], raw_movies
         )
         movies = list(map(self.transform_into_movie, raw_movies))
         return movies
@@ -25,6 +25,7 @@ class MoviesSheetConnector:
     def transform_into_movie(self, raw_movie):
         raw_movie["watched"] = True if raw_movie["watched"] == "TRUE" else False
         raw_movie["year"] = int(raw_movie["year"])
+        raw_movie["id"] = int(raw_movie["id"])
         return raw_movie
 
     def get_movie_count(self):

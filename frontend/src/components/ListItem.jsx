@@ -48,7 +48,7 @@ function ListItem({ item }) {
           style={{ maxWidth: "20rem" }}
         >
           <div className="card-body">
-            {info !== undefined ? (
+            {info.poster_path !== undefined ? (
               <img
                 src={`${import.meta.env.VITE_MOVIE_API_IMAGES_URL}${info.poster_path}`}
                 className="card-img-top"

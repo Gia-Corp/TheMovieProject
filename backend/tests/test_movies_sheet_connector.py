@@ -17,8 +17,8 @@ class TestMoviesSheetConnector:
             "",
         ]
         sheet.get.return_value = [
-            ["James Cameron", "Titanic", "1998", "TRUE"],
-            ["John Lasseter", "Cars", "2006", "FALSE"],
+            ["James Cameron", "Titanic", "1998", "TRUE", "1"],
+            ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
         expected_movies = [
             {
@@ -26,12 +26,14 @@ class TestMoviesSheetConnector:
                 "director": "James Cameron",
                 "watched": True,
                 "year": 1998,
+                "id": 1,
             },
             {
                 "title": "Cars",
                 "director": "John Lasseter",
                 "watched": False,
                 "year": 2006,
+                "id": 2,
             },
         ]
         connector = MoviesSheetConnector(sheet)
@@ -48,12 +50,12 @@ class TestMoviesSheetConnector:
             "",
         ]
         sheet.get.return_value = [
-            ["James Cameron", "Titanic", 1998, "TRUE"],
-            ["John Lasseter", "Cars", 2006, "FALSE"],
+            ["James Cameron", "Titanic", "1998", "TRUE", "1"],
+            ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
         connector = MoviesSheetConnector(sheet)
         connector.get_movies_by_page(MoviesPage(2, 2))
-        sheet.get.assert_called_with("A4:D5")
+        sheet.get.assert_called_with("A4:E5")
 
     def test_connector_to_fetch_correct_sheet_range_when_different_page_size(self):
         sheet = Mock()
@@ -80,12 +82,12 @@ class TestMoviesSheetConnector:
             "a",
         ]
         sheet.get.return_value = [
-            ["James Cameron", "Titanic", 1998, "TRUE"],
-            ["John Lasseter", "Cars", 2006, "FALSE"],
+            ["James Cameron", "Titanic", "1998", "TRUE", "1"],
+            ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
         connector = MoviesSheetConnector(sheet)
         connector.get_movies_by_page(MoviesPage(2, 10))
-        sheet.get.assert_called_with("A12:D21")
+        sheet.get.assert_called_with("A12:E21")
 
     def test_get_movies_by_page_should_fail_when_is_out_of_bounds_of_the_list(self):
         with raises(PageOutOfBoundsError) as error:
