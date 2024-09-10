@@ -1,4 +1,4 @@
-from datetime import datetime
+from exceptions.api_exception import ApiException
 
 
 class MoviesPage:
@@ -23,35 +23,21 @@ class MoviesPage:
         return self.number * self.size
 
 
-class InvalidPageNumberError(Exception):
-    status_code = 400
+class InvalidPageNumberError(ApiException):
+    BAD_REQUEST = 400
 
-    def __init__(self, page_number, status_code=None, payload=None):
-        self.message = f"{page_number} is not a valid page number"
-        super().__init__(self.message)
-        if status_code is not None:
-            self.status_code = status_code
-        self.payload = payload
+    def build_message(self, page_number):
+        return f"{page_number} is not a valid page number"
 
-    def to_dict(self):
-        rv = dict(self.payload or ())
-        rv["message"] = self.message
-        rv["timestamp"] = str(datetime.now())
-        return rv
+    def get_status_code(self):
+        return self.BAD_REQUEST
 
 
-class InvalidPageSizeError(Exception):
-    status_code = 400
+class InvalidPageSizeError(ApiException):
+    BAD_REQUEST = 400
 
-    def __init__(self, page_size, status_code=None, payload=None):
-        self.message = f"{page_size} is not a valid page size"
-        super().__init__(self.message)
-        if status_code is not None:
-            self.status_code = status_code
-        self.payload = payload
+    def build_message(self, page_size):
+        return f"{page_size} is not a valid page size"
 
-    def to_dict(self):
-        rv = dict(self.payload or ())
-        rv["message"] = self.message
-        rv["timestamp"] = str(datetime.now())
-        return rv
+    def get_status_code(self):
+        return self.BAD_REQUEST
