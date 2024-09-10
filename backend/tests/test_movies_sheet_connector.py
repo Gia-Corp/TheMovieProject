@@ -1,4 +1,4 @@
-from movies_sheet_connector import (
+from persistence.movies_sheet_connector import (
     MoviesSheetConnector,
     PageOutOfBoundsError,
 )
