@@ -7,13 +7,19 @@ from page_metadata_calculator import PageMetadataCalculator
 import config
 import gspread
 
-movies_controller = Blueprint("movies_controller", __name__)
+movies = Blueprint("movies_controller", __name__)
 
 client = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
 movies_sheet = client.open(config.SHEET_NAME).sheet1
 
 
-@movies_controller.route("/movies")
+@movies.errorhandler(InvalidPageNumberError)
+@movies.errorhandler(InvalidPageSizeError)
+def invalid_page(error):
+    return jsonify(error.to_dict()), error.status_code
+
+
+@movies.get("/movies")
 def get_movies():
     page_number = request.args.get("page")
     if not page_number or not page_number.isnumeric():
@@ -33,7 +39,31 @@ def get_movies():
     return {"metadata": metadata, "movies": movies}
 
 
-@movies_controller.errorhandler(InvalidPageNumberError)
-@movies_controller.errorhandler(InvalidPageSizeError)
-def invalid_page(error):
-    return jsonify(error.to_dict()), error.status_code
+@movies.post("/movies")
+def create_movie():
+    return jsonify("Movie created successfully")
+    # try:
+    #     title = request.json["title"]
+    #     director = request.json["director"]
+    #     watched = request.json["watched"]
+
+    #     add_movie(title, director, watched)
+
+    #     return jsonify("Success")
+    # except Exception as err:
+    #     return str(err), 500
+
+
+# @movies.patch("/movies/<id>")
+# def update_movie():
+#     try:
+#         id = request.json["id"]
+#         title = request.json["title"]
+#         director = request.json["director"]
+#         watched = request.json["watched"]
+
+#         update_movie(id, title, director, watched)
+
+#         return jsonify("Success")
+#     except Exception as err:
+#         return str(err), 500
