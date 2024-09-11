@@ -6,6 +6,11 @@ from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
 from page_metadata_calculator import PageMetadataCalculator
 import config
 import gspread
+from domain.movie import (
+    EmptyMovieDirectorError,
+    EmptyMovieTitleError,
+    NegativeMovieYearError,
+)
 
 movies = Blueprint("movies_controller", __name__)
 
@@ -13,9 +18,12 @@ client = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
 movies_sheet = client.open(config.SHEET_NAME).sheet1
 
 
+@movies.errorhandler(NegativeMovieYearError)
+@movies.errorhandler(EmptyMovieTitleError)
+@movies.errorhandler(EmptyMovieDirectorError)
 @movies.errorhandler(InvalidPageNumberError)
 @movies.errorhandler(InvalidPageSizeError)
-def invalid_page(error):
+def api_error(error):
     return jsonify(error.to_dict()), error.status_code
 
 
@@ -41,18 +49,9 @@ def get_movies():
 
 @movies.post("/movies")
 def create_movie():
-    return jsonify("Movie created successfully")
-    # try:
-    #     title = request.json["title"]
-    #     director = request.json["director"]
-    #     year = request.json["year"]
-    #     watched = request.json["watched"]
-
-    #     add_movie(title, director, watched)
-
-    #     return jsonify("Success")
-    # except Exception as err:
-    #     return str(err), 500
+    # movie = Movie(request.json["title"], request.json["director"], request.json["year"], request.json["watched"])
+    return jsonify("Successful!")
+    # add_movie(title, director, watched)
 
 
 # @movies.patch("/movies/<id>")
