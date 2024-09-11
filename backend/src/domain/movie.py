@@ -9,7 +9,11 @@ class Movie:
             raise EmptyMovieTitleError
         if not director:
             raise EmptyMovieDirectorError
-        return
+
+        self.title = title
+        self.director = director
+        self.year = year
+        self.watched = watched
 
 
 class EmptyMovieDirectorError(ApiException):
