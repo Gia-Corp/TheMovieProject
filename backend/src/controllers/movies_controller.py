@@ -4,7 +4,7 @@ from persistence.movies_sheet_connector import (
 )
 from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
 from page_metadata_calculator import PageMetadataCalculator
-import config
+import settings
 import gspread
 from domain.movie import (
     EmptyMovieDirectorError,
@@ -14,8 +14,8 @@ from domain.movie import (
 
 movies = Blueprint("movies_controller", __name__)
 
-client = gspread.service_account_from_dict(config.SHEET_CREDENTIALS)
-movies_sheet = client.open(config.SHEET_NAME).sheet1
+client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
+movies_sheet = client.open(settings.SHEET_NAME).sheet1
 
 
 @movies.errorhandler(NegativeMovieYearError)
