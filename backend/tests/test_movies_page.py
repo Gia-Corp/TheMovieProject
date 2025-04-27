@@ -1,4 +1,8 @@
-from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
+from pagination.movies_page import (
+    MoviesPage,
+    InvalidPageNumberError,
+    InvalidPageSizeError,
+)
 from pytest import raises
 
 
