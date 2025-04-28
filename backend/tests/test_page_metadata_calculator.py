@@ -1,5 +1,5 @@
-from pagination.page_metadata_calculator import PageMetadataCalculator
-from pagination.movies_page import MoviesPage
+from src.pagination.page_metadata_calculator import PageMetadataCalculator
+from src.pagination.movies_page import MoviesPage
 
 
 class TestPageMetadataCalculator:

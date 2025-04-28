@@ -1,2 +1,2 @@
 #!/bin/bash
-flask --app src/app --debug run --host=backend
+fastapi dev src/app.py --host backend --port 5000

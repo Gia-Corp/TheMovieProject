@@ -1,12 +1,34 @@
-from controllers.movies_controller import movies
-from flask import Flask, jsonify
-from flask_cors import CORS
+from .controllers.movies_controller import movies
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from .domain.movie import (
+    EmptyMovieDirectorError,
+    EmptyMovieTitleError,
+    NegativeMovieYearError,
+)
+from .pagination.movies_page import InvalidPageNumberError, InvalidPageSizeError
 
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(movies)
+app = FastAPI(
+    title="The Movie Project API",
+    swagger_ui_parameters={
+        "syntaxHighlight": {"theme": "arta"},
+        "tryItOutEnabled": True,
+    },
+)
 
 
-@app.route("/")
+@app.exception_handler(NegativeMovieYearError)
+@app.exception_handler(EmptyMovieTitleError)
+@app.exception_handler(EmptyMovieDirectorError)
+@app.exception_handler(InvalidPageNumberError)
+@app.exception_handler(InvalidPageSizeError)
+async def api_error_handler(request: Request, exc: Exception):
+    return JSONResponse(status_code=exc.status_code, content=exc.to_dict())
+
+
+app.include_router(movies)
+
+
+@app.get("/")
 def hello_world():
-    return jsonify("Hello World!")
+    return "The Movie Project"

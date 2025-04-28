@@ -1,57 +1,58 @@
-from flask import jsonify, request, Blueprint
-from persistence.movies_sheet_connector import (
+from fastapi import APIRouter, Query
+from pydantic import BaseModel
+from ..persistence.movies_sheet_connector import (
     MoviesSheetConnector,
 )
-from movies_page import MoviesPage, InvalidPageNumberError, InvalidPageSizeError
-from page_metadata_calculator import PageMetadataCalculator
-import settings
+from ..pagination.movies_page import MoviesPage
+from ..pagination.page_metadata_calculator import PageMetadataCalculator
+import src.settings as settings
 import gspread
-from domain.movie import (
-    EmptyMovieDirectorError,
-    EmptyMovieTitleError,
-    NegativeMovieYearError,
+from ..domain.movie import (
+    Movie,
 )
 
-movies = Blueprint("movies_controller", __name__)
 
 client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
 movies_sheet = client.open(settings.SHEET_NAME).sheet1
 
 
-@movies.errorhandler(NegativeMovieYearError)
-@movies.errorhandler(EmptyMovieTitleError)
-@movies.errorhandler(EmptyMovieDirectorError)
-@movies.errorhandler(InvalidPageNumberError)
-@movies.errorhandler(InvalidPageSizeError)
-def api_error(error):
-    return jsonify(error.to_dict()), error.status_code
+movies = APIRouter(
+    tags=["Movies"],
+)
 
 
 @movies.get("/movies")
-def get_movies():
-    page_number = request.args.get("page")
-    if not page_number or not page_number.isnumeric():
-        raise InvalidPageNumberError(page_number)
-    page_number = int(page_number)
-
-    page_size = request.args.get("size")
-    if not page_size or not page_size.isnumeric():
-        raise InvalidPageSizeError(page_size)
-    page_size = int(page_size)
-
+async def get_movies(
+    page: int = Query(..., gt=0),
+    size: int = Query(..., gt=0),
+):
     connector = MoviesSheetConnector(movies_sheet)
-    page = MoviesPage(page_number, page_size)
-    movies = connector.get_movies_by_page(page)
+    page_obj = MoviesPage(page, size)
+    movies = connector.get_movies_by_page(page_obj)
     movie_count = connector.get_movie_count()
-    metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
+    metadata = PageMetadataCalculator().calculate(page_obj, movie_count, "/movies")
+
     return {"metadata": metadata, "movies": movies}
 
 
+class MovieCreateRequest(BaseModel):
+    title: str
+    director: str
+    year: int
+    watched: bool
+
+
 @movies.post("/movies")
-def create_movie():
-    # movie = Movie(request.json["title"], request.json["director"], request.json["year"], request.json["watched"])
-    return jsonify("Successful!")
-    # add_movie(title, director, watched)
+async def create_movie(movie_data: MovieCreateRequest):
+    movie = Movie(
+        movie_data.title,
+        movie_data.director,
+        movie_data.year,
+        movie_data.watched,
+    )
+    connector = MoviesSheetConnector(movies_sheet)
+    connector.add_movie(movie)
+    return {"message": "Successful!"}
 
 
 # @movies.patch("/movies/<id>")

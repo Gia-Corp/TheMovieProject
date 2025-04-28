@@ -1,4 +1,4 @@
-from exceptions.api_exception import ApiException
+from ..exceptions.api_exception import ApiException
 
 
 class Movie:

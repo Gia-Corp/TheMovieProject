@@ -1,8 +1,8 @@
-from persistence.movies_sheet_connector import (
+from src.persistence.movies_sheet_connector import (
     MoviesSheetConnector,
     PageOutOfBoundsError,
 )
-from pagination.movies_page import MoviesPage
+from src.pagination.movies_page import MoviesPage
 from unittest.mock import Mock
 from pytest import raises
 
