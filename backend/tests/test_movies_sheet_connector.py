@@ -1,8 +1,8 @@
-from movies_sheet_connector import (
+from src.persistence.movies_sheet_connector import (
     MoviesSheetConnector,
     PageOutOfBoundsError,
 )
-from movies_page import MoviesPage
+from src.pagination.movies_page import MoviesPage
 from unittest.mock import Mock
 from pytest import raises
 
@@ -109,12 +109,6 @@ class TestMoviesSheetConnector:
         assert movie_count == 2
 
     def test_get_movie_count_with_no_movies(self):
-        sheet = Mock()
-        sheet.col_values.return_value = ["Director", ""]
-        movie_count = MoviesSheetConnector(sheet).get_movie_count()
-        assert movie_count == 0
-
-    def test_get_pagination_metadata_xxx(self):
         sheet = Mock()
         sheet.col_values.return_value = ["Director", ""]
         movie_count = MoviesSheetConnector(sheet).get_movie_count()

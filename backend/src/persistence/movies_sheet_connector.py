@@ -1,4 +1,5 @@
 from gspread import utils
+from ..exceptions.api_exception import ApiException
 
 
 class MoviesSheetConnector:
@@ -31,7 +32,16 @@ class MoviesSheetConnector:
     def get_movie_count(self):
         return self.next_available_row() - 2
 
+    def add_movie(self, movie):
+        movie_as_list = [movie.director, movie.title, movie.year, movie.watched]
+        self.sheet.append_row(movie_as_list)
 
-class PageOutOfBoundsError(Exception):
-    def __init__(self):
-        super().__init__("Selected page is out of bounds")
+
+class PageOutOfBoundsError(ApiException):
+    NOT_FOUND = 404
+
+    def build_message(self, parameter):
+        return "Selected page is out of bounds"
+
+    def get_status_code(self):
+        return self.NOT_FOUND
