@@ -5,6 +5,7 @@ load_dotenv()
 
 # General
 PORT = getenv("PORT")
+FRONTEND_URL = getenv("FRONTEND_URL")
 
 # Google Sheets
 SHEET_NAME = getenv("SHEET_NAME")
