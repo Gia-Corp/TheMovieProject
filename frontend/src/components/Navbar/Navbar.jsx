@@ -2,7 +2,7 @@ import "./Navbar.css";
 
 function Navbar() {
   return (
-    <nav className="navbar">
+    <nav className="nav-bar">
       <div className="nav-buttons">
         <a id="home-button" href="#">
           The Movie Project

@@ -1,4 +1,4 @@
-.navbar {
+.nav-bar {
   background-color: rgba(111,66,193,1);
   padding: 5px;
   height: fit-content;
@@ -11,7 +11,6 @@
   justify-self: start;
   display: flex;
   align-items: center;
-  padding: 10px 0 10px 20px;
 
   & a {
     margin: 0;
