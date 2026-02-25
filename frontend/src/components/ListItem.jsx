@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { MovieApiServiceContext } from "./MovieApiServiceProvider";
-import PropTypes from "prop-types";
 
 function ListItem({ item }) {
   const movieApiService = useContext(MovieApiServiceContext);
@@ -87,9 +86,5 @@ function ListItem({ item }) {
     </div>
   );
 }
-
-ListItem.propTypes = {
-  item: PropTypes.object,
-};
 
 export default ListItem;

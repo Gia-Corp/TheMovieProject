@@ -1,5 +1,4 @@
 import ListItem from "./ListItem";
-import PropTypes from "prop-types";
 
 function List({ list }) {
   return (
@@ -12,9 +11,5 @@ function List({ list }) {
     </div>
   );
 }
-
-List.propTypes = {
-  list: PropTypes.array,
-};
 
 export default List;
