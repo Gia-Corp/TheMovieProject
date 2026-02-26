@@ -1,0 +1,25 @@
+.skeleton {
+  --animation-time: 1.2s;
+  --anmtn-clr-base: rgba(255, 255, 255, 0.432);
+  --anmtn-clr-1: rgb(from var(--anmtn-clr-base) r g b / calc(alpha - 0.55));
+  --anmtn-clr-2: rgb(from var(--anmtn-clr-base) r g b / calc(alpha - 0.25));
+
+  background: linear-gradient(90deg, var(--anmtn-clr-2) 0%, var(--anmtn-clr-1) 50%, var(--anmtn-clr-2) 100%);
+  background-size: 200% 100%;
+  animation: pulse var(--animation-time) infinite linear;
+  height: 100%;
+  width: 100%;
+
+  * {
+    visibility: hidden;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
