@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import List from "./List";
-import Paginator from "./Paginator";
+import List from "./List/List.jsx";
+import Paginator from "./Paginator/Paginator.jsx";
 import { MovieServiceContext } from "./MovieServiceProvider";
 
 function Home() {
@@ -37,18 +37,22 @@ function Home() {
   }, [currentPage, movieService]);
 
   return (
-    <div>
+    <div className="primary-content">
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
         disabled={loading}
         selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
       />
-      {loading ? (
-        <h3>cargando</h3>
-      ) : (
-        <div>{error ? <h3>ERROR</h3> : <List list={list} />}</div>
-      )}
+      <main>
+        {loading ? (
+          <h3>cargando</h3>
+        ) : error ? (
+          <h3>ERROR</h3>
+        ) : (
+          <List list={list} />
+        )}
+      </main>
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}

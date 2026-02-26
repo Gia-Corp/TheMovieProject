@@ -10,3 +10,24 @@
   color: #999;
   cursor: not-allowed;
 }
+
+#root {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.primary-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
