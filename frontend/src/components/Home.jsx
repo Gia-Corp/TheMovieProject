@@ -7,7 +7,7 @@ function Home() {
   const movieService = useContext(MovieServiceContext);
   const [list, setList] = useState([]);
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageCount, setTotalPageCount] = useState(0);
@@ -44,7 +44,9 @@ function Home() {
         disabled={loading}
         selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
       />
-      <main>{error ? <h3>ERROR</h3> : <List list={list} />}</main>
+      <main>
+        {error ? <h3>ERROR</h3> : <List isLoading={loading} list={list} />}
+      </main>
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}

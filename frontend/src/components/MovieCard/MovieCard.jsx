@@ -6,14 +6,10 @@ function MovieCard({ item }) {
   const movieApiService = useContext(MovieApiServiceContext);
 
   const [info, setInfo] = useState({});
-  const [loading, setLoading] = useState(!item);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-
-    if (!item) {
-      return;
-    }
 
     movieApiService
       .getMovieData({
@@ -46,15 +42,13 @@ function MovieCard({ item }) {
           : {}
       }
     >
-      {loading ? (
-        <div className="placeholder-cargando"></div>
-      ) : (
+      {
         <div className="detalles-pelicula">
           <h2 className="titulo-pelicula">{item["title"]}</h2>
           <p className="director-pelicula">{item["director"]}</p>
           <p className="año-pelicula">{item["year"]}</p>
         </div>
-      )}
+      }
     </div>
   );
 }

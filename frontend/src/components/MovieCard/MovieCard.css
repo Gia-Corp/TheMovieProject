@@ -4,6 +4,7 @@
   background-position: center;
   background-color: rgb(46, 27, 82);
   aspect-ratio: 273 / 409;
+  max-width: 250px;
   position: relative;
   overflow: hidden;
   transition: scale 0.15s ease-out;
@@ -14,24 +15,6 @@
 
   &:hover .detalles-pelicula {
     opacity: 1;
-  }
-}
-
-.placeholder-cargando {
-  position: absolute;
-  left: 0%;
-  height: 100%;
-  width: 75%;
-  background-image: linear-gradient(to left,rgba(46, 27, 82, .05), rgba(103, 60, 184, 0.3), rgba(105, 62, 186, 0.6), rgba(103, 60, 184, 0.3), rgba(46, 27, 82, .05));
-  animation: cargando 1.2s ease-out infinite;
-}
-
-@keyframes cargando {
-  0%{
-    left: -75%;
-  }
-  100%{
-    left: 100%;
   }
 }
 

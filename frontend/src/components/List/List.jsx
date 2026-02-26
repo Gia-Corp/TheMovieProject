@@ -1,19 +1,16 @@
 import MovieCard from "../MovieCard/MovieCard";
+import MovieCardSkeleton from "../MovieCardSkeleton/MovieCardSkeleton";
 import "./List.css";
 
-function List({ list }) {
-  const newList =
-    list.length > 0
-      ? list
-      : [null, null, null, null, null, null, null, null, null, null];
-
+function List({ list, isLoading }) {
   return (
-    <div className="movies-list">
-      {newList.map((item, index) => {
-        const itemId = item ? item.id : index;
-        return <MovieCard key={itemId} item={item} />;
-      })}
-    </div>
+    <ul className="movies-list">
+      {isLoading
+        ? Array.from({ length: 10 }).map((_, i) => (
+            <MovieCardSkeleton key={i} />
+          ))
+        : list.map((item) => <MovieCard key={item.id} item={item} />)}
+    </ul>
   );
 }
 
