@@ -44,15 +44,7 @@ function Home() {
         disabled={loading}
         selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
       />
-      <main>
-        {loading ? (
-          <h3>Cargando...</h3>
-        ) : error ? (
-          <h3>ERROR</h3>
-        ) : (
-          <List list={list} />
-        )}
-      </main>
+      <main>{error ? <h3>ERROR</h3> : <List list={list} />}</main>
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
