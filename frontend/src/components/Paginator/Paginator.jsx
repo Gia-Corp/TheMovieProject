@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
+import "./Paginator.css";
 
 function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
   const [currentPage, setCurrentPage] = useState(pageNumber);
