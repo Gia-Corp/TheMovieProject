@@ -38,7 +38,7 @@ function ListItem({ item }) {
           style={{ maxWidth: "20rem" }}
         >
           <div className="card-body">
-            <h4 className="card-title">Loading</h4>
+            <h4 className="card-title">Cargando...</h4>
           </div>
         </div>
       ) : (

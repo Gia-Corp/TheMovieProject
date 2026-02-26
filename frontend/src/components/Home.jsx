@@ -46,7 +46,7 @@ function Home() {
       />
       <main>
         {loading ? (
-          <h3>cargando</h3>
+          <h3>Cargando...</h3>
         ) : error ? (
           <h3>ERROR</h3>
         ) : (
