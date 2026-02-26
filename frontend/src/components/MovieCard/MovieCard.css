@@ -1,0 +1,87 @@
+.tarjeta-pelicula {
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgb(46, 27, 82);
+  aspect-ratio: 273 / 409;
+  position: relative;
+  overflow: hidden;
+  transition: scale 0.15s ease-out;
+
+  &:hover {
+    scale: 1.08;
+  }
+
+  &:hover .detalles-pelicula {
+    opacity: 1;
+  }
+}
+
+.placeholder-cargando {
+  position: absolute;
+  left: 0%;
+  height: 100%;
+  width: 75%;
+  background-image: linear-gradient(to left,rgba(46, 27, 82, .05), rgba(103, 60, 184, 0.3), rgba(105, 62, 186, 0.6), rgba(103, 60, 184, 0.3), rgba(46, 27, 82, .05));
+  animation: cargando 1.2s ease-out infinite;
+}
+
+@keyframes cargando {
+  0%{
+    left: -75%;
+  }
+  100%{
+    left: 100%;
+  }
+}
+
+.detalles-pelicula {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  opacity: 0;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8%;
+  gap: 10px;
+  text-align: center;
+  background: linear-gradient(
+      rgb(46, 17, 90) 0%, 
+      rgb(46, 17, 90) 15%, 
+      rgba(46, 17, 90, 0.834) 40%, 
+      rgba(46, 17, 90, 0.462) 60%, 
+      rgba(46, 17, 90, 0.041) 75%);
+
+  & h2, p {
+    color: #ffffff;
+  }
+
+  & h2 {
+    margin: 0;
+    font-weight: 900;
+    font-size: 1.5rem;
+  }
+
+  & p {
+    margin: 0;
+  }
+}
+
+.pelicula-vista {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 13%;
+  aspect-ratio: 1/1;
+  background-image: url('icons/check_circle_24dp_75FB4C_FILL1_wght400_GRAD0_opsz24.svg');
+  background-size: 65%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: rgb(46, 27, 82);
+  border-radius: 10px 0 0 0;
+  z-index: 3;
+}
