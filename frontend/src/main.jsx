@@ -1,10 +1,17 @@
+import "./index.css";
+import "./bootstrap.min.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
-import "./index.css";
+import MovieServiceProvider from "./components/MovieServiceProvider";
+import MovieApiServiceProvider from "./components/MovieApiServiceProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <MovieServiceProvider>
+      <MovieApiServiceProvider>
+        <App />
+      </MovieApiServiceProvider>
+    </MovieServiceProvider>
   </StrictMode>,
 );
