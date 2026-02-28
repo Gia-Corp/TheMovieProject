@@ -25,7 +25,7 @@ function MovieCard({ item }) {
 
   return (
     <div
-      className="tarjeta-pelicula"
+      className="movie-card"
       style={
         moviePosterUrl
           ? {
@@ -35,7 +35,7 @@ function MovieCard({ item }) {
       }
     >
       {
-        <div className="detalles-pelicula">
+        <div className="movie-info">
           <h2 className="titulo-pelicula">{item["title"]}</h2>
           <p className="director-pelicula">{item["director"]}</p>
           <p className="año-pelicula">{item["year"]}</p>

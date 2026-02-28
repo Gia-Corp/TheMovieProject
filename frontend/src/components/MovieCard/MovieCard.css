@@ -1,4 +1,4 @@
-.tarjeta-pelicula {
+.movie-card {
   border-radius: 10px;
   background-size: cover;
   background-position: center;
@@ -13,12 +13,12 @@
     scale: 1.08;
   }
 
-  &:hover .detalles-pelicula {
+  &:hover .movie-info {
     opacity: 1;
   }
 }
 
-.detalles-pelicula {
+.movie-info {
   position: absolute;
   inset: 0;
   height: 100%;
@@ -54,7 +54,7 @@
   }
 }
 
-.pelicula-vista {
+.watched-movie {
   position: absolute;
   bottom: 0;
   right: 0;
