@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import List from "./List/List.jsx";
 import Paginator from "./Paginator/Paginator.jsx";
-import { MovieServiceContext } from "./MovieServiceProvider";
+import { useRepos } from "./RepositoriesProvider";
 
 function Home() {
-  const movieService = useContext(MovieServiceContext);
+  const { movieRepository } = useRepos();
   const [list, setList] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ function Home() {
     setError(false);
     setLoading(true);
 
-    movieService
+    movieRepository
       .getList({
         page: currentPage,
         size: 10,
@@ -34,7 +34,7 @@ function Home() {
       .catch((err) => {
         console.error(err);
       });
-  }, [currentPage, movieService]);
+  }, [currentPage, movieRepository]);
 
   return (
     <div className="primary-content">

@@ -1,9 +1,9 @@
 import "./MovieCard.css";
-import { useContext, useEffect, useState } from "react";
-import { MovieApiServiceContext } from "../MovieApiServiceProvider";
+import { useEffect, useState } from "react";
+import { useRepos } from "../RepositoriesProvider";
 
 function MovieCard({ item }) {
-  const movieApiService = useContext(MovieApiServiceContext);
+  const { posterRepository } = useRepos();
 
   const [info, setInfo] = useState({});
   const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ function MovieCard({ item }) {
   useEffect(() => {
     setLoading(true);
 
-    movieApiService
+    posterRepository
       .getMovieData({
         name: item.title,
         year: item.year,
@@ -29,7 +29,7 @@ function MovieCard({ item }) {
         setLoading(false);
         return;
       });
-  }, [item, movieApiService]);
+  }, [item, posterRepository]);
 
   return (
     <div

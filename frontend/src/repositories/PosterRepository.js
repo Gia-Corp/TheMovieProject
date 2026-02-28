@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export class MovieApiService {
+export class PosterRepository {
   static #SEARCH_PATH = "/3/search/movie";
   #service;
 
@@ -14,7 +14,7 @@ export class MovieApiService {
   }
   getMovieData({ name, year }) {
     return this.#service
-      .get(MovieApiService.#SEARCH_PATH, {
+      .get(PosterRepository.#SEARCH_PATH, {
         params: {
           query: name,
           year,

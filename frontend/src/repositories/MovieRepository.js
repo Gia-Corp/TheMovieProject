@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export class MovieService {
+export class MovieRepository {
   static #MOVIES_PATH = "/movies";
   #service;
 
@@ -11,7 +11,7 @@ export class MovieService {
   }
   getList({ page, size }) {
     return this.#service
-      .get(MovieService.#MOVIES_PATH, {
+      .get(MovieRepository.#MOVIES_PATH, {
         params: {
           page,
           size,
