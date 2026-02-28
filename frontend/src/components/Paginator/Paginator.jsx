@@ -73,7 +73,7 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
         renderPaginationItems()
       ) : (
         <Pagination.Item key={1} active disabled>
-          {0}
+          {"Cargando..."}
         </Pagination.Item>
       )}
       <Pagination.Next
