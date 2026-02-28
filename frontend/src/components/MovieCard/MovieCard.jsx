@@ -4,30 +4,22 @@ import { useRepos } from "../../providers/RepositoriesProvider";
 
 function MovieCard({ item }) {
   const { posterRepository } = useRepos();
-
-  const [info, setInfo] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [moviePosterUrl, setMoviePosterUrl] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-
     posterRepository
-      .getMovieData({
+      .getPoster({
         name: item.title,
         year: item.year,
       })
       .then((res) => {
-        if (res !== null) {
-          setInfo(res);
-          setLoading(false);
-        } else {
-          setLoading(false);
+        if (res === null) {
+          return;
         }
-        return;
+        setMoviePosterUrl(res);
       })
-      .catch(() => {
-        setLoading(false);
-        return;
+      .catch((error) => {
+        console.error(error);
       });
   }, [item, posterRepository]);
 
@@ -35,9 +27,9 @@ function MovieCard({ item }) {
     <div
       className="tarjeta-pelicula"
       style={
-        info.poster_path
+        moviePosterUrl
           ? {
-              backgroundImage: `url(${import.meta.env.VITE_MOVIE_API_IMAGES_URL}${info.poster_path})`,
+              backgroundImage: `url(${moviePosterUrl})`,
             }
           : {}
       }

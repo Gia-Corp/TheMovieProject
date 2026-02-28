@@ -2,8 +2,9 @@ export class PosterRepository {
   static #SEARCH_PATH = "/3/search/movie";
   static #BASE_URL = import.meta.env.VITE_MOVIE_API_URL;
   static #API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+  static #IMAGES_BASE_URL = import.meta.env.VITE_MOVIE_API_IMAGES_URL;
 
-  async getMovieData({ name, year }) {
+  async getPoster({ name, year }) {
     const url = new URL(
       PosterRepository.#SEARCH_PATH,
       PosterRepository.#BASE_URL,
@@ -25,6 +26,6 @@ export class PosterRepository {
       throw new Error("no results");
     }
 
-    return data.results[0];
+    return `${PosterRepository.#IMAGES_BASE_URL}${data.results[0].poster_path}`;
   }
 }
