@@ -7,17 +7,17 @@ function Home() {
   const { movieRepository } = useRepos();
   const [list, setList] = useState([]);
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageCount, setTotalPageCount] = useState(0);
 
   useEffect(() => {
     setError(false);
-    setLoading(true);
+    setIsLoading(true);
 
     movieRepository
-      .getList({
+      .getMovies({
         page: currentPage,
         size: 10,
       })
@@ -25,9 +25,9 @@ function Home() {
         if (res !== null) {
           setList(res.movies);
           setTotalPageCount(res.metadata.page_count);
-          setLoading(false);
+          setIsLoading(false);
         } else {
-          setLoading(false);
+          setIsLoading(false);
           setError(true);
         }
       })
@@ -41,16 +41,16 @@ function Home() {
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
-        disabled={loading}
+        disabled={isLoading}
         selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
       />
       <main>
-        {error ? <h3>ERROR</h3> : <List isLoading={loading} list={list} />}
+        {error ? <h3>ERROR</h3> : <List isLoading={isLoading} list={list} />}
       </main>
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
-        disabled={loading}
+        disabled={isLoading}
         selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
       />
     </div>

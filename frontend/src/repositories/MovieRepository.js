@@ -2,7 +2,7 @@ export class MovieRepository {
   static #MOVIES_PATH = "/movies";
   static #BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-  async getList({ page, size }) {
+  async getMovies({ page, size }) {
     const url = new URL(
       MovieRepository.#MOVIES_PATH,
       MovieRepository.#BASE_URL,
