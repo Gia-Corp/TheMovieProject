@@ -1,27 +1,22 @@
-import axios from "axios";
-
 export class MovieRepository {
   static #MOVIES_PATH = "/movies";
-  #service;
+  static #BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-  constructor() {
-    this.#service = axios.create({
-      baseURL: import.meta.env.VITE_BACKEND_URL,
-    });
-  }
-  getList({ page, size }) {
-    return this.#service
-      .get(MovieRepository.#MOVIES_PATH, {
-        params: {
-          page,
-          size,
-        },
-      })
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        throw err.response.data;
-      });
+  async getList({ page, size }) {
+    const url = new URL(
+      MovieRepository.#MOVIES_PATH,
+      MovieRepository.#BASE_URL,
+    );
+    url.searchParams.set("page", page);
+    url.searchParams.set("size", size);
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw error;
+    }
+
+    return res.json();
   }
 }

@@ -1,34 +1,30 @@
-import axios from "axios";
-
 export class PosterRepository {
   static #SEARCH_PATH = "/3/search/movie";
-  #service;
+  static #BASE_URL = import.meta.env.VITE_MOVIE_API_URL;
+  static #API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
 
-  constructor() {
-    this.#service = axios.create({
-      baseURL: import.meta.env.VITE_MOVIE_API_URL,
-      params: {
-        api_key: import.meta.env.VITE_MOVIE_API_KEY,
-      },
-    });
-  }
-  getMovieData({ name, year }) {
-    return this.#service
-      .get(PosterRepository.#SEARCH_PATH, {
-        params: {
-          query: name,
-          year,
-        },
-      })
-      .then((res) => {
-        if (res.data.results.length !== 0) {
-          return res.data.results[0];
-        } else {
-          throw new Error("no results");
-        }
-      })
-      .catch((err) => {
-        throw err.response.data;
-      });
+  async getMovieData({ name, year }) {
+    const url = new URL(
+      PosterRepository.#SEARCH_PATH,
+      PosterRepository.#BASE_URL,
+    );
+    url.searchParams.set("api_key", PosterRepository.#API_KEY);
+    url.searchParams.set("query", name);
+    url.searchParams.set("year", year);
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw error;
+    }
+
+    const data = await res.json();
+
+    if (data.results.length === 0) {
+      throw new Error("no results");
+    }
+
+    return data.results[0];
   }
 }
