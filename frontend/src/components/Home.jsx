@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRepos } from "../hooks/useRepos.js";
-import List from "./List/List.jsx";
+import MoviesList from "./MoviesList/MoviesList.jsx";
 import Paginator from "./Paginator/Paginator.jsx";
 
 function Home() {
@@ -47,7 +47,11 @@ function Home() {
         selectPageEvent={onPageSelection}
       />
       <main>
-        {error ? <h3>ERROR</h3> : <List isLoading={isLoading} list={list} />}
+        {error ? (
+          <h3>ERROR</h3>
+        ) : (
+          <MoviesList isLoading={isLoading} list={list} />
+        )}
       </main>
       <Paginator
         pageCount={totalPageCount}

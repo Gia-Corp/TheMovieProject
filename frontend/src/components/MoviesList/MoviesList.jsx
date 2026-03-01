@@ -1,8 +1,8 @@
 import MovieCard from "../MovieCard/MovieCard";
 import MovieCardSkeleton from "../MovieCardSkeleton/MovieCardSkeleton";
-import "./List.css";
+import "./MoviesList.css";
 
-function List({ list, isLoading }) {
+function MoviesList({ list, isLoading }) {
   return (
     <ul className="movies-list">
       {isLoading
@@ -14,4 +14,4 @@ function List({ list, isLoading }) {
   );
 }
 
-export default List;
+export default MoviesList;
