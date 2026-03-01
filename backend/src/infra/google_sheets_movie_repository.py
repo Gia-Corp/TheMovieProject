@@ -1,8 +1,8 @@
 from gspread import utils
-from ..exceptions.api_exception import ApiException
+from src.application.exceptions.api_exception import ApiException
 
 
-class MoviesSheetConnector:
+class GoogleSheetsMovieRepository:
     def __init__(self, sheet):
         self.sheet = sheet
 

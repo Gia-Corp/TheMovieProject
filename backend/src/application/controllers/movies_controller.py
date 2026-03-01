@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
-from ..persistence.movies_sheet_connector import (
-    MoviesSheetConnector,
+from src.infra.google_sheets_movie_repository import (
+    GoogleSheetsMovieRepository,
 )
-from ..pagination.movies_page import MoviesPage
-from ..pagination.page_metadata_calculator import PageMetadataCalculator
+from src.application.pagination.movies_page import MoviesPage
+from src.application.pagination.page_metadata_calculator import PageMetadataCalculator
 import src.settings as settings
 import gspread
-from ..domain.movie import (
+from src.domain.movie import (
     Movie,
 )
 
@@ -26,7 +26,7 @@ async def get_movies(
     page: int = Query(..., gt=0),
     size: int = Query(..., gt=0),
 ):
-    connector = MoviesSheetConnector(movies_sheet)
+    connector = GoogleSheetsMovieRepository(movies_sheet)
     page_obj = MoviesPage(page, size)
     movies = connector.get_movies_by_page(page_obj)
     movie_count = connector.get_movie_count()
@@ -50,7 +50,7 @@ async def create_movie(movie_data: MovieCreateRequest):
         movie_data.year,
         movie_data.watched,
     )
-    connector = MoviesSheetConnector(movies_sheet)
+    connector = GoogleSheetsMovieRepository(movies_sheet)
     connector.add_movie(movie)
     return {"message": "Successful!"}
 

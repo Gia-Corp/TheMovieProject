@@ -1,5 +1,5 @@
-from src.persistence.movies_sheet_connector import (
-    MoviesSheetConnector,
+from src.infra.movies_sheet_connector import (
+    GoogleSheetsMovieRepository,
     PageOutOfBoundsError,
 )
 from src.pagination.movies_page import MoviesPage
@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from pytest import raises
 
 
-class TestMoviesSheetConnector:
+class TestGoogleSheetsMovieRepository:
     def test_connector_to_transform_sheet_data_format_in_intended_way(self):
         sheet = Mock()
         sheet.col_values.return_value = [
@@ -36,7 +36,7 @@ class TestMoviesSheetConnector:
                 "id": 2,
             },
         ]
-        connector = MoviesSheetConnector(sheet)
+        connector = GoogleSheetsMovieRepository(sheet)
         movies = connector.get_movies_by_page(MoviesPage(1, 2))
         assert movies == expected_movies
 
@@ -53,7 +53,7 @@ class TestMoviesSheetConnector:
             ["James Cameron", "Titanic", "1998", "TRUE", "1"],
             ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
-        connector = MoviesSheetConnector(sheet)
+        connector = GoogleSheetsMovieRepository(sheet)
         connector.get_movies_by_page(MoviesPage(2, 2))
         sheet.get.assert_called_with("A4:E5")
 
@@ -85,7 +85,7 @@ class TestMoviesSheetConnector:
             ["James Cameron", "Titanic", "1998", "TRUE", "1"],
             ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
-        connector = MoviesSheetConnector(sheet)
+        connector = GoogleSheetsMovieRepository(sheet)
         connector.get_movies_by_page(MoviesPage(2, 10))
         sheet.get.assert_called_with("A12:E21")
 
@@ -98,18 +98,18 @@ class TestMoviesSheetConnector:
                 "Tim Burton",
                 "",
             ]
-            connector = MoviesSheetConnector(sheet)
+            connector = GoogleSheetsMovieRepository(sheet)
             connector.get_movies_by_page(MoviesPage(3, 2))
         assert "Selected page is out of bounds" in str(error)
 
     def test_get_movie_count_with_existing_movies(self):
         sheet = Mock()
         sheet.col_values.return_value = ["Director", "James Cameron", "John Lasseter"]
-        movie_count = MoviesSheetConnector(sheet).get_movie_count()
+        movie_count = GoogleSheetsMovieRepository(sheet).get_movie_count()
         assert movie_count == 2
 
     def test_get_movie_count_with_no_movies(self):
         sheet = Mock()
         sheet.col_values.return_value = ["Director", ""]
-        movie_count = MoviesSheetConnector(sheet).get_movie_count()
+        movie_count = GoogleSheetsMovieRepository(sheet).get_movie_count()
         assert movie_count == 0

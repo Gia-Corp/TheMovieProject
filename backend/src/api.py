@@ -1,5 +1,5 @@
-from .pagination.movies_page import InvalidPageNumberError, InvalidPageSizeError
-from .controllers.movies_controller import movies
+from .application.pagination.movies_page import InvalidPageNumberError, InvalidPageSizeError
+from .application.controllers.movies_controller import movies
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, Request
@@ -10,7 +10,7 @@ from .domain.movie import (
 )
 import src.settings as settings
 
-app = FastAPI(
+api = FastAPI(
     title="The Movie Project API",
     swagger_ui_parameters={
         "syntaxHighlight": {"theme": "arta"},
@@ -22,7 +22,7 @@ origins = [
     settings.FRONTEND_URL,
 ]
 
-app.add_middleware(
+api.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
@@ -30,18 +30,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.exception_handler(NegativeMovieYearError)
-@app.exception_handler(EmptyMovieTitleError)
-@app.exception_handler(EmptyMovieDirectorError)
-@app.exception_handler(InvalidPageNumberError)
-@app.exception_handler(InvalidPageSizeError)
+@api.exception_handler(NegativeMovieYearError)
+@api.exception_handler(EmptyMovieTitleError)
+@api.exception_handler(EmptyMovieDirectorError)
+@api.exception_handler(InvalidPageNumberError)
+@api.exception_handler(InvalidPageSizeError)
 async def api_error_handler(request: Request, exc: Exception):
     return JSONResponse(status_code=exc.status_code, content=exc.to_dict())
 
 
-app.include_router(movies)
+api.include_router(movies)
 
 
-@app.get("/")
+@api.get("/")
 def hello_world():
     return "The Movie Project"
