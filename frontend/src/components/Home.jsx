@@ -5,7 +5,7 @@ import Paginator from "./Paginator/Paginator.jsx";
 
 function Home() {
   const { movieRepository } = useRepos();
-  const [list, setList] = useState([]);
+  const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,7 +20,7 @@ function Home() {
       })
       .then((res) => {
         if (res !== null) {
-          setList(res.movies);
+          setMovies(res.movies);
           setTotalPageCount(res.metadata.page_count);
           setIsLoading(false);
         } else {
@@ -50,7 +50,7 @@ function Home() {
         {error ? (
           <h3>ERROR</h3>
         ) : (
-          <MoviesList isLoading={isLoading} list={list} />
+          <MoviesList isLoading={isLoading} movies={movies} />
         )}
       </main>
       <Paginator
