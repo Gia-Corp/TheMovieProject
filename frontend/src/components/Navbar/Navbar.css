@@ -15,8 +15,8 @@
 
 @keyframes scrolled {
   to {
-    background-color: rgba(111,66,193,.25);
-    backdrop-filter: blur(5px);
+    background-color: rgba(111,66,193,.5);
+    backdrop-filter: blur(10px);
   }
 }
 
