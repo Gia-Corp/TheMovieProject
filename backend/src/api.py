@@ -1,4 +1,7 @@
-from .application.pagination.movies_page import InvalidPageNumberError, InvalidPageSizeError
+from .application.pagination.movies_page import (
+    InvalidPageNumberError,
+    InvalidPageSizeError,
+)
 from .application.controllers.movies_controller import movies
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -29,6 +32,7 @@ api.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @api.exception_handler(NegativeMovieYearError)
 @api.exception_handler(EmptyMovieTitleError)

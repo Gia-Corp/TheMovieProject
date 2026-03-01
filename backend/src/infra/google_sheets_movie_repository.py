@@ -13,7 +13,7 @@ class GoogleSheetsMovieRepository:
         if self.next_available_row() <= page_first_row:
             raise PageOutOfBoundsError
 
-        raw_movies = self.sheet.get(f"A{page_first_row}:E{page_last_row }")
+        raw_movies = self.sheet.get(f"A{page_first_row}:E{page_last_row}")
         raw_movies = utils.to_records(
             ["director", "title", "year", "watched", "id"], raw_movies
         )
