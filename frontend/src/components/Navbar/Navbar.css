@@ -1,5 +1,5 @@
 .nav-bar {
-  background-color: rgba(111,66,193,1);
+  background-color: var(--main-clr);
   padding: 5px 15px;
   height: fit-content;
   display: grid;
@@ -49,13 +49,13 @@
     font-size: 1em;
 
     &:focus, &:hover {
-      outline: 3px solid rgb(65, 38, 114);
+      outline: 3px solid var(--background-clr);
     }
   }
 }
 
 .search-button {
-  background-color: rgb(255, 53, 201);
+  background-color: var(--secondary-clr);
   border: none;
   border-radius: 5px;
   color: #fff;

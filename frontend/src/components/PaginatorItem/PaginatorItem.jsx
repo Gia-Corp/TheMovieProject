@@ -1,7 +1,7 @@
 function PaginatorItem({ active, disabled, onClick, children }) {
   return (
     <button
-      className={`pagination-item ${active ? "active" : ""}`}
+      className={`pagination ${active ? "active" : ""}`}
       onClick={onClick}
       disabled={disabled}
     >

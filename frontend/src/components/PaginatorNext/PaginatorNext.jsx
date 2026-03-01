@@ -1,6 +1,6 @@
 function PaginatorNext({ onClick, disabled }) {
   return (
-    <button className="pagination-next" onClick={onClick} disabled={disabled}>
+    <button className="pagination" onClick={onClick} disabled={disabled}>
       »
     </button>
   );

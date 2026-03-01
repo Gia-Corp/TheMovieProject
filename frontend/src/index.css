@@ -2,6 +2,9 @@
 
 :root {
   --font-family: "Ranade", sans-serif;
+  --background-clr: rgb(26, 9, 51);
+  --main-clr: rgba(111,66,193,1);
+  --secondary-clr: rgb(255, 53, 201);
 }
 
 /* CSS RESET */
@@ -83,7 +86,7 @@ svg {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background-color: rgb(26, 9, 51);
+  background-color: var(--background-clr);
 }
 
 .primary-content {

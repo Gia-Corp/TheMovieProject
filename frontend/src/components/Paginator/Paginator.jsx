@@ -67,7 +67,7 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
   };
 
   return (
-    <div className={disabled ? "disabled-div" : ""}>
+    <div className={`paginator ${disabled ? "disabled-div" : ""}`}>
       <PaginatorPrev
         onClick={() => selectPage((prev) => Math.max(prev - 1, 1))}
         disabled={currentPage === 1 || pageCount === 0}

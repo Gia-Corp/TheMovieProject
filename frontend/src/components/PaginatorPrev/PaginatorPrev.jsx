@@ -1,6 +1,6 @@
 function PaginatorPrev({ onClick, disabled }) {
   return (
-    <button className="pagination-prev" onClick={onClick} disabled={disabled}>
+    <button className="pagination" onClick={onClick} disabled={disabled}>
       «
     </button>
   );

@@ -1,5 +1,5 @@
 function PaginatorEllipsis() {
-  return <span className="pagination-ellipsis">...</span>;
+  return <span className="pagination">...</span>;
 }
 
 export default PaginatorEllipsis;
