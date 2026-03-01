@@ -1,6 +1,6 @@
 import "./MovieCard.css";
 import { useEffect, useState } from "react";
-import { useRepos } from "../../providers/RepositoriesProvider";
+import { useRepos } from "../../hooks/useRepos";
 
 function MovieCard({ item }) {
   const { posterRepository } = useRepos();

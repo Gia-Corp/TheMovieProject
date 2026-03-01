@@ -1,8 +1,7 @@
-import { createContext, useContext } from "react";
 import { MovieRepository } from "../repositories/MovieRepository";
 import { PosterRepository } from "../repositories/PosterRepository";
+import { RepositoriesContext } from "../hooks/useRepos";
 
-const RepositoriesContext = createContext();
 const movieRepository = new MovieRepository();
 const posterRepository = new PosterRepository();
 
@@ -13,5 +12,3 @@ export function RepositoriesProvider({ children }) {
     </RepositoriesContext.Provider>
   );
 }
-
-export const useRepos = () => useContext(RepositoriesContext);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRepos } from "../providers/RepositoriesProvider.jsx";
+import { useRepos } from "../hooks/useRepos.js";
 import List from "./List/List.jsx";
 import Paginator from "./Paginator/Paginator.jsx";
 
