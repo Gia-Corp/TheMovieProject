@@ -1,17 +1,17 @@
 import MovieCard from "../MovieCard/MovieCard";
 import MovieCardSkeleton from "../MovieCardSkeleton/MovieCardSkeleton";
-import "./List.css";
+import "./MoviesList.css";
 
-function List({ list, isLoading }) {
+function MoviesList({ movies, isLoading }) {
   return (
     <ul className="movies-list">
       {isLoading
         ? Array.from({ length: 10 }).map((_, i) => (
             <MovieCardSkeleton key={i} />
           ))
-        : list.map((item) => <MovieCard key={item.id} item={item} />)}
+        : movies.map((movie) => <MovieCard key={movie.id} movie={movie} />)}
     </ul>
   );
 }
 
-export default List;
+export default MoviesList;

@@ -2,15 +2,15 @@ import "./MovieCard.css";
 import { useEffect, useState } from "react";
 import { useRepos } from "../../hooks/useRepos";
 
-function MovieCard({ item }) {
+function MovieCard({ movie }) {
   const { posterRepository } = useRepos();
   const [moviePosterUrl, setMoviePosterUrl] = useState("");
 
   useEffect(() => {
     posterRepository
       .getPoster({
-        name: item.title,
-        year: item.year,
+        name: movie.title,
+        year: movie.year,
       })
       .then((res) => {
         if (res === null) {
@@ -21,7 +21,7 @@ function MovieCard({ item }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [item, posterRepository]);
+  }, [movie, posterRepository]);
 
   return (
     <div
@@ -34,13 +34,12 @@ function MovieCard({ item }) {
           : {}
       }
     >
-      {
-        <div className="movie-info">
-          <h2 className="titulo-pelicula">{item["title"]}</h2>
-          <p className="director-pelicula">{item["director"]}</p>
-          <p className="año-pelicula">{item["year"]}</p>
-        </div>
-      }
+      <div className="movie-info">
+        <h2 className="movie-title">{movie["title"]}</h2>
+        <p>{movie["director"]}</p>
+        <p>{movie["year"]}</p>
+      </div>
+      {movie["watched"] ? <div className="watched-movie"></div> : <></>}
     </div>
   );
 }

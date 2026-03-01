@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRepos } from "../hooks/useRepos.js";
-import List from "./List/List.jsx";
+import MoviesList from "./MoviesList/MoviesList.jsx";
 import Paginator from "./Paginator/Paginator.jsx";
 
 function Home() {
   const { movieRepository } = useRepos();
-  const [list, setList] = useState([]);
+  const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,7 +20,7 @@ function Home() {
       })
       .then((res) => {
         if (res !== null) {
-          setList(res.movies);
+          setMovies(res.movies);
           setTotalPageCount(res.metadata.page_count);
           setIsLoading(false);
         } else {
@@ -47,7 +47,11 @@ function Home() {
         selectPageEvent={onPageSelection}
       />
       <main>
-        {error ? <h3>ERROR</h3> : <List isLoading={isLoading} list={list} />}
+        {error ? (
+          <h3>ERROR</h3>
+        ) : (
+          <MoviesList isLoading={isLoading} movies={movies} />
+        )}
       </main>
       <Paginator
         pageCount={totalPageCount}

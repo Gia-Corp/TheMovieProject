@@ -39,19 +39,17 @@
       rgba(46, 17, 90, 0.462) 60%, 
       rgba(46, 17, 90, 0.041) 75%);
 
-  & h2, p {
-    color: #ffffff;
-  }
-
-  & h2 {
-    margin: 0;
-    font-weight: 900;
-    font-size: 1.5rem;
-  }
-
   & p {
+    color: #ffffff;
     margin: 0;
   }
+}
+
+.movie-title {
+  margin: 0;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #ffffff;
 }
 
 .watched-movie {
@@ -60,11 +58,9 @@
   right: 0;
   height: 13%;
   aspect-ratio: 1/1;
-  background-image: url('icons/check_circle_24dp_75FB4C_FILL1_wght400_GRAD0_opsz24.svg');
+  background-image: url('../../assets/icons/check_circle.svg');
   background-size: 65%;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: rgb(46, 27, 82);
-  border-radius: 10px 0 0 0;
   z-index: 3;
 }
