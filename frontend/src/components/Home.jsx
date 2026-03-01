@@ -1,23 +1,20 @@
-import { useContext, useEffect, useState } from "react";
-import List from "./List";
-import Paginator from "./Paginator";
-import { MovieServiceContext } from "./MovieServiceProvider";
+import { useEffect, useState } from "react";
+import { useRepos } from "../hooks/useRepos.js";
+import List from "./List/List.jsx";
+import Paginator from "./Paginator/Paginator.jsx";
 
 function Home() {
-  const movieService = useContext(MovieServiceContext);
+  const { movieRepository } = useRepos();
   const [list, setList] = useState([]);
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageCount, setTotalPageCount] = useState(0);
 
   useEffect(() => {
-    setError(false);
-    setLoading(true);
-
-    movieService
-      .getList({
+    movieRepository
+      .getMovies({
         page: currentPage,
         size: 10,
       })
@@ -25,35 +22,38 @@ function Home() {
         if (res !== null) {
           setList(res.movies);
           setTotalPageCount(res.metadata.page_count);
-          setLoading(false);
+          setIsLoading(false);
         } else {
-          setLoading(false);
+          setIsLoading(false);
           setError(true);
         }
       })
       .catch((err) => {
         console.error(err);
       });
-  }, [currentPage, movieService]);
+  }, [currentPage, movieRepository]);
+
+  const onPageSelection = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    setIsLoading(true);
+  };
 
   return (
-    <div>
+    <div className="primary-content">
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
-        disabled={loading}
-        selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
+        disabled={isLoading}
+        selectPageEvent={onPageSelection}
       />
-      {loading ? (
-        <h3>cargando</h3>
-      ) : (
-        <div>{error ? <h3>ERROR</h3> : <List list={list} />}</div>
-      )}
+      <main>
+        {error ? <h3>ERROR</h3> : <List isLoading={isLoading} list={list} />}
+      </main>
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
-        disabled={loading}
-        selectPageEvent={(pageNumber) => setCurrentPage(pageNumber)}
+        disabled={isLoading}
+        selectPageEvent={onPageSelection}
       />
     </div>
   );

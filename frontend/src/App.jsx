@@ -1,24 +1,17 @@
-import MovieDetail from "./components/MovieDetail";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar.jsx";
 import Home from "./components/Home";
-import Navbar from "./components/Navbar";
-import "./bootstrap.min.css";
-import MovieServiceProvider from "./components/MovieServiceProvider";
-import MovieApiServiceProvider from "./components/MovieApiServiceProvider";
+import MovieDetail from "./components/MovieDetail";
 
 function App() {
   return (
-    <MovieServiceProvider>
-      <MovieApiServiceProvider>
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/movie" element={<MovieDetail />} />
-          </Routes>
-        </BrowserRouter>
-      </MovieApiServiceProvider>
-    </MovieServiceProvider>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route exact path="/movie" element={<MovieDetail />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

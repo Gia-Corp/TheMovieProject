@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import Pagination from "react-bootstrap/Pagination";
-import PropTypes from "prop-types";
+import PaginatorPrev from "../PaginatorPrev/PaginatorPrev";
+import PaginatorItem from "../PaginatorItem/PaginatorItem";
+import PaginatorNext from "../PaginatorNext/PaginatorNext";
+import PaginatorEllipsis from "../PaginatorEllipsis/PaginatorEllipsis";
+import "./Paginator.css";
 
 function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
   const [currentPage, setCurrentPage] = useState(pageNumber);
@@ -26,37 +29,37 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
     // Add the first page with an ellipsis if necessary
     if (startPage > 1) {
       paginationItems.push(
-        <Pagination.Item key={1} onClick={() => selectPage(1)}>
+        <PaginatorItem key={1} onClick={() => selectPage(1)}>
           1
-        </Pagination.Item>,
+        </PaginatorItem>,
       );
       if (startPage > 2) {
-        paginationItems.push(<Pagination.Ellipsis key="start-ellipsis" />);
+        paginationItems.push(<PaginatorEllipsis key="start-ellipsis" />);
       }
     }
 
     // Add the range of pages
     for (let i = startPage; i <= endPage; i++) {
       paginationItems.push(
-        <Pagination.Item
+        <PaginatorItem
           key={i}
           active={i === currentPage}
           onClick={() => selectPage(i)}
         >
           {i}
-        </Pagination.Item>,
+        </PaginatorItem>,
       );
     }
 
     // Add the last page with an ellipsis if necessary
     if (endPage < pageCount) {
       if (endPage < pageCount - 1) {
-        paginationItems.push(<Pagination.Ellipsis key="end-ellipsis" />);
+        paginationItems.push(<PaginatorEllipsis key="end-ellipsis" />);
       }
       paginationItems.push(
-        <Pagination.Item key={pageCount} onClick={() => selectPage(pageCount)}>
+        <PaginatorItem key={pageCount} onClick={() => selectPage(pageCount)}>
           {pageCount}
-        </Pagination.Item>,
+        </PaginatorItem>,
       );
     }
 
@@ -64,31 +67,24 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
   };
 
   return (
-    <Pagination className={disabled ? "disabled-div" : ""}>
-      <Pagination.Prev
+    <div className={`paginator ${disabled ? "disabled-div" : ""}`}>
+      <PaginatorPrev
         onClick={() => selectPage((prev) => Math.max(prev - 1, 1))}
         disabled={currentPage === 1 || pageCount === 0}
       />
       {pageCount > 0 ? (
         renderPaginationItems()
       ) : (
-        <Pagination.Item key={1} active disabled>
-          {0}
-        </Pagination.Item>
+        <PaginatorItem key={1} active disabled>
+          {"Cargando..."}
+        </PaginatorItem>
       )}
-      <Pagination.Next
+      <PaginatorNext
         onClick={() => selectPage((prev) => Math.min(prev + 1, pageCount))}
         disabled={currentPage === pageCount || pageCount === 0}
       />
-    </Pagination>
+    </div>
   );
 }
-
-Paginator.propTypes = {
-  selectPageEvent: PropTypes.func,
-  pageNumber: PropTypes.number,
-  pageCount: PropTypes.number,
-  disabled: PropTypes.bool,
-};
 
 export default Paginator;

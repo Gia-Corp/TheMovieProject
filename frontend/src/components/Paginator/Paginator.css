@@ -1,0 +1,19 @@
+.paginator {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination {
+  background-color: transparent;
+  padding: 10px;
+  border: var(--main-clr) solid 1px;
+  border-radius: 5px;
+  
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.active {
+  background-color: var(--main-clr);
+}
