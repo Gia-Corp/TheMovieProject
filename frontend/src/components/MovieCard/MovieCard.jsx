@@ -34,13 +34,12 @@ function MovieCard({ movie }) {
           : {}
       }
     >
-      {
-        <div className="movie-info">
-          <h2 className="titulo-pelicula">{movie["title"]}</h2>
-          <p className="director-pelicula">{movie["director"]}</p>
-          <p className="año-pelicula">{movie["year"]}</p>
-        </div>
-      }
+      <div className="movie-info">
+        <h2 className="movie-title">{movie["title"]}</h2>
+        <p>{movie["director"]}</p>
+        <p>{movie["year"]}</p>
+      </div>
+      {movie["watched"] ? <div className="watched-movie"></div> : <></>}
     </div>
   );
 }
