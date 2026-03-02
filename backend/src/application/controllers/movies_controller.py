@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Query, Depends
-from pydantic import BaseModel
 from src.infra import GoogleSheetsMovieRepository
 from src.application.pagination import MoviesPage, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo
+from src.application.dtos import CreateMovieDTO
 
 movies_controller = APIRouter(
     tags=["Movies"],
@@ -24,23 +24,16 @@ async def get_movies(
     return {"metadata": metadata, "movies": movies}
 
 
-class MovieCreateRequest(BaseModel):
-    title: str
-    director: str
-    year: int
-    watched: bool
-
-
 @movies_controller.post("/movies")
 async def create_movie(
-    movie_data: MovieCreateRequest,
+    movie_dto: CreateMovieDTO,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
     movie = Movie(
-        movie_data.title,
-        movie_data.director,
-        movie_data.year,
-        movie_data.watched,
+        movie_dto.title,
+        movie_dto.director,
+        movie_dto.year,
+        movie_dto.watched,
     )
     movie_repo.add_movie(movie)
     return {"message": "Successful!"}
