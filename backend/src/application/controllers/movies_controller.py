@@ -1,35 +1,29 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from pydantic import BaseModel
 from src.infra.google_sheets_movie_repository import (
     GoogleSheetsMovieRepository,
 )
 from src.application.pagination.movies_page import MoviesPage
 from src.application.pagination.page_metadata_calculator import PageMetadataCalculator
-import src.settings as settings
-import gspread
 from src.domain.movie import (
     Movie,
 )
+from src.dependencies import get_movie_repo
 
-
-client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
-movies_sheet = client.open(settings.SHEET_NAME).sheet1
-
-
-movies = APIRouter(
+movies_controller = APIRouter(
     tags=["Movies"],
 )
 
 
-@movies.get("/movies")
+@movies_controller.get("/movies")
 async def get_movies(
     page: int = Query(..., gt=0),
     size: int = Query(..., gt=0),
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
-    connector = GoogleSheetsMovieRepository(movies_sheet)
     page_obj = MoviesPage(page, size)
-    movies = connector.get_movies_by_page(page_obj)
-    movie_count = connector.get_movie_count()
+    movies = movie_repo.get_movies_by_page(page_obj)
+    movie_count = movie_repo.get_movie_count()
     metadata = PageMetadataCalculator().calculate(page_obj, movie_count, "/movies")
 
     return {"metadata": metadata, "movies": movies}
@@ -42,20 +36,22 @@ class MovieCreateRequest(BaseModel):
     watched: bool
 
 
-@movies.post("/movies")
-async def create_movie(movie_data: MovieCreateRequest):
+@movies_controller.post("/movies")
+async def create_movie(
+    movie_data: MovieCreateRequest,
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+):
     movie = Movie(
         movie_data.title,
         movie_data.director,
         movie_data.year,
         movie_data.watched,
     )
-    connector = GoogleSheetsMovieRepository(movies_sheet)
-    connector.add_movie(movie)
+    movie_repo.add_movie(movie)
     return {"message": "Successful!"}
 
 
-# @movies.patch("/movies/<id>")
+# @movies_controller.patch("/movies/<id>")
 # def update_movie():
 #     try:
 #         id = request.json["id"]

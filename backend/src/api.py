@@ -2,7 +2,6 @@ from .application.pagination.movies_page import (
     InvalidPageNumberError,
     InvalidPageSizeError,
 )
-from .application.controllers.movies_controller import movies
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, Request
@@ -12,6 +11,7 @@ from .domain.movie import (
     NegativeMovieYearError,
 )
 import src.settings as settings
+from .application.controllers.movies_controller import movies_controller
 
 api = FastAPI(
     title="The Movie Project API",
@@ -43,7 +43,7 @@ async def api_error_handler(request: Request, exc: Exception):
     return JSONResponse(status_code=exc.status_code, content=exc.to_dict())
 
 
-api.include_router(movies)
+api.include_router(movies_controller)
 
 
 @api.get("/")
