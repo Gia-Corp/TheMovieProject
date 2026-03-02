@@ -1,4 +1,5 @@
 gspread==6.2.1
+gspread_models==1.0.7
 python-dotenv==1.2.2
 gunicorn==25.1.0
 pytest==9.0.2
