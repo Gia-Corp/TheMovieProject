@@ -1,8 +1,8 @@
-from src.infra.google_sheets_movie_repository import (
+from src.infra import (
     GoogleSheetsMovieRepository,
     PageOutOfBoundsError,
 )
-from src.application.pagination.movies_page import MoviesPage
+from src.application.pagination import MoviesPage
 from unittest.mock import Mock
 from pytest import raises
 

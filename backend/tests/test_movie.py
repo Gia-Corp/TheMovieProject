@@ -1,4 +1,4 @@
-from src.domain.movie import (
+from src.domain import (
     Movie,
     NegativeMovieYearError,
     EmptyMovieTitleError,
