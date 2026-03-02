@@ -1,17 +1,17 @@
-from .application.pagination.movies_page import (
-    InvalidPageNumberError,
-    InvalidPageSizeError,
-)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, Request
-from .domain.movie import (
+from .application.pagination import (
+    InvalidPageNumberError,
+    InvalidPageSizeError,
+)
+from .domain import (
     EmptyMovieDirectorError,
     EmptyMovieTitleError,
     NegativeMovieYearError,
 )
 import src.settings as settings
-from .application.controllers.movies_controller import movies_controller
+from .application.controllers import movies_controller
 
 api = FastAPI(
     title="The Movie Project API",
@@ -21,13 +21,9 @@ api = FastAPI(
     },
 )
 
-origins = [
-    settings.FRONTEND_URL,
-]
-
 api.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[settings.FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

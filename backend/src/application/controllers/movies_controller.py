@@ -1,13 +1,8 @@
 from fastapi import APIRouter, Query, Depends
 from pydantic import BaseModel
-from src.infra.google_sheets_movie_repository import (
-    GoogleSheetsMovieRepository,
-)
-from src.application.pagination.movies_page import MoviesPage
-from src.application.pagination.page_metadata_calculator import PageMetadataCalculator
-from src.domain.movie import (
-    Movie,
-)
+from src.infra import GoogleSheetsMovieRepository
+from src.application.pagination import MoviesPage, PageMetadataCalculator
+from src.domain import Movie
 from src.dependencies import get_movie_repo
 
 movies_controller = APIRouter(

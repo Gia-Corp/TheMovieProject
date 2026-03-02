@@ -1,4 +1,4 @@
-from ..exceptions.api_exception import ApiException
+from ..exceptions import ApiException
 
 
 class MoviesPage:
