@@ -1,5 +1,6 @@
 from gspread import utils
 from src.application.exceptions import ApiException
+from src.domain import Movie
 
 
 class GoogleSheetsMovieRepository:
@@ -10,27 +11,31 @@ class GoogleSheetsMovieRepository:
         page_first_row = page.get_first_index() + 1
         page_last_row = page.get_last_index() + 1
 
-        if self.next_available_row() <= page_first_row:
+        if self._next_available_row() <= page_first_row:
             raise PageOutOfBoundsError
 
         raw_movies = self.sheet.get(f"A{page_first_row}:E{page_last_row}")
         raw_movies = utils.to_records(
             ["director", "title", "year", "watched", "id"], raw_movies
         )
-        movies = list(map(self.transform_into_movie, raw_movies))
+        movies = list(map(self._transform_into_movie, raw_movies))
         return movies
 
-    def next_available_row(self):
+    def _next_available_row(self):
         return len(list(filter(None, self.sheet.col_values(1)))) + 1
 
-    def transform_into_movie(self, raw_movie):
-        raw_movie["watched"] = True if raw_movie["watched"] == "TRUE" else False
-        raw_movie["year"] = int(raw_movie["year"])
-        raw_movie["id"] = int(raw_movie["id"])
-        return raw_movie
+    def _transform_into_movie(self, raw_movie):
+        movie = Movie(
+            id=int(raw_movie["id"]),
+            title=raw_movie["title"],
+            director=raw_movie["director"],
+            year=int(raw_movie["year"]),
+            watched=True if raw_movie["watched"] == "TRUE" else False,
+        )
+        return movie
 
     def get_movie_count(self):
-        return self.next_available_row() - 2
+        return self._next_available_row() - 2
 
     def add_movie(self, movie):
         movie_as_list = [movie.director, movie.title, movie.year, movie.watched]

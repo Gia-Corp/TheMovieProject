@@ -1,3 +1,4 @@
+from src.domain import Movie
 from src.infra import (
     GoogleSheetsMovieRepository,
     PageOutOfBoundsError,
@@ -21,20 +22,12 @@ class TestGoogleSheetsMovieRepository:
             ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
         expected_movies = [
-            {
-                "title": "Titanic",
-                "director": "James Cameron",
-                "watched": True,
-                "year": 1998,
-                "id": 1,
-            },
-            {
-                "title": "Cars",
-                "director": "John Lasseter",
-                "watched": False,
-                "year": 2006,
-                "id": 2,
-            },
+            Movie(
+                id=1, title="Titanic", director="James Cameron", year=1998, watched=True
+            ),
+            Movie(
+                id=2, title="Cars", director="John Lasseter", year=2006, watched=False
+            ),
         ]
         repo = GoogleSheetsMovieRepository(sheet)
         movies = repo.get_movies_by_page(Page(1, 2))

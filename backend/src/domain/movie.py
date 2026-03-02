@@ -1,19 +1,25 @@
 from src.application.exceptions import ApiException
+from dataclasses import dataclass
 
 
+@dataclass
 class Movie:
-    def __init__(self, title, director, year, watched):
-        if year < 0:
-            raise NegativeMovieYearError(year)
-        if not title:
-            raise EmptyMovieTitleError
-        if not director:
-            raise EmptyMovieDirectorError
+    id: int
+    title: str
+    director: str
+    year: int
+    watched: bool = False
 
-        self.title = title
-        self.director = director
-        self.year = year
-        self.watched = watched
+    def __post_init__(self):
+        self._validate()
+
+    def _validate(self):
+        if self.year < 0:
+            raise NegativeMovieYearError(self.year)
+        if not self.title:
+            raise EmptyMovieTitleError()
+        if not self.director:
+            raise EmptyMovieDirectorError()
 
 
 class EmptyMovieDirectorError(ApiException):
