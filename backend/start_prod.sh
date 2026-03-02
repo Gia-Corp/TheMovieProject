@@ -1,2 +1,2 @@
 #!/bin/bash
-fastapi run src/app.py --port 5000
+fastapi run src/api.py --port 5000
