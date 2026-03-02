@@ -30,13 +30,13 @@ async def create_movie(
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
     movie = Movie(
-        movie_dto.title,
-        movie_dto.director,
-        movie_dto.year,
-        movie_dto.watched,
+        id=1,
+        title=movie_dto.title,
+        director=movie_dto.director,
+        year=movie_dto.year,
+        watched=movie_dto.watched,
     )
-    movie_repo.add_movie(movie)
-    return {"message": "Successful!"}
+    return movie_repo.add(movie)
 
 
 # @movies_controller.patch("/movies/<id>")

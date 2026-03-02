@@ -37,9 +37,21 @@ class GoogleSheetsMovieRepository:
     def get_movie_count(self):
         return self._next_available_row() - 2
 
-    def add_movie(self, movie):
-        movie_as_list = [movie.director, movie.title, movie.year, movie.watched]
+    def add(self, movie):
+        last_id = int(self.sheet.get("last_id")[0][0])
+        next_id = last_id + 1
+
+        movie_as_list = [
+            movie.director,
+            movie.title,
+            movie.year,
+            movie.watched,
+            next_id,
+        ]
         self.sheet.append_row(movie_as_list)
+        self.sheet.update([[next_id]], "last_id")
+        movie.id = next_id
+        return movie
 
 
 class PageOutOfBoundsError(ApiException):
