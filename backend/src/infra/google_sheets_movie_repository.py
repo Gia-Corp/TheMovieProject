@@ -76,6 +76,12 @@ class GoogleSheetsMovieRepository:
         )
         return movie
 
+    def delete(self, id):
+        cell = self.sheet.find(str(id), in_column=5)
+        if not cell:
+            return
+        self.sheet.delete_rows(cell.row)
+
 
 class PageOutOfBoundsError(ApiException):
     NOT_FOUND = 404

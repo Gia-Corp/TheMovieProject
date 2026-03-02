@@ -86,3 +86,20 @@ async def update_movie(
         raise MovieNotFoundError(movie_id)
 
     return movie
+
+
+@movies_controller.delete("/movies/{movie_id}")
+async def delete_movie(
+    movie_id: int = Path(
+        ..., gt=0, description="El ID de la película debe ser mayor a 0"
+    ),
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+):
+    movie = movie_repo.get_by_id(movie_id)
+
+    if not movie:
+        raise MovieNotFoundError(movie_id)
+
+    movie_repo.delete(movie_id)
+
+    return movie
