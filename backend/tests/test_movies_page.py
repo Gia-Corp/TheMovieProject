@@ -1,4 +1,4 @@
-from src.pagination.movies_page import (
+from src.application.pagination.movies_page import (
     MoviesPage,
     InvalidPageNumberError,
     InvalidPageSizeError,
