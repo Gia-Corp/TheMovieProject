@@ -10,6 +10,7 @@ from .domain import (
     EmptyMovieTitleError,
     NegativeMovieYearError,
 )
+from .infra import MovieNotFoundError
 import src.settings as settings
 from .application.controllers import movies_controller
 
@@ -30,6 +31,7 @@ api.add_middleware(
 )
 
 
+@api.exception_handler(MovieNotFoundError)
 @api.exception_handler(NegativeMovieYearError)
 @api.exception_handler(EmptyMovieTitleError)
 @api.exception_handler(EmptyMovieDirectorError)

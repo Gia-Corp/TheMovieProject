@@ -15,14 +15,17 @@ class GoogleSheetsMovieRepository:
             raise PageOutOfBoundsError
 
         raw_movies = self.sheet.get(f"A{page_first_row}:E{page_last_row}")
-        raw_movies = utils.to_records(
-            ["director", "title", "year", "watched", "id"], raw_movies
-        )
-        movies = list(map(self._transform_into_movie, raw_movies))
+        movies = self._dicts_to_movies(raw_movies)
         return movies
 
     def _next_available_row(self):
         return len(list(filter(None, self.sheet.col_values(1)))) + 1
+
+    def _dicts_to_movies(self, dicts):
+        raw_movies = utils.to_records(
+            ["director", "title", "year", "watched", "id"], dicts
+        )
+        return list(map(self._transform_into_movie, raw_movies))
 
     def _transform_into_movie(self, raw_movie):
         movie = Movie(
@@ -53,12 +56,31 @@ class GoogleSheetsMovieRepository:
         movie.id = next_id
         return movie
 
+    def get_by_id(self, id):
+        cell = self.sheet.find(str(id), in_column=5)
+        if not cell:
+            return
+
+        raw_movies = self.sheet.get(f"A{cell.row}:E{cell.row}")
+        movies = self._dicts_to_movies(raw_movies)
+        return movies[0]
+
 
 class PageOutOfBoundsError(ApiException):
     NOT_FOUND = 404
 
     def build_message(self, parameter):
         return "Selected page is out of bounds"
+
+    def get_status_code(self):
+        return self.NOT_FOUND
+
+
+class MovieNotFoundError(ApiException):
+    NOT_FOUND = 404
+
+    def build_message(self, parameter):
+        return f"Movie with ID {parameter} not found"
 
     def get_status_code(self):
         return self.NOT_FOUND

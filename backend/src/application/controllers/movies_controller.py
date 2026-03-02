@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, Depends, Path
-from src.infra import GoogleSheetsMovieRepository
+from src.infra import GoogleSheetsMovieRepository, MovieNotFoundError
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo
@@ -22,6 +22,21 @@ async def get_movies(
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
 
     return {"metadata": metadata, "movies": movies}
+
+
+@movies_controller.get("/movies/{movie_id}")
+async def get_movie(
+    movie_id: int = Path(
+        ..., gt=0, description="El ID de la película debe ser mayor a 0"
+    ),
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+):
+    movie = movie_repo.get_by_id(movie_id)
+
+    if not movie:
+        raise MovieNotFoundError(movie_id)
+
+    return movie
 
 
 @movies_controller.post("/movies")
@@ -50,8 +65,6 @@ async def update_movie(
     # movie = movie_repo.get_by_id(movie_id)
 
     # if not movie:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_404_NOT_FOUND,
-    #         detail=f"Movie with id {movie_id} not found",
-    #     )
-    return {"id": movie_id}
+    #     raise MovieNotFoundError(movie_id)
+
+    return {"status": "success!"}
