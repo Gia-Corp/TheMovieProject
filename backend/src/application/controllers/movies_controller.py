@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Depends, Path
 from src.infra import GoogleSheetsMovieRepository
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo
-from src.application.dtos import CreateMovieDTO
+from src.application.dtos import CreateMovieDTO, UpdateMovieDTO
 
 movies_controller = APIRouter(
     tags=["Movies"],
@@ -39,16 +39,19 @@ async def create_movie(
     return movie_repo.add(movie)
 
 
-# @movies_controller.patch("/movies/<id>")
-# def update_movie():
-#     try:
-#         id = request.json["id"]
-#         title = request.json["title"]
-#         director = request.json["director"]
-#         watched = request.json["watched"]
+@movies_controller.patch("/movies/{movie_id}")
+async def update_movie(
+    movie_id: int = Path(
+        ..., gt=0, description="El ID de la película debe ser mayor a 0"
+    ),
+    movie_dto: UpdateMovieDTO = None,
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+):
+    # movie = movie_repo.get_by_id(movie_id)
 
-#         update_movie(id, title, director, watched)
-
-#         return jsonify("Success")
-#     except Exception as err:
-#         return str(err), 500
+    # if not movie:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         detail=f"Movie with id {movie_id} not found",
+    #     )
+    return {"id": movie_id}
