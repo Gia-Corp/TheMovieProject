@@ -62,9 +62,27 @@ async def update_movie(
     movie_dto: UpdateMovieDTO = None,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
-    # movie = movie_repo.get_by_id(movie_id)
+    movie = movie_repo.get_by_id(movie_id)
 
-    # if not movie:
-    #     raise MovieNotFoundError(movie_id)
+    if not movie:
+        raise MovieNotFoundError(movie_id)
 
-    return {"status": "success!"}
+    if movie_dto.title:
+        movie.title = movie_dto.title
+
+    if movie_dto.director:
+        movie.director = movie_dto.director
+
+    if movie_dto.year:
+        movie.year = movie_dto.year
+
+    if movie_dto.watched is not None:
+        movie.watched = movie_dto.watched
+
+    movie.validate()
+
+    movie = movie_repo.save(movie)
+    if not movie:
+        raise MovieNotFoundError(movie_id)
+
+    return movie

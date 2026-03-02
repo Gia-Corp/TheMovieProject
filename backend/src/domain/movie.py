@@ -11,9 +11,9 @@ class Movie:
     watched: bool = False
 
     def __post_init__(self):
-        self._validate()
+        self.validate()
 
-    def _validate(self):
+    def validate(self):
         if self.year < 0:
             raise NegativeMovieYearError(self.year)
         if not self.title:

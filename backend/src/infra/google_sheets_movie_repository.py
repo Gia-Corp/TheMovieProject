@@ -65,6 +65,17 @@ class GoogleSheetsMovieRepository:
         movies = self._dicts_to_movies(raw_movies)
         return movies[0]
 
+    def save(self, movie):
+        cell = self.sheet.find(str(movie.id), in_column=5)
+        if not cell:
+            return
+
+        self.sheet.update(
+            [[movie.director, movie.title, movie.year, movie.watched]],
+            f"A{cell.row}:D{cell.row}",
+        )
+        return movie
+
 
 class PageOutOfBoundsError(ApiException):
     NOT_FOUND = 404
