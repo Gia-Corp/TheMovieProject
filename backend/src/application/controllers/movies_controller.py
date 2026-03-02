@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, Depends
 from src.infra import GoogleSheetsMovieRepository
-from src.application.pagination import MoviesPage, PageMetadataCalculator
+from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo
 from src.application.dtos import CreateMovieDTO
@@ -16,10 +16,10 @@ async def get_movies(
     size: int = Query(..., gt=0),
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
-    page_obj = MoviesPage(page, size)
-    movies = movie_repo.get_movies_by_page(page_obj)
+    page = Page(page, size)
+    movies = movie_repo.get_movies_by_page(page)
     movie_count = movie_repo.get_movie_count()
-    metadata = PageMetadataCalculator().calculate(page_obj, movie_count, "/movies")
+    metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
 
     return {"metadata": metadata, "movies": movies}
 

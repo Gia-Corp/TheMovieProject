@@ -2,7 +2,7 @@ from src.infra import (
     GoogleSheetsMovieRepository,
     PageOutOfBoundsError,
 )
-from src.application.pagination import MoviesPage
+from src.application.pagination import Page
 from unittest.mock import Mock
 from pytest import raises
 
@@ -37,7 +37,7 @@ class TestGoogleSheetsMovieRepository:
             },
         ]
         repo = GoogleSheetsMovieRepository(sheet)
-        movies = repo.get_movies_by_page(MoviesPage(1, 2))
+        movies = repo.get_movies_by_page(Page(1, 2))
         assert movies == expected_movies
 
     def test_movie_repo_to_fetch_correct_sheet_range_based_on_page_size_and_number(
@@ -56,7 +56,7 @@ class TestGoogleSheetsMovieRepository:
             ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
         repo = GoogleSheetsMovieRepository(sheet)
-        repo.get_movies_by_page(MoviesPage(2, 2))
+        repo.get_movies_by_page(Page(2, 2))
         sheet.get.assert_called_with("A4:E5")
 
     def test_movie_repo_to_fetch_correct_sheet_range_when_different_page_size(self):
@@ -88,7 +88,7 @@ class TestGoogleSheetsMovieRepository:
             ["John Lasseter", "Cars", "2006", "FALSE", "2"],
         ]
         repo = GoogleSheetsMovieRepository(sheet)
-        repo.get_movies_by_page(MoviesPage(2, 10))
+        repo.get_movies_by_page(Page(2, 10))
         sheet.get.assert_called_with("A12:E21")
 
     def test_get_movies_by_page_should_fail_when_is_out_of_bounds_of_the_list(self):
@@ -101,7 +101,7 @@ class TestGoogleSheetsMovieRepository:
                 "",
             ]
             repo = GoogleSheetsMovieRepository(sheet)
-            repo.get_movies_by_page(MoviesPage(3, 2))
+            repo.get_movies_by_page(Page(3, 2))
         assert "Selected page is out of bounds" in str(error)
 
     def test_get_movie_count_with_existing_movies(self):

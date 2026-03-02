@@ -1,5 +1,5 @@
-from .movies_page import (
-    MoviesPage,
+from .page import (
+    Page,
     InvalidPageNumberError,
     InvalidPageSizeError,
 )
@@ -9,6 +9,6 @@ from .page_metadata_calculator import PageMetadataCalculator
 __all__ = [
     "InvalidPageNumberError",
     "InvalidPageSizeError",
-    "MoviesPage",
+    "Page",
     "PageMetadataCalculator",
 ]

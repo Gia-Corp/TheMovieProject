@@ -1,9 +1,9 @@
-from src.application.pagination import PageMetadataCalculator, MoviesPage
+from src.application.pagination import PageMetadataCalculator, Page
 
 
 class TestPageMetadataCalculator:
     def test_calculate_metadata_for_first_page(self):
-        metadata = PageMetadataCalculator().calculate(MoviesPage(1, 2), 500, "/movies")
+        metadata = PageMetadataCalculator().calculate(Page(1, 2), 500, "/movies")
         expected_metadata = {
             "page": 1,
             "size": 2,
@@ -19,7 +19,7 @@ class TestPageMetadataCalculator:
         assert expected_metadata == metadata
 
     def test_calculate_metadata_for_page_in_the_middle(self):
-        metadata = PageMetadataCalculator().calculate(MoviesPage(4, 7), 500, "/movies")
+        metadata = PageMetadataCalculator().calculate(Page(4, 7), 500, "/movies")
         expected_metadata = {
             "page": 4,
             "size": 7,
@@ -35,9 +35,7 @@ class TestPageMetadataCalculator:
         assert expected_metadata == metadata
 
     def test_calculate_metadata_for_last_page(self):
-        metadata = PageMetadataCalculator().calculate(
-            MoviesPage(10, 50), 500, "/movies"
-        )
+        metadata = PageMetadataCalculator().calculate(Page(10, 50), 500, "/movies")
         expected_metadata = {
             "page": 10,
             "size": 50,
