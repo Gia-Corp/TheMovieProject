@@ -1,19 +1,17 @@
 import "./SearchResults.css";
+import SearchItem from "../SearchItem/SearchItem";
 
 function SearchResults({ movies }) {
-  return movies.length > 0 ? (
-    <ul className="dropdown-list">
-      {movies.map((movie) => {
-        return (
-          <li
-            className="dropdown-item"
-            key={movie["id"]}
-          >{`${movie["title"]} (${movie["year"]})`}</li>
-        );
-      })}
+  if (movies.length === 0) {
+    return;
+  }
+
+  return (
+    <ul className="search-results">
+      {movies.map((movie) => (
+        <SearchItem key={movie["id"]} movie={movie} />
+      ))}
     </ul>
-  ) : (
-    ""
   );
 }
 

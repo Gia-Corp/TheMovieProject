@@ -1,4 +1,4 @@
-.dropdown-list {
+.search-results {
   position: absolute;
   width: 100%;
   top: 45px;
@@ -10,13 +10,4 @@
   flex-direction: column;
   gap: 7px;
   font-size: 0.85rem;
-}
-
-.dropdown-item {
-  padding: 3px;
-
-  &:hover {
-    cursor: pointer;
-    background-color: rgb(206, 206, 206);
-  }
 }
