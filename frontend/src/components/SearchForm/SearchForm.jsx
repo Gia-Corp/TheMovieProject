@@ -1,6 +1,7 @@
 import "./SearchForm.css";
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "../../hooks/useRepos";
+import SearchResults from "../SearchResults/SearchResults";
 
 function SearchForm() {
   const [inputText, setInputText] = useState("");
@@ -37,20 +38,7 @@ function SearchForm() {
         value={inputText}
         onChange={handleInputChange}
       />
-      {movies.length > 0 ? (
-        <ul className="dropdown-list">
-          {movies.map((movie) => {
-            return (
-              <li
-                className="dropdown-item"
-                key={movie["id"]}
-              >{`${movie["title"]} (${movie["year"]})`}</li>
-            );
-          })}
-        </ul>
-      ) : (
-        ""
-      )}
+      <SearchResults movies={movies} />
     </form>
   );
 }
