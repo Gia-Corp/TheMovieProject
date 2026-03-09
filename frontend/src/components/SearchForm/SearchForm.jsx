@@ -7,7 +7,7 @@ function SearchForm() {
   const [inputText, setInputText] = useState("");
   const timerRef = useRef(null);
   const { movieRepository } = useRepos();
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(null);
 
   useEffect(() => {
     if (inputText === "") return;
@@ -20,14 +20,15 @@ function SearchForm() {
           size: 20,
           title: inputText,
         })
-        .then((res) => setMovies(res["movies"]));
+        .then((res) => setMovies(res["movies"]))
+        .catch(() => setMovies([]));
     }, 500);
   }, [inputText, movieRepository]);
 
   const handleInputChange = (event) => {
     const newInputText = event.target.value;
     setInputText(newInputText);
-    if (newInputText === "") setMovies([]);
+    if (newInputText === "") setMovies(null);
   };
 
   return (
