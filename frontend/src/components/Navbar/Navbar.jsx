@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import SearchForm from "../SearchForm/SearchForm";
 
 function Navbar() {
   return (
@@ -8,12 +9,7 @@ function Navbar() {
           The Movie Project
         </a>
       </div>
-      <form className="search-form">
-        <button className="search-button" type="button">
-          Buscar
-        </button>
-        <input placeholder="Una peli..." type="text" />
-      </form>
+      <SearchForm />
     </nav>
   );
 }
