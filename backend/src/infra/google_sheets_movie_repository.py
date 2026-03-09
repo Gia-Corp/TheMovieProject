@@ -1,6 +1,7 @@
 from gspread import utils
 from src.application.exceptions import ApiException
 from src.domain import Movie
+import re
 
 
 class GoogleSheetsMovieRepository:
@@ -81,6 +82,18 @@ class GoogleSheetsMovieRepository:
         if not cell:
             return
         self.sheet.delete_rows(cell.row)
+
+    def find_by_title(self, title):
+        cells = self.sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
+        if not cells:
+            return
+
+        row_ranges = [f"A{cell.row}:E{cell.row}" for cell in cells]
+
+        rows = self.sheet.batch_get(row_ranges)
+        raw_movies = [row[0] for row in rows]
+        movies = self._dicts_to_movies(raw_movies)
+        return movies
 
 
 class PageOutOfBoundsError(ApiException):

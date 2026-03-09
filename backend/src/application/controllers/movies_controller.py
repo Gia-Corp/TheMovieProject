@@ -4,6 +4,7 @@ from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo
 from src.application.dtos import CreateMovieDTO, UpdateMovieDTO
+from typing import Optional
 
 movies_controller = APIRouter(
     tags=["Movies"],
@@ -14,12 +15,17 @@ movies_controller = APIRouter(
 async def get_movies(
     page: int = Query(..., gt=0),
     size: int = Query(..., gt=0),
+    title: Optional[str] = None,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
     page = Page(page, size)
-    movies = movie_repo.get_movies_by_page(page)
     movie_count = movie_repo.get_movie_count()
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
+
+    if title:
+        movies = movie_repo.find_by_title(title)
+    else:
+        movies = movie_repo.get_movies_by_page(page)
 
     return {"metadata": metadata, "movies": movies}
 
