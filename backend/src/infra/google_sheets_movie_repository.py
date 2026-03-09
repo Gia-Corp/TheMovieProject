@@ -110,7 +110,7 @@ class MovieNotFoundError(ApiException):
     NOT_FOUND = 404
 
     def build_message(self, parameter):
-        return f"Movie with ID {parameter} not found"
+        return "No movies found"
 
     def get_status_code(self):
         return self.NOT_FOUND

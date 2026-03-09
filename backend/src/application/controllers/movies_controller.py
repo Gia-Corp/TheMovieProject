@@ -22,6 +22,8 @@ async def get_movies(
 
     if title:
         movies = movie_repo.find_by_title(title)
+        if not movies:
+            raise MovieNotFoundError()
 
         start = page.number * page.size - page.size
         end = page.number * page.size
