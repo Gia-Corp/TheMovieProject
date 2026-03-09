@@ -10,7 +10,7 @@ from .domain import (
     EmptyMovieTitleError,
     NegativeMovieYearError,
 )
-from .infra import MovieNotFoundError
+from .infra import MovieNotFoundError, PageOutOfBoundsError
 import src.settings as settings
 from .application.controllers import movies_controller
 
@@ -31,6 +31,7 @@ api.add_middleware(
 )
 
 
+@api.exception_handler(PageOutOfBoundsError)
 @api.exception_handler(MovieNotFoundError)
 @api.exception_handler(NegativeMovieYearError)
 @api.exception_handler(EmptyMovieTitleError)

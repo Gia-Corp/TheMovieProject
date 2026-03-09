@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Query, Depends, Path
-from src.infra import GoogleSheetsMovieRepository, MovieNotFoundError
+from src.infra import (
+    GoogleSheetsMovieRepository,
+    MovieNotFoundError,
+    PageOutOfBoundsError,
+)
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo
 from src.application.dtos import CreateMovieDTO, UpdateMovieDTO
 from typing import Optional
+import math
 
 movies_controller = APIRouter(
     tags=["Movies"],
@@ -28,6 +33,10 @@ async def get_movies(
         start = page.number * page.size - page.size
         end = page.number * page.size
         movie_count = len(movies)
+
+        page_count = math.ceil(movie_count / page.size)
+        if page.number > page_count:
+            raise PageOutOfBoundsError
 
         movies = movies[start:end]
     else:

@@ -97,7 +97,7 @@ class GoogleSheetsMovieRepository:
 
 
 class PageOutOfBoundsError(ApiException):
-    NOT_FOUND = 404
+    NOT_FOUND = 400
 
     def build_message(self, parameter):
         return "Selected page is out of bounds"
