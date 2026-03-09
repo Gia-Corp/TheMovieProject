@@ -19,14 +19,20 @@ async def get_movies(
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
 ):
     page = Page(page, size)
-    movie_count = movie_repo.get_movie_count()
-    metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
 
     if title:
         movies = movie_repo.find_by_title(title)
+
+        start = page.number * page.size - page.size
+        end = page.number * page.size
+        movie_count = len(movies)
+
+        movies = movies[start:end]
     else:
         movies = movie_repo.get_movies_by_page(page)
+        movie_count = movie_repo.get_movie_count()
 
+    metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
     return {"metadata": metadata, "movies": movies}
 
 
