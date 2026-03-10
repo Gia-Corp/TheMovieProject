@@ -8,6 +8,7 @@ function SearchForm() {
   const timerRef = useRef(null);
   const { movieRepository } = useRepos();
   const [movies, setMovies] = useState(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     if (inputText === "") return;
@@ -31,6 +32,9 @@ function SearchForm() {
     if (newInputText === "") setMovies(null);
   };
 
+  const handleOnFocus = () => setIsFocused(true);
+  const handleOnBlur = () => setTimeout(() => setIsFocused(false), 150);
+
   return (
     <form className="search-form">
       <input
@@ -38,8 +42,10 @@ function SearchForm() {
         type="text"
         value={inputText}
         onChange={handleInputChange}
+        onFocus={handleOnFocus}
+        onBlur={handleOnBlur}
       />
-      <SearchResults movies={movies} />
+      {isFocused ? <SearchResults movies={movies} /> : ""}
     </form>
   );
 }
