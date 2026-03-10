@@ -1,12 +1,16 @@
 import "./SearchItem.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SearchItem({ movie }) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/movies/${movie.id}`, { state: { movie } });
+  };
+
   return (
-    <li className="search-item" key={movie["id"]}>
-      <Link to={`/movies/${movie["id"]}`}>
-        {`${movie["title"]} (${movie["year"]})`}
-      </Link>
+    <li onClick={handleClick} className="search-item" key={movie["id"]}>
+      {`${movie["title"]} (${movie["year"]})`}
     </li>
   );
 }
