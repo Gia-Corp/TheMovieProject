@@ -11,6 +11,7 @@
 
   &:hover {
     scale: 1.08;
+    cursor: pointer;
   }
 
   &:hover .movie-info {

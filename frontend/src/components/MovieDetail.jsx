@@ -1,11 +1,15 @@
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function MovieDetail() {
-  const { id } = useParams();
+  const { state } = useLocation();
+  const { movie } = state;
 
   return (
-    <div>
-      <h1 style={{ color: "#fff" }}>Estas viendo la peli con id: {id}</h1>
+    <div style={{ color: "#fff" }}>
+      <h1>{`${movie.title} (#${movie.id})`}</h1>
+      <p>Director: {movie.director}</p>
+      <p>Año: {movie.year}</p>
+      <p>{movie.watched ? "Vista" : "No vista"}</p>
     </div>
   );
 }
