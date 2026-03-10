@@ -8,8 +8,8 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/movie" element={<MovieDetail />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/movies/:id" element={<MovieDetail />} />
       </Routes>
     </BrowserRouter>
   );

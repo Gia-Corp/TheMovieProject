@@ -1,6 +1,7 @@
 import "./MovieCard.css";
 import { useEffect, useState } from "react";
 import { useRepos } from "../../hooks/useRepos";
+import { Link } from "react-router-dom";
 
 function MovieCard({ movie }) {
   const { posterRepository } = useRepos();
@@ -24,23 +25,25 @@ function MovieCard({ movie }) {
   }, [movie, posterRepository]);
 
   return (
-    <div
-      className="movie-card"
-      style={
-        moviePosterUrl
-          ? {
-              backgroundImage: `url(${moviePosterUrl})`,
-            }
-          : {}
-      }
-    >
-      <div className="movie-info">
-        <h2 className="movie-title">{movie["title"]}</h2>
-        <p>{movie["director"]}</p>
-        <p>{movie["year"]}</p>
+    <Link to={`/movies/${movie["id"]}`}>
+      <div
+        className="movie-card"
+        style={
+          moviePosterUrl
+            ? {
+                backgroundImage: `url(${moviePosterUrl})`,
+              }
+            : {}
+        }
+      >
+        <div className="movie-info">
+          <h2 className="movie-title">{movie["title"]}</h2>
+          <p>{movie["director"]}</p>
+          <p>{movie["year"]}</p>
+        </div>
+        {movie["watched"] ? <div className="watched-movie"></div> : <></>}
       </div>
-      {movie["watched"] ? <div className="watched-movie"></div> : <></>}
-    </div>
+    </Link>
   );
 }
 
