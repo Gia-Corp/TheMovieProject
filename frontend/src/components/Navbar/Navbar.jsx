@@ -1,19 +1,14 @@
 import "./Navbar.css";
+import SearchForm from "../SearchForm/SearchForm";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
     <nav className="nav-bar">
       <div className="nav-buttons">
-        <a id="home-button" href="#">
-          The Movie Project
-        </a>
+        <Link to="/">The Movie Project</Link>
       </div>
-      <form className="search-form">
-        <button className="search-button" type="button">
-          Buscar
-        </button>
-        <input placeholder="Una peli..." type="text" />
-      </form>
+      <SearchForm />
     </nav>
   );
 }

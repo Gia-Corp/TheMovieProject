@@ -1,15 +1,15 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar.jsx";
-import Home from "./components/Home";
-import MovieDetail from "./components/MovieDetail";
+import Home from "./pages/Home";
+import MovieDetailWrapper from "./pages/MovieDetail/MovieDetailWrapper";
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/movie" element={<MovieDetail />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/movies/:id" element={<MovieDetailWrapper />} />
       </Routes>
     </BrowserRouter>
   );

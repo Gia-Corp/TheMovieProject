@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRepos } from "../hooks/useRepos.js";
-import MoviesList from "./MoviesList/MoviesList.jsx";
-import Paginator from "./Paginator/Paginator.jsx";
+import MoviesList from "../components/MoviesList/MoviesList.jsx";
+import Paginator from "../components/Paginator/Paginator.jsx";
 
 function Home() {
   const { movieRepository } = useRepos();

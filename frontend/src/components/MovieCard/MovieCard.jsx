@@ -1,10 +1,12 @@
 import "./MovieCard.css";
 import { useEffect, useState } from "react";
 import { useRepos } from "../../hooks/useRepos";
+import { useNavigate } from "react-router-dom";
 
 function MovieCard({ movie }) {
   const { posterRepository } = useRepos();
   const [moviePosterUrl, setMoviePosterUrl] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     posterRepository
@@ -23,8 +25,13 @@ function MovieCard({ movie }) {
       });
   }, [movie, posterRepository]);
 
+  const handleClick = () => {
+    navigate(`/movies/${movie.id}`, { state: { movie, moviePosterUrl } });
+  };
+
   return (
     <div
+      onClick={handleClick}
       className="movie-card"
       style={
         moviePosterUrl
@@ -34,11 +41,6 @@ function MovieCard({ movie }) {
           : {}
       }
     >
-      <div className="movie-info">
-        <h2 className="movie-title">{movie["title"]}</h2>
-        <p>{movie["director"]}</p>
-        <p>{movie["year"]}</p>
-      </div>
       {movie["watched"] ? <div className="watched-movie"></div> : <></>}
     </div>
   );

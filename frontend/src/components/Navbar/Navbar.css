@@ -33,38 +33,3 @@
     font-weight: bold;
   }
 }
-
-.search-form {
-  height: 75%;
-  width: 100%;
-  justify-self: center;
-  display: flex;
-  gap: 10px;
-
-  & input {
-    flex-grow: 8;
-    padding: 0 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1em;
-
-    &:focus, &:hover {
-      outline: 3px solid var(--background-clr);
-    }
-  }
-}
-
-.search-button {
-  background-color: var(--secondary-clr);
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 0 0.5rem;
-
-  &:hover {
-    cursor: pointer;
-    background-color: rgb(228, 104, 195);
-  }
-}
