@@ -34,3 +34,8 @@
     max-width: 50%;
   }
 }
+
+.check-icon {
+  height: 50px;
+  aspect-ratio: 1 / 1;
+}

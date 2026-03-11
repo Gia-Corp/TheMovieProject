@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import "./MovieDetail.css";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
+import checkIcon from "../../assets/icons/check_circle.svg";
 
 function MovieDetail() {
   const { state } = useLocation();
@@ -26,7 +27,11 @@ function MovieDetail() {
         <h2>{movie.title}</h2>
         <p>Dirigida por: {movie.director}</p>
         <p>Año: {movie.year}</p>
-        <p>{movie.watched ? "Vista" : "No vista"}</p>
+        {movie.watched ? (
+          <img src={checkIcon} alt="vista" className="check-icon" />
+        ) : (
+          ""
+        )}
       </div>
       <div className="poster-section">
         {isLoading ? (
