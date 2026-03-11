@@ -5,7 +5,10 @@ function SearchItem({ movie }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/movies/${movie.id}`, { state: { movie } });
+    navigate(`/movies/${movie.id}`, {
+      state: { movie, moviePosterUrl: null },
+      id: movie.id,
+    });
   };
 
   return (

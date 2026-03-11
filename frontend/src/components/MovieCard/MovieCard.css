@@ -19,40 +19,6 @@
   }
 }
 
-.movie-info {
-  position: absolute;
-  inset: 0;
-  height: 100%;
-  width: 100%;
-  border-radius: inherit;
-  opacity: 0;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 8%;
-  gap: 10px;
-  text-align: center;
-  background: linear-gradient(
-      rgb(46, 17, 90) 0%, 
-      rgb(46, 17, 90) 15%, 
-      rgba(46, 17, 90, 0.834) 40%, 
-      rgba(46, 17, 90, 0.462) 60%, 
-      rgba(46, 17, 90, 0.041) 75%);
-
-  & p {
-    color: #ffffff;
-    margin: 0;
-  }
-}
-
-.movie-title {
-  margin: 0;
-  font-weight: 900;
-  font-size: 1.5rem;
-  color: #ffffff;
-}
-
 .watched-movie {
   position: absolute;
   bottom: 0;

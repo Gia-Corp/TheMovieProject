@@ -26,7 +26,7 @@ function MovieCard({ movie }) {
   }, [movie, posterRepository]);
 
   const handleClick = () => {
-    navigate(`/movies/${movie.id}`, { state: { movie } });
+    navigate(`/movies/${movie.id}`, { state: { movie, moviePosterUrl } });
   };
 
   return (
@@ -41,11 +41,6 @@ function MovieCard({ movie }) {
           : {}
       }
     >
-      <div className="movie-info">
-        <h2 className="movie-title">{movie["title"]}</h2>
-        {/* <p>{movie["director"]}</p>
-        <p>{movie["year"]}</p> */}
-      </div>
       {movie["watched"] ? <div className="watched-movie"></div> : <></>}
     </div>
   );
