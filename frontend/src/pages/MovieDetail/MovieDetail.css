@@ -40,7 +40,12 @@
   aspect-ratio: 1 / 1;
 }
 
-.watched-movie-button {
+.watched-section {
+  display: flex;
+  gap: 10px;
+}
+
+.watched-section button {
   padding: 10px;
   
   & {
