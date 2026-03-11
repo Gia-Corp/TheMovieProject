@@ -1,0 +1,41 @@
+.movie-detail-page {
+  flex: 1;
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  gap: 30px;
+
+  * {
+    text-align: end;
+    text-wrap: balance;
+  }
+}
+
+.detail-section h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.poster-section {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+
+  img {
+    aspect-ratio: 273 / 409;
+    max-width: 50%;
+  }
+}
+
+.check-icon {
+  height: 50px;
+  aspect-ratio: 1 / 1;
+}

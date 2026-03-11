@@ -1,0 +1,4 @@
+span.pagination {
+  pointer-events: none;
+  border: none;
+}

@@ -1,7 +1,78 @@
+/* CSS VARIABLES */
+
+:root {
+  --font-family: "Ranade", sans-serif;
+  --background-clr: rgb(26, 9, 51);
+  --main-clr: rgba(111,66,193,1);
+  --secondary-clr: rgb(255, 53, 201);
+}
+
+/* CSS RESET */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font: inherit;
+}
+
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+a {
+  all: unset;
+  cursor: pointer;
+}
+
+/* Make images easier to work with */
+img,
+picture,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* START OF CUSTOM STYLES */
+
+* {
+  font-family: var(--font-family);
 }
 
 .disabled-div {
@@ -9,4 +80,33 @@
   opacity: 0.5;
   color: #999;
   cursor: not-allowed;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-clr);
+}
+
+.primary-content {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 30px;
+  padding: 30px 0;
+
+  & * {
+    color: #fff;
+  }
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1500px;
 }

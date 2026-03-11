@@ -1,0 +1,13 @@
+.search-results {
+  position: absolute;
+  width: 100%;
+  top: 45px;
+  left: 0;
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.85rem;
+}

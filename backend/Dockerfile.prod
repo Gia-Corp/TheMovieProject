@@ -1,4 +1,4 @@
-FROM python:3.12.4-slim
+FROM python:3.13.3-slim
 
 WORKDIR /backend
 COPY requirements.txt .
@@ -9,6 +9,6 @@ COPY . .
 
 EXPOSE 5000
 
-RUN chmod +x start_prod
+RUN chmod +x start_prod.sh
 
-CMD ["./start_prod"]
+CMD ["./start_prod.sh"]

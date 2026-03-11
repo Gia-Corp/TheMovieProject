@@ -1,0 +1,8 @@
+.search-item {
+  padding: 3px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(206, 206, 206);
+  }
+}
