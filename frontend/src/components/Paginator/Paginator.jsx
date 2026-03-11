@@ -44,6 +44,7 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
         <PaginatorItem
           key={i}
           active={i === currentPage}
+          disabled={i === currentPage}
           onClick={() => selectPage(i)}
         >
           {i}
@@ -66,12 +67,19 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
     return paginationItems;
   };
 
+  const hidePrevButton = currentPage === 1 || pageCount === 0;
+  const hideNextButton = currentPage === pageCount || pageCount === 0;
+
   return (
     <div className={`paginator ${disabled ? "disabled-div" : ""}`}>
-      <PaginatorPrev
-        onClick={() => selectPage((prev) => Math.max(prev - 1, 1))}
-        disabled={currentPage === 1 || pageCount === 0}
-      />
+      {hidePrevButton ? (
+        ""
+      ) : (
+        <PaginatorPrev
+          onClick={() => selectPage((prev) => Math.max(prev - 1, 1))}
+          disabled={hidePrevButton}
+        />
+      )}
       {pageCount > 0 ? (
         renderPaginationItems()
       ) : (
@@ -79,10 +87,14 @@ function Paginator({ selectPageEvent, pageNumber, pageCount, disabled }) {
           {"Cargando..."}
         </PaginatorItem>
       )}
-      <PaginatorNext
-        onClick={() => selectPage((prev) => Math.min(prev + 1, pageCount))}
-        disabled={currentPage === pageCount || pageCount === 0}
-      />
+      {hideNextButton ? (
+        ""
+      ) : (
+        <PaginatorNext
+          onClick={() => selectPage((prev) => Math.min(prev + 1, pageCount))}
+          disabled={hideNextButton}
+        />
+      )}
     </div>
   );
 }
