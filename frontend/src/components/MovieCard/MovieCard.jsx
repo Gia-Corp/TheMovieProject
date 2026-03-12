@@ -7,6 +7,7 @@ function MovieCard({ movie }) {
   const { posterRepository } = useRepos();
   const [moviePosterUrl, setMoviePosterUrl] = useState("");
   const navigate = useNavigate();
+  const [isPosterReady, setIsPosterReady] = useState(false);
 
   useEffect(() => {
     posterRepository
@@ -30,17 +31,15 @@ function MovieCard({ movie }) {
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className="movie-card"
-      style={
-        moviePosterUrl
-          ? {
-              backgroundImage: `url(${moviePosterUrl})`,
-            }
-          : {}
-      }
-    >
+    <div className={isPosterReady ? "movie-card" : "movie-card skeleton"}>
+      <img
+        onClick={handleClick}
+        src={moviePosterUrl}
+        style={{ display: isPosterReady ? "block" : "none" }}
+        onLoad={() => setIsPosterReady(true)}
+        onError={() => setIsPosterReady(true)}
+      />
+
       {movie["watched"] ? <div className="watched-movie"></div> : <></>}
     </div>
   );
