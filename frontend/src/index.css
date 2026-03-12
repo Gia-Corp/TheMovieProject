@@ -4,15 +4,15 @@
   --font: "Ranade", sans-serif;
   
   /* PRIMITIVE COLORS */
-  --purple-dark: rgb(26, 9, 51);
-  --purple-normal: rgba(111,66,193,1);
+  --purple: rgba(111, 66, 193, 1);
   --white: rgb(255, 255, 255);
 
   /* SEMANTIC TOKENS */
-  --background-clr: var(--purple-dark);
-  --main-clr: var(--purple-normal);
+  --main-clr: var(--purple);
   --main-strong-clr: color-mix(in srgb, var(--main-clr) 41%, black);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
+  --bg-clr: color-mix(in srgb, var(--main-clr) 14%, rgb(12, 0, 28));
+  
   --text-clr: var(--white);
   --dropdown-clr: var(--white);
   --dropdown-hover-clr: color-mix(in srgb, var(--dropdown-clr) 90%, black);
@@ -97,7 +97,7 @@ svg {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background-color: var(--background-clr);
+  background-color: var(--bg-clr);
 }
 
 main {
