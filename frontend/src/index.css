@@ -5,6 +5,9 @@
 :root {
   --regular-font: "National Park", sans-serif;
   --title-font: "Winky Rough";
+
+  --tile-size: 15px;
+  --dot-size: 0.75px;
   
   /* PRIMITIVE COLORS */
   --purple: rgba(111, 66, 193, 1);
@@ -14,6 +17,7 @@
   --main-clr: var(--purple);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
+  --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
   
   --text-clr: var(--white);
   --dropdown-clr: var(--white);
@@ -95,11 +99,30 @@ svg {
   cursor: not-allowed;
 }
 
-#root {
+body {
+  background-color: var(--bg-clr);
+  position: relative;
   min-height: 100dvh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+
+  opacity: 0.2;
+  background-color: var(--bg-clr);
+  background-image: radial-gradient(var(--dot-clr) var(--dot-size), var(--bg-clr) var(--dot-size));
+  background-size: var(--tile-size) var(--tile-size);
+}
+
+#root {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-clr);
 }
 
 main {
