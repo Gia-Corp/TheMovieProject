@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
+
 /* CSS VARIABLES */
 
 :root {
-  --font: "Ranade", sans-serif;
+  --regular-font: "National Park", sans-serif;
+  --title-font: "Winky Rough";
   
   /* PRIMITIVE COLORS */
   --purple: rgba(111, 66, 193, 1);
@@ -82,7 +85,7 @@ svg {
 /* START OF CUSTOM STYLES */
 
 * {
-  font-family: var(--font);
+  font-family: var(--regular-font);
 }
 
 .disabled-div {
