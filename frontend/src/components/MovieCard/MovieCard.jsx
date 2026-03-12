@@ -2,6 +2,7 @@ import "./MovieCard.css";
 import { useEffect, useState } from "react";
 import { useRepos } from "../../hooks/useRepos";
 import { useNavigate } from "react-router-dom";
+import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieCard({ movie }) {
   const { posterRepository } = useRepos();
@@ -39,8 +40,7 @@ function MovieCard({ movie }) {
         onLoad={() => setIsPosterReady(true)}
         onError={() => setIsPosterReady(true)}
       />
-
-      {movie["watched"] ? <div className="watched-movie"></div> : null}
+      <div>{movie["watched"] ? <MovieWatchedIcon size={40} /> : null}</div>
     </div>
   );
 }

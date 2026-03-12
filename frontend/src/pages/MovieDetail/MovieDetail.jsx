@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import "./MovieDetail.css";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
-import checkIcon from "../../assets/icons/check_circle.svg";
+import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieDetail() {
   const { state } = useLocation();
@@ -22,9 +22,9 @@ function MovieDetail() {
       .catch(console.error);
   }, [movie, posterRepository]);
 
-  const handleToggleWatched = (movieId) => {
+  const handleOnClick = () => {
     setIsWatched(!isWatched);
-    movieRepository.updateMovie(movieId, { watched: !isWatched });
+    movieRepository.updateMovie(movie.id, { watched: !isWatched });
   };
 
   return (
@@ -34,16 +34,10 @@ function MovieDetail() {
         <p>Dirigida por: {movie.director}</p>
         <p>Año: {movie.year}</p>
         <div className="watched-section">
-          {isWatched ? (
-            <img src={checkIcon} alt="vista" className="check-icon" />
-          ) : (
-            ""
-          )}
-          {
-            <button onClick={() => handleToggleWatched(movie.id)}>
-              {isWatched ? "Marcar como no vista" : "Marcar como vista"}
-            </button>
-          }
+          {isWatched ? <MovieWatchedIcon size={60} /> : null}
+          <button onClick={handleOnClick}>
+            {isWatched ? "Marcar como no vista" : "Marcar como vista"}
+          </button>
         </div>
       </div>
       <div className="poster-section">

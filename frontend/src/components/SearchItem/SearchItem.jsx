@@ -1,6 +1,6 @@
 import "./SearchItem.css";
 import { useNavigate } from "react-router-dom";
-import checkIcon from "../../assets/icons/check_circle.svg";
+import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
 
 function SearchItem({ movie }) {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function SearchItem({ movie }) {
   return (
     <li onClick={handleClick} className="search-item" key={movie["id"]}>
       <p>{`${movie["title"]} (${movie["year"]})`}</p>
-      {movie["watched"] ? <img src={checkIcon} className="check-icon" /> : ""}
+      {movie["watched"] ? <MovieWatchedIcon size={20} /> : null}
     </li>
   );
 }

@@ -1,14 +1,11 @@
 .search-item {
   padding: 3px;
   display: flex;
+  align-items: center;
   gap: 7px;
 
   &:hover {
     cursor: pointer;
     background-color: var(--dropdown-hover-clr);
   }
-}
-
-.search-item .check-icon {
-  height: 20px;
 }

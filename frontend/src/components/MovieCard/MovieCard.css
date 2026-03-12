@@ -16,15 +16,8 @@
   object-fit: cover;
 }
 
-.watched-movie {
+.movie-card div {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  height: 13%;
-  aspect-ratio: 1/1;
-  background-image: url('../../assets/icons/check_circle.svg');
-  background-size: 65%;
-  background-repeat: no-repeat;
-  background-position: center;
-  z-index: 3;
+  bottom: 5px;
+  right: 5px;
 }
