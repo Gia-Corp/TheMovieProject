@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useRepos } from "../hooks/useRepos.js";
-import MoviesList from "../components/MoviesList/MoviesList.jsx";
-import Paginator from "../components/Paginator/Paginator.jsx";
+import { useRepos } from "../../hooks/useRepos.js";
+import MoviesList from "../../components/MoviesList/MoviesList.jsx";
+import Paginator from "../../components/Paginator/Paginator.jsx";
+import "./Home.css";
 
 function Home() {
   const { movieRepository } = useRepos();
@@ -39,7 +40,7 @@ function Home() {
   };
 
   return (
-    <div className="primary-content">
+    <div className="home">
       <Paginator
         pageCount={totalPageCount}
         pageNumber={currentPage}
