@@ -1,6 +1,6 @@
 .movie-detail-page {
   flex: 1;
-  color: var(--font-main-clr);
+  color: var(--text-clr);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 50px;
