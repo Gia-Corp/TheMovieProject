@@ -2,9 +2,23 @@
 
 :root {
   --font-family: "Ranade", sans-serif;
-  --background-clr: rgb(26, 9, 51);
-  --main-clr: rgba(111,66,193,1);
-  --secondary-clr: rgb(255, 53, 201);
+  
+  /* PRIMITIVE COLORS */
+  --color-purple-dark: rgb(26, 9, 51);
+  --color-purple-strong: rgb(46, 27, 82);
+  --color-purple-normal: rgba(111,66,193,1);
+  --color-purple-normal-transparent: rgba(111,66,193,.5);
+  --color-white: rgb(255, 255, 255);
+  --color-white-darker:  color-mix(in srgb, var(--color-white) 90%, black);
+
+  /* SEMANTIC TOKENS */
+  --background-clr: var(--color-purple-dark);
+  --main-clr: var(--color-purple-normal);
+  --main-stronger-clr: var(--color-purple-strong);
+  --main-transparent-clr: var(--color-purple-normal-transparent);
+  --font-main-clr: var(--color-white);
+  --dropdown-clr: var(--color-white);
+  --dropdown-hover-clr: var(--color-white-darker);
 }
 
 /* CSS RESET */
@@ -98,7 +112,7 @@ svg {
   padding: 30px 0;
 
   & * {
-    color: #fff;
+    color: var(--font-main-clr);
   }
 }
 

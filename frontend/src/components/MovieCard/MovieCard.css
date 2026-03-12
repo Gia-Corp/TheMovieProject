@@ -2,7 +2,7 @@
   border-radius: 10px;
   background-size: cover;
   background-position: center;
-  background-color: rgb(46, 27, 82);
+  background-color: var(--main-stronger-clr);
   aspect-ratio: 273 / 409;
   max-width: 250px;
   position: relative;

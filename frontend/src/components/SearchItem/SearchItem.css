@@ -3,6 +3,6 @@
 
   &:hover {
     cursor: pointer;
-    background-color: rgb(206, 206, 206);
+    background-color: var(--dropdown-hover-clr);
   }
 }
