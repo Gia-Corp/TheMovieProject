@@ -9,8 +9,8 @@ function MovieDetail() {
   const { movie, moviePosterUrl } = state;
   const [posterUrl, setPosterUrl] = useState(moviePosterUrl ?? null);
   const { movieRepository, posterRepository } = useRepos();
-  const isLoading = posterUrl === null;
   const [isWatched, setIsWatched] = useState(movie.watched);
+  const [isPosterReady, setIsPosterReady] = useState(false);
 
   useEffect(() => {
     posterRepository
@@ -47,10 +47,15 @@ function MovieDetail() {
         </div>
       </div>
       <div className="poster-section">
-        {isLoading ? (
-          "Cargando poster..."
-        ) : (
-          <img src={posterUrl} alt={movie.title} />
+        {!isPosterReady && <div className="skeleton" />}
+        {posterUrl && (
+          <img
+            src={posterUrl}
+            alt={movie.title}
+            style={{ display: isPosterReady ? "block" : "none" }}
+            onLoad={() => setIsPosterReady(true)}
+            onError={() => setIsPosterReady(true)}
+          />
         )}
       </div>
     </div>

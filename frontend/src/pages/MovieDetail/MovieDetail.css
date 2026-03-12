@@ -29,9 +29,10 @@
   align-items: center;
   justify-content: start;
 
-  img {
+  img, .skeleton {
     aspect-ratio: 273 / 409;
     max-width: 50%;
+    max-height: 85%;
   }
 }
 

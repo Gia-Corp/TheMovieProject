@@ -11,7 +11,7 @@
   --main-clr: var(--purple);
   --main-strong-clr: color-mix(in srgb, var(--main-clr) 41%, black);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
-  --bg-clr: color-mix(in srgb, var(--main-clr) 14%, rgb(12, 0, 28));
+  --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   
   --text-clr: var(--white);
   --dropdown-clr: var(--white);
