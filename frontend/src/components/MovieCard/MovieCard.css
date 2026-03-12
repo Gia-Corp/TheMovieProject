@@ -1,21 +1,19 @@
 .movie-card {
-  background-size: cover;
-  background-position: center;
-  background-color: var(--main-strong-clr);
   aspect-ratio: 273 / 409;
   max-width: 250px;
   position: relative;
-  overflow: hidden;
   transition: scale 0.15s ease-out;
 
   &:hover {
     scale: 1.08;
     cursor: pointer;
   }
+}
 
-  &:hover .movie-info {
-    opacity: 1;
-  }
+.movie-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .watched-movie {

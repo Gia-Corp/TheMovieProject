@@ -9,7 +9,6 @@
 
   /* SEMANTIC TOKENS */
   --main-clr: var(--purple);
-  --main-strong-clr: color-mix(in srgb, var(--main-clr) 41%, black);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   

@@ -34,13 +34,13 @@ function MovieCard({ movie }) {
     <div className={isPosterReady ? "movie-card" : "movie-card skeleton"}>
       <img
         onClick={handleClick}
-        src={moviePosterUrl}
+        src={moviePosterUrl === "" ? null : moviePosterUrl}
         style={{ display: isPosterReady ? "block" : "none" }}
         onLoad={() => setIsPosterReady(true)}
         onError={() => setIsPosterReady(true)}
       />
 
-      {movie["watched"] ? <div className="watched-movie"></div> : <></>}
+      {movie["watched"] ? <div className="watched-movie"></div> : null}
     </div>
   );
 }
