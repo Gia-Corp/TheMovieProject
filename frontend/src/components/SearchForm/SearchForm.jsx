@@ -38,7 +38,7 @@ function SearchForm() {
   return (
     <form className="search-form">
       <input
-        placeholder="Buscar peli..."
+        placeholder="¿Qué peli buscás?"
         type="text"
         value={inputText}
         onChange={handleInputChange}
