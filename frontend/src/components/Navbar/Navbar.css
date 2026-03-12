@@ -15,7 +15,7 @@
 
 @keyframes scrolled {
   to {
-    background-color: rgba(111,66,193,.5);
+    background-color: var(--main-ghost-clr);
     backdrop-filter: blur(10px);
   }
 }
@@ -29,7 +29,8 @@
     margin: 0;
     text-decoration: none;
     font-size: 1.5rem;
-    color: #fff;
+    color: var(--text-clr);
     font-weight: bold;
+    font-family: var(--title-font);
   }
 }

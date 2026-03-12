@@ -1,8 +1,11 @@
 .search-item {
   padding: 3px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
 
   &:hover {
     cursor: pointer;
-    background-color: rgb(206, 206, 206);
+    background-color: var(--dropdown-hover-clr);
   }
 }

@@ -1,6 +1,6 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar.jsx";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home.jsx";
 import MovieDetailWrapper from "./pages/MovieDetail/MovieDetailWrapper";
 
 function App() {

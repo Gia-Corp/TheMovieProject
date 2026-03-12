@@ -2,11 +2,13 @@ import "./MovieCard.css";
 import { useEffect, useState } from "react";
 import { useRepos } from "../../hooks/useRepos";
 import { useNavigate } from "react-router-dom";
+import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieCard({ movie }) {
   const { posterRepository } = useRepos();
   const [moviePosterUrl, setMoviePosterUrl] = useState("");
   const navigate = useNavigate();
+  const [isPosterReady, setIsPosterReady] = useState(false);
 
   useEffect(() => {
     posterRepository
@@ -30,18 +32,15 @@ function MovieCard({ movie }) {
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className="movie-card"
-      style={
-        moviePosterUrl
-          ? {
-              backgroundImage: `url(${moviePosterUrl})`,
-            }
-          : {}
-      }
-    >
-      {movie["watched"] ? <div className="watched-movie"></div> : <></>}
+    <div className={isPosterReady ? "movie-card" : "movie-card skeleton"}>
+      <img
+        onClick={handleClick}
+        src={moviePosterUrl === "" ? null : moviePosterUrl}
+        style={{ display: isPosterReady ? "block" : "none" }}
+        onLoad={() => setIsPosterReady(true)}
+        onError={() => setIsPosterReady(true)}
+      />
+      <div>{movie["watched"] ? <MovieWatchedIcon size={40} /> : null}</div>
     </div>
   );
 }

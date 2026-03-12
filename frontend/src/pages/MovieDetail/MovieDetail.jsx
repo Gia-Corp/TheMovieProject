@@ -2,14 +2,15 @@ import { useLocation } from "react-router-dom";
 import "./MovieDetail.css";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
-import checkIcon from "../../assets/icons/check_circle.svg";
+import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieDetail() {
   const { state } = useLocation();
   const { movie, moviePosterUrl } = state;
   const [posterUrl, setPosterUrl] = useState(moviePosterUrl ?? null);
-  const { posterRepository } = useRepos();
-  const isLoading = posterUrl === null;
+  const { movieRepository, posterRepository } = useRepos();
+  const [isWatched, setIsWatched] = useState(movie.watched);
+  const [isPosterReady, setIsPosterReady] = useState(false);
 
   useEffect(() => {
     posterRepository
@@ -21,23 +22,34 @@ function MovieDetail() {
       .catch(console.error);
   }, [movie, posterRepository]);
 
+  const handleOnClick = () => {
+    setIsWatched(!isWatched);
+    movieRepository.updateMovie(movie.id, { watched: !isWatched });
+  };
+
   return (
     <div className="movie-detail-page">
       <div className="detail-section">
         <h2>{movie.title}</h2>
         <p>Dirigida por: {movie.director}</p>
         <p>Año: {movie.year}</p>
-        {movie.watched ? (
-          <img src={checkIcon} alt="vista" className="check-icon" />
-        ) : (
-          ""
-        )}
+        <div className="watched-section">
+          {isWatched ? <MovieWatchedIcon size={60} /> : null}
+          <button onClick={handleOnClick}>
+            {isWatched ? "Marcar como no vista" : "Marcar como vista"}
+          </button>
+        </div>
       </div>
       <div className="poster-section">
-        {isLoading ? (
-          "Cargando poster..."
-        ) : (
-          <img src={posterUrl} alt={movie.title} />
+        {!isPosterReady && <div className="skeleton" />}
+        {posterUrl && (
+          <img
+            src={posterUrl}
+            alt={movie.title}
+            style={{ display: isPosterReady ? "block" : "none" }}
+            onLoad={() => setIsPosterReady(true)}
+            onError={() => setIsPosterReady(true)}
+          />
         )}
       </div>
     </div>
