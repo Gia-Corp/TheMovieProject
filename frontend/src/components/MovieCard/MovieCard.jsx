@@ -1,5 +1,5 @@
 import "./MovieCard.css";
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMoviePoster } from "../../hooks/useMoviePoster";
 import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
@@ -9,9 +9,9 @@ function MovieCard({ movie }) {
   const navigate = useNavigate();
   const [isImageReady, setIsImageReady] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     navigate(`/movies/${movie.id}`, { state: { movie, posterUrl } });
-  };
+  }, [navigate, movie, posterUrl]);
 
   return (
     <div className={isImageReady ? "movie-card" : "movie-card skeleton"}>
@@ -27,4 +27,4 @@ function MovieCard({ movie }) {
   );
 }
 
-export default MovieCard;
+export default memo(MovieCard);
