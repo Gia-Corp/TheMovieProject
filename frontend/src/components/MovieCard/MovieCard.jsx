@@ -1,44 +1,26 @@
 import "./MovieCard.css";
-import { useEffect, useState } from "react";
-import { useRepos } from "../../hooks/useRepos";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMoviePoster } from "../../hooks/useMoviePoster";
 import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieCard({ movie }) {
-  const { posterRepository } = useRepos();
-  const [moviePosterUrl, setMoviePosterUrl] = useState("");
+  const { posterUrl } = useMoviePoster(movie);
   const navigate = useNavigate();
-  const [isPosterReady, setIsPosterReady] = useState(false);
-
-  useEffect(() => {
-    posterRepository
-      .getPoster({
-        name: movie.title,
-        year: movie.year,
-      })
-      .then((res) => {
-        if (res === null) {
-          return;
-        }
-        setMoviePosterUrl(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [movie, posterRepository]);
+  const [isImageReady, setIsImageReady] = useState(false);
 
   const handleClick = () => {
-    navigate(`/movies/${movie.id}`, { state: { movie, moviePosterUrl } });
+    navigate(`/movies/${movie.id}`, { state: { movie, posterUrl } });
   };
 
   return (
-    <div className={isPosterReady ? "movie-card" : "movie-card skeleton"}>
+    <div className={isImageReady ? "movie-card" : "movie-card skeleton"}>
       <img
         onClick={handleClick}
-        src={moviePosterUrl === "" ? null : moviePosterUrl}
-        style={{ display: isPosterReady ? "block" : "none" }}
-        onLoad={() => setIsPosterReady(true)}
-        onError={() => setIsPosterReady(true)}
+        src={posterUrl === null ? null : posterUrl}
+        style={{ display: isImageReady ? "block" : "none" }}
+        onLoad={() => setIsImageReady(true)}
+        onError={() => setIsImageReady(true)}
       />
       <div>{movie["watched"] ? <MovieWatchedIcon size={40} /> : null}</div>
     </div>

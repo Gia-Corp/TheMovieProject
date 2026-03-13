@@ -1,26 +1,19 @@
 import { useLocation } from "react-router-dom";
 import "./MovieDetail.css";
+import { useMoviePoster } from "../../hooks/useMoviePoster";
 import { useRepos } from "../../hooks/useRepos";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieDetail() {
   const { state } = useLocation();
-  const { movie, moviePosterUrl } = state;
-  const [posterUrl, setPosterUrl] = useState(moviePosterUrl ?? null);
-  const { movieRepository, posterRepository } = useRepos();
+  const { movie, posterUrl: passedPosterUrl } = state;
+  const { posterUrl } = useMoviePoster(movie);
+  const { movieRepository } = useRepos();
   const [isWatched, setIsWatched] = useState(movie.watched);
-  const [isPosterReady, setIsPosterReady] = useState(false);
+  const [isImageReady, setIsImageReady] = useState(false);
 
-  useEffect(() => {
-    posterRepository
-      .getPoster({ name: movie.title, year: movie.year })
-      .then((res) => {
-        if (res === null) return;
-        setPosterUrl(res);
-      })
-      .catch(console.error);
-  }, [movie, posterRepository]);
+  const effectivePosterUrl = posterUrl || passedPosterUrl;
 
   const handleOnClick = () => {
     setIsWatched(!isWatched);
@@ -41,14 +34,14 @@ function MovieDetail() {
         </div>
       </div>
       <div className="poster-section">
-        {!isPosterReady && <div className="skeleton" />}
-        {posterUrl && (
+        {!isImageReady && effectivePosterUrl && <div className="skeleton" />}
+        {effectivePosterUrl && (
           <img
-            src={posterUrl}
+            src={effectivePosterUrl}
             alt={movie.title}
-            style={{ display: isPosterReady ? "block" : "none" }}
-            onLoad={() => setIsPosterReady(true)}
-            onError={() => setIsPosterReady(true)}
+            style={{ display: isImageReady ? "block" : "none" }}
+            onLoad={() => setIsImageReady(true)}
+            onError={() => setIsImageReady(true)}
           />
         )}
       </div>
