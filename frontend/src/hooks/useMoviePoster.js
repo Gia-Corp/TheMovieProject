@@ -1,16 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "./useRepos";
-
-const MAX_CACHE_SIZE = 100;
-const posterCache = new Map();
-
-function addToCache(key, value) {
-  if (posterCache.size >= MAX_CACHE_SIZE) {
-    const firstKey = posterCache.keys().next().value;
-    posterCache.delete(firstKey);
-  }
-  posterCache.set(key, value);
-}
+import { posterCache } from "../utils/PosterCache";
 
 export function useMoviePoster(movie) {
   const { posterRepository } = useRepos();
@@ -37,7 +27,7 @@ export function useMoviePoster(movie) {
       .getPoster({ name: movie.title, year: movie.year })
       .then((res) => {
         if (res !== null && isMountedRef.current) {
-          addToCache(cacheKey, res);
+          posterCache.set(cacheKey, res);
           setPosterUrl(res);
         }
       })
