@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=National+Park:wght@200..800&display=swap');
 /* CSS VARIABLES */
 
 :root {
   --regular-font: "National Park", sans-serif;
-  --title-font: "Winky Rough";
+  --title-font: "Bakbak One";
 
   --tile-size: 15px;
   --dot-size: 0.75px;
