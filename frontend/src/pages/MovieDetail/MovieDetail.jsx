@@ -34,7 +34,7 @@ function MovieDetail() {
         </div>
       </div>
       <div className="poster-section">
-        {!isImageReady && effectivePosterUrl && <div className="skeleton" />}
+        {!isImageReady && <div className="skeleton" />}
         {effectivePosterUrl && (
           <img
             src={effectivePosterUrl}
