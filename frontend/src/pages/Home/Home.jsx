@@ -24,20 +24,17 @@ function Home() {
           setMovies(res.movies);
           setTotalPageCount(res.metadata.page_count);
           setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          setError(true);
         }
       })
-      .catch((err) => {
-        console.error(err);
-      });
+      .catch(setError);
   }, [currentPage, movieRepository]);
 
   const onPageSelection = (pageNumber) => {
     setCurrentPage(pageNumber);
     setIsLoading(true);
   };
+
+  if (error) throw error;
 
   return (
     <div className="home">
@@ -48,11 +45,7 @@ function Home() {
         selectPageEvent={onPageSelection}
       />
       <main>
-        {error ? (
-          <h3>ERROR</h3>
-        ) : (
-          <MoviesList isLoading={isLoading} movies={movies} />
-        )}
+        <MoviesList isLoading={isLoading} movies={movies} />
       </main>
       <Paginator
         pageCount={totalPageCount}

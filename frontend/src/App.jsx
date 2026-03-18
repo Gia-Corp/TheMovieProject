@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 
@@ -8,16 +8,18 @@ const MovieDetailWrapper = lazy(
   () => import("./pages/MovieDetail/MovieDetailWrapper.jsx"),
 );
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
       <Suspense fallback={<div>Cargando...</div>}>
         <Routes>
           <Route
             path="/"
             element={
-              <ErrorBoundary>
+              <ErrorBoundary key={location.pathname}>
                 <Home />
               </ErrorBoundary>
             }
@@ -25,13 +27,21 @@ function App() {
           <Route
             path="/movies/:id"
             element={
-              <ErrorBoundary>
+              <ErrorBoundary key={location.pathname}>
                 <MovieDetailWrapper />
               </ErrorBoundary>
             }
           />
         </Routes>
       </Suspense>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
