@@ -24,6 +24,22 @@ export class MovieRepository {
     return res.json();
   }
 
+  async getMovie(id) {
+    const url = new URL(
+      `${MovieRepository.#MOVIES_PATH}/${id}`,
+      MovieRepository.#BASE_URL,
+    );
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw error;
+    }
+
+    return res.json();
+  }
+
   async updateMovie(movieId, movie) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${movieId}`,

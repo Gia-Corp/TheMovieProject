@@ -3,7 +3,9 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar.jsx";
 
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
-const MovieDetailWrapper = lazy(() => import("./pages/MovieDetail/MovieDetailWrapper.jsx"));
+const MovieDetailWrapper = lazy(
+  () => import("./pages/MovieDetail/MovieDetailWrapper.jsx"),
+);
 
 function App() {
   return (
