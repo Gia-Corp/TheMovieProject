@@ -14,17 +14,18 @@ function MovieDetail() {
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
   const { posterUrl } = useMoviePoster(movie);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!movie) {
-      movieRepository
-        .getMovie(id)
-        .then((res) => {
-          setMovie(res);
-          setIsWatched(res.watched);
-        })
-        .catch((err) => console.error(err));
-    }
+    if (movie) return;
+
+    movieRepository
+      .getMovie(id)
+      .then((res) => {
+        setMovie(res);
+        setIsWatched(res.watched);
+      })
+      .catch(setError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -34,6 +35,8 @@ function MovieDetail() {
     setIsWatched(!isWatched);
     movieRepository.updateMovie(movie.id, { watched: !isWatched });
   };
+
+  if (error) throw error;
 
   if (!movie) {
     return <p>Cargando...</p>;

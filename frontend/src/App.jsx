@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar.jsx";
+import Navbar from "./components/Navbar/Navbar";
+import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
 const MovieDetailWrapper = lazy(
@@ -13,8 +14,22 @@ function App() {
       <Navbar />
       <Suspense fallback={<div>Cargando...</div>}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/movies/:id" element={<MovieDetailWrapper />} />
+          <Route
+            path="/"
+            element={
+              <ErrorBoundary>
+                <Home />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/movies/:id"
+            element={
+              <ErrorBoundary>
+                <MovieDetailWrapper />
+              </ErrorBoundary>
+            }
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>

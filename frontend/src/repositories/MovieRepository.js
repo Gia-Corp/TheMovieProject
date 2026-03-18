@@ -34,7 +34,7 @@ export class MovieRepository {
 
     if (!res.ok) {
       const error = await res.json();
-      throw error;
+      throw new Error(error.message);
     }
 
     return res.json();
