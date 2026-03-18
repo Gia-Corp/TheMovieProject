@@ -1,17 +1,32 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import "./MovieDetail.css";
 import { useMoviePoster } from "../../hooks/useMoviePoster";
 import { useRepos } from "../../hooks/useRepos";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieDetail() {
   const { state } = useLocation();
-  const { movie, posterUrl: passedPosterUrl } = state;
-  const { posterUrl } = useMoviePoster(movie);
+  const { id } = useParams();
   const { movieRepository } = useRepos();
-  const [isWatched, setIsWatched] = useState(movie.watched);
+  const [movie, setMovie] = useState(state?.movie ?? null);
+  const passedPosterUrl = state?.posterUrl ?? null;
+  const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
+  const { posterUrl } = useMoviePoster(movie);
+
+  useEffect(() => {
+    if (!movie) {
+      movieRepository
+        .getMovie(id)
+        .then((res) => {
+          setMovie(res);
+          setIsWatched(res.watched);
+        })
+        .catch((err) => console.error(err));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const effectivePosterUrl = posterUrl || passedPosterUrl;
 
@@ -19,6 +34,10 @@ function MovieDetail() {
     setIsWatched(!isWatched);
     movieRepository.updateMovie(movie.id, { watched: !isWatched });
   };
+
+  if (!movie) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div className="movie-detail-page">
