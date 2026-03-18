@@ -10,3 +10,12 @@
     color: var(--text-clr);
   }
 }
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1500px;
+}

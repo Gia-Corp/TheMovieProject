@@ -1,31 +1,46 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import "./MovieDetail.css";
+import { useMoviePoster } from "../../hooks/useMoviePoster";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
 import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieDetail() {
   const { state } = useLocation();
-  const { movie, moviePosterUrl } = state;
-  const [posterUrl, setPosterUrl] = useState(moviePosterUrl ?? null);
-  const { movieRepository, posterRepository } = useRepos();
-  const [isWatched, setIsWatched] = useState(movie.watched);
-  const [isPosterReady, setIsPosterReady] = useState(false);
+  const { id } = useParams();
+  const { movieRepository } = useRepos();
+  const [movie, setMovie] = useState(state?.movie ?? null);
+  const passedPosterUrl = state?.posterUrl ?? null;
+  const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
+  const [isImageReady, setIsImageReady] = useState(false);
+  const { posterUrl } = useMoviePoster(movie);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    posterRepository
-      .getPoster({ name: movie.title, year: movie.year })
+    if (movie) return;
+
+    movieRepository
+      .getMovie(id)
       .then((res) => {
-        if (res === null) return;
-        setPosterUrl(res);
+        setMovie(res);
+        setIsWatched(res.watched);
       })
-      .catch(console.error);
-  }, [movie, posterRepository]);
+      .catch(setError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const effectivePosterUrl = posterUrl || passedPosterUrl;
 
   const handleOnClick = () => {
     setIsWatched(!isWatched);
     movieRepository.updateMovie(movie.id, { watched: !isWatched });
   };
+
+  if (error) throw error;
+
+  if (!movie) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div className="movie-detail-page">
@@ -41,14 +56,14 @@ function MovieDetail() {
         </div>
       </div>
       <div className="poster-section">
-        {!isPosterReady && <div className="skeleton" />}
-        {posterUrl && (
+        {!isImageReady && <div className="skeleton" />}
+        {effectivePosterUrl && (
           <img
-            src={posterUrl}
+            src={effectivePosterUrl}
             alt={movie.title}
-            style={{ display: isPosterReady ? "block" : "none" }}
-            onLoad={() => setIsPosterReady(true)}
-            onError={() => setIsPosterReady(true)}
+            style={{ display: isImageReady ? "block" : "none" }}
+            onLoad={() => setIsImageReady(true)}
+            onError={() => setIsImageReady(true)}
           />
         )}
       </div>
