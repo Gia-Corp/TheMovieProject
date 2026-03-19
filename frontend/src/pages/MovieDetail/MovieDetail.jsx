@@ -3,7 +3,7 @@ import "./MovieDetail.css";
 import { useMoviePoster } from "../../hooks/useMoviePoster";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
-import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
+import MovieWatchedButton from "../../components/MovieWatchedButton/MovieWatchedButton";
 
 function MovieDetail() {
   const { state } = useLocation();
@@ -29,6 +29,7 @@ function MovieDetail() {
   }, []);
 
   const handleOnClick = () => {
+    console.log("CLICKEADO");
     setIsWatched(!isWatched);
     movieRepository.updateMovie(movie.id, { watched: !isWatched });
   };
@@ -47,12 +48,7 @@ function MovieDetail() {
         <span>
           <p>{movie.year}</p>
         </span>
-        <div className="watched-section">
-          {isWatched ? <MovieWatchedIcon size={60} /> : null}
-          <button onClick={handleOnClick}>
-            {isWatched ? "Marcar como no vista" : "Marcar como vista"}
-          </button>
-        </div>
+        <MovieWatchedButton isWatched={isWatched} onClick={handleOnClick} />
       </div>
       <div className="poster-section">
         {!isImageReady && <div className="skeleton" />}
