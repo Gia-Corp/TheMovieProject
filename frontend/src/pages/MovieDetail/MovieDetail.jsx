@@ -44,7 +44,9 @@ function MovieDetail() {
       <div className="detail-section">
         <h2>{movie.title}</h2>
         <p>Dirigida por: {movie.director}</p>
-        <p>Año: {movie.year}</p>
+        <span>
+          <p>{movie.year}</p>
+        </span>
         <div className="watched-section">
           {isWatched ? <MovieWatchedIcon size={60} /> : null}
           <button onClick={handleOnClick}>

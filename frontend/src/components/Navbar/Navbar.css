@@ -1,6 +1,6 @@
 .nav-bar {
   background-color: var(--bg-clr);
-  padding: 15px;
+  padding: 15px 30px;
   height: fit-content;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
