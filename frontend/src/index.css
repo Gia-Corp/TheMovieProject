@@ -19,6 +19,7 @@
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
   
   --text-clr: var(--white);
+  --strong-text-clr: var(--main-clr);
   --dropdown-clr: var(--white);
   --dropdown-hover-clr: color-mix(in srgb, var(--dropdown-clr) 90%, black);
 }
