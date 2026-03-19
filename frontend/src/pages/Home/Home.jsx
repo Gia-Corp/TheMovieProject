@@ -11,7 +11,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPageCount, setTotalPageCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     movieRepository
@@ -22,14 +22,14 @@ function Home() {
       .then((res) => {
         if (res !== null) {
           setMovies(res.movies);
-          setTotalPageCount(res.metadata.page_count);
+          setTotalPages(res.metadata.page_count);
           setIsLoading(false);
         }
       })
       .catch(setError);
   }, [currentPage, movieRepository]);
 
-  const onPageSelection = (pageNumber) => {
+  const handlePageSelection = (pageNumber) => {
     setCurrentPage(pageNumber);
     setIsLoading(true);
   };
@@ -39,19 +39,21 @@ function Home() {
   return (
     <div className="home">
       <Paginator
-        pageCount={totalPageCount}
-        pageNumber={currentPage}
+        key="upper-paginator"
+        currentPage={currentPage}
+        totalPages={totalPages}
         disabled={isLoading}
-        selectPageEvent={onPageSelection}
+        handlePageSelection={handlePageSelection}
       />
       <main>
         <MoviesList isLoading={isLoading} movies={movies} />
       </main>
       <Paginator
-        pageCount={totalPageCount}
-        pageNumber={currentPage}
+        key="bottom-paginator"
+        currentPage={currentPage}
+        totalPages={totalPages}
         disabled={isLoading}
-        selectPageEvent={onPageSelection}
+        handlePageSelection={handlePageSelection}
       />
     </div>
   );
