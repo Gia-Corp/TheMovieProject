@@ -12,19 +12,18 @@ function Home() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const MOVIES_PAGE_SIZE = 10;
 
   useEffect(() => {
     movieRepository
       .getMovies({
         page: currentPage,
-        size: 10,
+        size: MOVIES_PAGE_SIZE,
       })
       .then((res) => {
-        if (res !== null) {
-          setMovies(res.movies);
-          setTotalPages(res.metadata.page_count);
-          setIsLoading(false);
-        }
+        setMovies(res.movies);
+        setTotalPages(res.metadata.page_count);
+        setIsLoading(false);
       })
       .catch(setError);
   }, [currentPage, movieRepository]);
