@@ -1,23 +1,15 @@
 .nav-bar {
-  background-color: var(--main-clr);
-  padding: 5px 15px;
+  background-color: var(--bg-clr);
+  padding: 15px 30px;
   height: fit-content;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
+  border-bottom: 2px solid var(--main-clr);
 
   position: sticky;
   top: 0;
   z-index: 10;
-  animation: scrolled linear both;
-  animation-timeline: scroll(root);
-}
-
-@keyframes scrolled {
-  to {
-    background-color: var(--main-ghost-clr);
-    backdrop-filter: blur(10px);
-  }
 }
 
 .nav-buttons {
@@ -29,7 +21,7 @@
     margin: 0;
     text-decoration: none;
     font-size: 1.5rem;
-    color: var(--text-clr);
+    color: var(--strong-text-clr);
     font-weight: bold;
     font-family: var(--title-font);
   }

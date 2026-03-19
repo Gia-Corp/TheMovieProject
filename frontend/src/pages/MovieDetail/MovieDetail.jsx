@@ -3,17 +3,16 @@ import "./MovieDetail.css";
 import { useMoviePoster } from "../../hooks/useMoviePoster";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
-import MovieWatchedIcon from "../../components/MovieWatchedIcon/MovieWatchedIcon";
+import MovieWatchedButton from "../../components/MovieWatchedButton/MovieWatchedButton";
 
 function MovieDetail() {
   const { state } = useLocation();
   const { id } = useParams();
   const { movieRepository } = useRepos();
   const [movie, setMovie] = useState(state?.movie ?? null);
-  const passedPosterUrl = state?.posterUrl ?? null;
+  const posterUrl = useMoviePoster(movie);
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
-  const { posterUrl } = useMoviePoster(movie);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -29,9 +28,8 @@ function MovieDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const effectivePosterUrl = posterUrl || passedPosterUrl;
-
   const handleOnClick = () => {
+    console.log("CLICKEADO");
     setIsWatched(!isWatched);
     movieRepository.updateMovie(movie.id, { watched: !isWatched });
   };
@@ -47,19 +45,16 @@ function MovieDetail() {
       <div className="detail-section">
         <h2>{movie.title}</h2>
         <p>Dirigida por: {movie.director}</p>
-        <p>Año: {movie.year}</p>
-        <div className="watched-section">
-          {isWatched ? <MovieWatchedIcon size={60} /> : null}
-          <button onClick={handleOnClick}>
-            {isWatched ? "Marcar como no vista" : "Marcar como vista"}
-          </button>
-        </div>
+        <span>
+          <p>{movie.year}</p>
+        </span>
+        <MovieWatchedButton isWatched={isWatched} onClick={handleOnClick} />
       </div>
       <div className="poster-section">
         {!isImageReady && <div className="skeleton" />}
-        {effectivePosterUrl && (
+        {posterUrl && (
           <img
-            src={effectivePosterUrl}
+            src={posterUrl}
             alt={movie.title}
             style={{ display: isImageReady ? "block" : "none" }}
             onLoad={() => setIsImageReady(true)}

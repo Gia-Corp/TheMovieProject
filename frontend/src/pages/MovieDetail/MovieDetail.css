@@ -25,6 +25,14 @@
   font-weight: 800;
 }
 
+.detail-section p {
+  font-size: 1.1rem;
+}
+
+.detail-section span {
+  font-weight: 700;
+}
+
 .poster-section {
   display: flex;
   align-items: center;
@@ -35,12 +43,6 @@
     max-width: 50%;
     max-height: 85%;
   }
-}
-
-.watched-section {
-  display: flex;
-  gap: 10px;
-  align-items: center;
 }
 
 .watched-section button {
