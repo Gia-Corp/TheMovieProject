@@ -7,15 +7,15 @@ function SearchItem({ movie }) {
 
   const handleClick = () => {
     navigate(`/movies/${movie.id}`, {
-      state: { movie, moviePosterUrl: null },
+      state: { movie },
       id: movie.id,
     });
   };
 
   return (
-    <li onClick={handleClick} className="search-item" key={movie["id"]}>
-      <p>{`${movie["title"]} (${movie["year"]})`}</p>
-      {movie["watched"] ? <MovieWatchedIcon size={20} /> : null}
+    <li onClick={handleClick} className="search-item" key={movie.id}>
+      <p>{`${movie.title} (${movie.year})`}</p>
+      {movie.watched ? <MovieWatchedIcon size={20} /> : null}
     </li>
   );
 }

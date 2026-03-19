@@ -38,5 +38,5 @@ export function useMoviePoster(movie) {
     };
   }, [movie, posterRepository, cacheKey]);
 
-  return { posterUrl };
+  return posterUrl;
 }

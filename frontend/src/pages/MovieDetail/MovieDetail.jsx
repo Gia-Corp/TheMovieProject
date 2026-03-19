@@ -10,10 +10,9 @@ function MovieDetail() {
   const { id } = useParams();
   const { movieRepository } = useRepos();
   const [movie, setMovie] = useState(state?.movie ?? null);
-  const passedPosterUrl = state?.posterUrl ?? null;
+  const posterUrl = useMoviePoster(movie);
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
-  const { posterUrl } = useMoviePoster(movie);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -28,8 +27,6 @@ function MovieDetail() {
       .catch(setError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const effectivePosterUrl = posterUrl || passedPosterUrl;
 
   const handleOnClick = () => {
     setIsWatched(!isWatched);
@@ -57,9 +54,9 @@ function MovieDetail() {
       </div>
       <div className="poster-section">
         {!isImageReady && <div className="skeleton" />}
-        {effectivePosterUrl && (
+        {posterUrl && (
           <img
-            src={effectivePosterUrl}
+            src={posterUrl}
             alt={movie.title}
             style={{ display: isImageReady ? "block" : "none" }}
             onLoad={() => setIsImageReady(true)}

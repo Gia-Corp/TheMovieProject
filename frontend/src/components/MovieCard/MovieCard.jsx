@@ -5,13 +5,13 @@ import { useMoviePoster } from "../../hooks/useMoviePoster";
 import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieCard({ movie }) {
-  const { posterUrl } = useMoviePoster(movie);
+  const posterUrl = useMoviePoster(movie);
   const navigate = useNavigate();
   const [isImageReady, setIsImageReady] = useState(false);
 
   const handleClick = useCallback(() => {
-    navigate(`/movies/${movie.id}`, { state: { movie, posterUrl } });
-  }, [navigate, movie, posterUrl]);
+    navigate(`/movies/${movie.id}`, { state: { movie } });
+  }, [navigate, movie]);
 
   return (
     <div className={isImageReady ? "movie-card" : "movie-card skeleton"}>
