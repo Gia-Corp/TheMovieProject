@@ -6,14 +6,18 @@
 🚀 To start app locally, run this:
 
 ```
-./start_app
+./start_app.sh
 ```
 
-⚙️ To start development containers for back & front end, run this:
+⚙️ To start development containers for backend and frontend, you can use these respectively:
 
 ```
-./start_dev_containers
+./start_dev_backend.sh
 ```
+```
+./start_dev_frontend.sh
+```
+
 ⚠️ If your OS doesn't allow you to run a certain script, execute this and try running it again:
 
 ```
