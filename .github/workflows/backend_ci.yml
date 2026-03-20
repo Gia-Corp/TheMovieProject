@@ -9,15 +9,14 @@ on:
       - backend/**
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: backend
-
 jobs:
   build:
     name: Lint, test & build
     runs-on: ubuntu-latest
     container: python:3.13.3-slim
+    defaults:
+      run:
+        working-directory: backend
     
     steps:
       - name: Check out code
@@ -40,15 +39,18 @@ jobs:
     needs: build
     
     steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
       - name: Install Render CLI
         run: |
           curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
           unzip render.zip
           sudo mv cli_v1.1.0 /usr/local/bin/render
+      
       - name: Trigger deploy with Render CLI
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           CI: true
         run: |
           render deploys create ${{ secrets.RENDER_SERVICE_ID }} --output json --confirm
-
