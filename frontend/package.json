@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "lint": "eslint src --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --fix",
-    "format": "prettier \"src/**/*.{js,jsx}\" --write --config ./.prettierrc"
+    "format": "prettier \"src/**/*.{js,jsx}\" --write --config ./.prettierrc",
+    "format:check": "prettier \"src/**/*.{js,jsx}\" --check --config ./.prettierrc"
   },
   "dependencies": {
     "react": "19.2.4",
