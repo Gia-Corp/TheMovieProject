@@ -9,7 +9,7 @@ function SearchResults({ movies }) {
   return (
     <ul className="search-results">
       {movies.length > 0
-        ? movies.map((movie) => <SearchItem key={movie["id"]} movie={movie} />)
+        ? movies.map((movie) => <SearchItem key={movie.id} movie={movie} />)
         : "No se encontraron pelis"}
     </ul>
   );

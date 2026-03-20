@@ -1,6 +1,6 @@
 .movie-detail-page {
   flex: 1;
-  color: #fff;
+  color: var(--text-clr);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 50px;
@@ -20,8 +20,17 @@
 }
 
 .detail-section h2 {
-  font-size: 2.5rem;
+  font-family: var(--title-font);
+  font-size: 3.5rem;
   font-weight: 800;
+}
+
+.detail-section p {
+  font-size: 1.1rem;
+}
+
+.detail-section span {
+  font-weight: 700;
 }
 
 .poster-section {
@@ -29,13 +38,17 @@
   align-items: center;
   justify-content: start;
 
-  img {
+  img, .skeleton {
     aspect-ratio: 273 / 409;
     max-width: 50%;
+    max-height: 85%;
   }
 }
 
-.check-icon {
-  height: 50px;
-  aspect-ratio: 1 / 1;
+.watched-section button {
+  padding: 10px;
+  
+  & {
+    cursor: pointer;
+  }
 }

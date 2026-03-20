@@ -3,8 +3,8 @@
   width: 100%;
   top: 45px;
   left: 0;
-  background-color: rgb(255, 255, 255);
-  padding: 10px;
+  background-color: var(--dropdown-clr);
+  padding: 8px;
   list-style-type: none;
   display: flex;
   flex-direction: column;

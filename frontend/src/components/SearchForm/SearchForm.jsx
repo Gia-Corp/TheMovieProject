@@ -4,9 +4,9 @@ import { useRepos } from "../../hooks/useRepos";
 import SearchResults from "../SearchResults/SearchResults";
 
 function SearchForm() {
-  const [inputText, setInputText] = useState("");
-  const timerRef = useRef(null);
   const { movieRepository } = useRepos();
+  const timerRef = useRef(null);
+  const [inputText, setInputText] = useState("");
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -38,7 +38,7 @@ function SearchForm() {
   return (
     <form className="search-form">
       <input
-        placeholder="Buscar peli..."
+        placeholder="¿Qué peli buscás?"
         type="text"
         value={inputText}
         onChange={handleInputChange}

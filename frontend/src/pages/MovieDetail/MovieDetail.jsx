@@ -1,43 +1,65 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import "./MovieDetail.css";
+import { useMoviePoster } from "../../hooks/useMoviePoster";
 import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
-import checkIcon from "../../assets/icons/check_circle.svg";
+import MovieWatchedButton from "../../components/MovieWatchedButton/MovieWatchedButton";
 
 function MovieDetail() {
   const { state } = useLocation();
-  const { movie, moviePosterUrl } = state;
-  const [posterUrl, setPosterUrl] = useState(moviePosterUrl ?? null);
-  const { posterRepository } = useRepos();
-  const isLoading = posterUrl === null;
+  const { id } = useParams();
+  const { movieRepository } = useRepos();
+  const [movie, setMovie] = useState(state?.movie ?? null);
+  const posterUrl = useMoviePoster(movie);
+  const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
+  const [isImageReady, setIsImageReady] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    posterRepository
-      .getPoster({ name: movie.title, year: movie.year })
+    if (movie) return;
+
+    movieRepository
+      .getMovie(id)
       .then((res) => {
-        if (res === null) return;
-        setPosterUrl(res);
+        setMovie(res);
+        setIsWatched(res.watched);
       })
-      .catch(console.error);
-  }, [movie, posterRepository]);
+      .catch(setError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleOnClick = () => {
+    console.log("CLICKEADO");
+    setIsWatched(!isWatched);
+    movieRepository.updateMovie(movie.id, { watched: !isWatched });
+  };
+
+  if (error) throw error;
+
+  if (!movie) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div className="movie-detail-page">
       <div className="detail-section">
         <h2>{movie.title}</h2>
         <p>Dirigida por: {movie.director}</p>
-        <p>Año: {movie.year}</p>
-        {movie.watched ? (
-          <img src={checkIcon} alt="vista" className="check-icon" />
-        ) : (
-          ""
-        )}
+        <span>
+          <p>{movie.year}</p>
+        </span>
+        <MovieWatchedButton isWatched={isWatched} onClick={handleOnClick} />
       </div>
       <div className="poster-section">
-        {isLoading ? (
-          "Cargando poster..."
-        ) : (
-          <img src={posterUrl} alt={movie.title} />
+        {!isImageReady && <div className="skeleton" />}
+        {posterUrl && (
+          <img
+            src={posterUrl}
+            alt={movie.title}
+            style={{ display: isImageReady ? "block" : "none" }}
+            onLoad={() => setIsImageReady(true)}
+            onError={() => setIsImageReady(true)}
+          />
         )}
       </div>
     </div>

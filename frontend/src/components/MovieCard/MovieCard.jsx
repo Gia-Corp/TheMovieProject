@@ -1,49 +1,30 @@
 import "./MovieCard.css";
-import { useEffect, useState } from "react";
-import { useRepos } from "../../hooks/useRepos";
+import { useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMoviePoster } from "../../hooks/useMoviePoster";
+import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieCard({ movie }) {
-  const { posterRepository } = useRepos();
-  const [moviePosterUrl, setMoviePosterUrl] = useState("");
+  const posterUrl = useMoviePoster(movie);
   const navigate = useNavigate();
+  const [isImageReady, setIsImageReady] = useState(false);
 
-  useEffect(() => {
-    posterRepository
-      .getPoster({
-        name: movie.title,
-        year: movie.year,
-      })
-      .then((res) => {
-        if (res === null) {
-          return;
-        }
-        setMoviePosterUrl(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [movie, posterRepository]);
-
-  const handleClick = () => {
-    navigate(`/movies/${movie.id}`, { state: { movie, moviePosterUrl } });
-  };
+  const handleClick = useCallback(() => {
+    navigate(`/movies/${movie.id}`, { state: { movie } });
+  }, [navigate, movie]);
 
   return (
-    <div
-      onClick={handleClick}
-      className="movie-card"
-      style={
-        moviePosterUrl
-          ? {
-              backgroundImage: `url(${moviePosterUrl})`,
-            }
-          : {}
-      }
-    >
-      {movie["watched"] ? <div className="watched-movie"></div> : <></>}
+    <div className={isImageReady ? "movie-card" : "movie-card skeleton"}>
+      <img
+        onClick={handleClick}
+        src={posterUrl === null ? null : posterUrl}
+        style={{ display: isImageReady ? "block" : "none" }}
+        onLoad={() => setIsImageReady(true)}
+        onError={() => setIsImageReady(true)}
+      />
+      <div>{movie["watched"] ? <MovieWatchedIcon size={40} /> : null}</div>
     </div>
   );
 }
 
-export default MovieCard;
+export default memo(MovieCard);

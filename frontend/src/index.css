@@ -1,10 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=National+Park:wght@200..800&display=swap');
 /* CSS VARIABLES */
 
 :root {
-  --font-family: "Ranade", sans-serif;
-  --background-clr: rgb(26, 9, 51);
-  --main-clr: rgba(111,66,193,1);
-  --secondary-clr: rgb(255, 53, 201);
+  --regular-font: "National Park", sans-serif;
+  --title-font: "Bakbak One";
+
+  --tile-size: 15px;
+  --dot-size: 0.75px;
+  
+  /* PRIMITIVE COLORS */
+  --purple: rgba(111, 66, 193, 1);
+  --white: rgb(255, 255, 255);
+
+  /* SEMANTIC TOKENS */
+  --main-clr: var(--purple);
+  --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
+  --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
+  --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
+  
+  --text-clr: var(--white);
+  --strong-text-clr: var(--main-clr);
+  --dropdown-clr: var(--white);
+  --dropdown-hover-clr: color-mix(in srgb, var(--dropdown-clr) 90%, black);
 }
 
 /* CSS RESET */
@@ -72,41 +89,37 @@ svg {
 /* START OF CUSTOM STYLES */
 
 * {
-  font-family: var(--font-family);
+  font-family: var(--regular-font);
 }
 
 .disabled-div {
   pointer-events: none;
   opacity: 0.5;
-  color: #999;
-  cursor: not-allowed;
+}
+
+body {
+  background-color: var(--bg-clr);
+  position: relative;
+  min-height: 100dvh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+
+  opacity: 0.2;
+  background-color: var(--bg-clr);
+  background-image: radial-gradient(var(--dot-clr) var(--dot-size), var(--bg-clr) var(--dot-size));
+  background-size: var(--tile-size) var(--tile-size);
 }
 
 #root {
-  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background-color: var(--background-clr);
-}
-
-.primary-content {
-  flex: 1;
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  gap: 30px;
-  padding: 30px 0;
-
-  & * {
-    color: #fff;
-  }
-}
-
-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  width: 100%;
-  max-width: 1500px;
+  height: 100%;
 }
