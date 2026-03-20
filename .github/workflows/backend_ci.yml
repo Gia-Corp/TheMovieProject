@@ -44,9 +44,13 @@ jobs:
 
       - name: Install Render CLI
         run: |
-          curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
+          mkdir -p /tmp/render
+          curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o /tmp/render/render.zip
+          cd /tmp/render
           unzip render.zip
           sudo mv cli_v1.1.0 /usr/local/bin/render
+          cd -
+          rm -rf /tmp/render
       
       - name: Trigger deploy with Render CLI
         env:
