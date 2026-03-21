@@ -22,7 +22,7 @@ function MovieCard({ movie }) {
         onLoad={() => setIsImageReady(true)}
         onError={() => setIsImageReady(true)}
       />
-      <div>{movie["watched"] ? <MovieWatchedIcon size={40} /> : null}</div>
+      <div>{movie["watched"] ? <MovieWatchedIcon /> : null}</div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import "./SearchForm.css";
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "@/hooks/useRepos";
 import SearchResults from "@/components/SearchResults/SearchResults";
+import CancelSearchButton from "@/components/CancelSearchButton/CancelSearchButton";
 
 function SearchForm() {
   const { movieRepository } = useRepos();
@@ -9,6 +10,7 @@ function SearchForm() {
   const [inputText, setInputText] = useState("");
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
+  const blurTimeout = useRef(null);
 
   useEffect(() => {
     if (inputText === "") return;
@@ -21,7 +23,7 @@ function SearchForm() {
           size: 20,
           title: inputText,
         })
-        .then((res) => setMovies(res["movies"]))
+        .then((res) => setMovies(res.movies))
         .catch(() => setMovies([]));
     }, 500);
   }, [inputText, movieRepository]);
@@ -32,19 +34,36 @@ function SearchForm() {
     if (newInputText === "") setMovies(null);
   };
 
-  const handleOnFocus = () => setIsFocused(true);
-  const handleOnBlur = () => setTimeout(() => setIsFocused(false), 150);
+  const handleOnFocus = () => {
+    clearTimeout(blurTimeout.current);
+    setIsFocused(true);
+  };
+  const handleOnBlur = () => {
+    blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
+  };
+  const handleOnClick = () => {
+    setInputText("");
+    setMovies(null);
+  };
 
   return (
     <form className="search-form">
-      <input
-        placeholder="¿Qué peli buscás?"
-        type="text"
-        value={inputText}
-        onChange={handleInputChange}
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-      />
+      <div>
+        <input
+          id="search-input"
+          placeholder="¿Qué peli buscás?"
+          type="text"
+          value={inputText}
+          onChange={handleInputChange}
+          onFocus={handleOnFocus}
+          onBlur={handleOnBlur}
+        />
+        <label htmlFor="search-input">
+          {inputText.length > 0 ? (
+            <CancelSearchButton onClick={handleOnClick} size={20} />
+          ) : null}
+        </label>
+      </div>
       {isFocused ? <SearchResults movies={movies} /> : ""}
     </form>
   );

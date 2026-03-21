@@ -6,6 +6,10 @@
 
   &:hover {
     cursor: pointer;
-    background-color: var(--dropdown-hover-clr);
+    background-color: var(--search-form-hover-clr);
   }
+}
+
+.search-item svg {
+  fill: var(--search-form-dark-clr);
 }
