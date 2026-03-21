@@ -3,11 +3,11 @@ import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 function MovieWatchedButton({ isWatched, onClick }) {
   return (
     <div style={{ cursor: "pointer" }}>
-      {isWatched ? (
-        <MovieWatchedIcon onClick={onClick} size={60} />
-      ) : (
-        <MovieWatchedIcon onClick={onClick} size={60} color="grey" />
-      )}
+      <MovieWatchedIcon
+        onClick={onClick}
+        size={60}
+        color={isWatched ? undefined : "grey"}
+      />
     </div>
   );
 }

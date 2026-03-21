@@ -1,6 +1,10 @@
 import "./MovieWatchedIcon.css";
 
-function MovieWatchedIcon({ size = "100%", color = "#31cc02", onClick }) {
+function MovieWatchedIcon({
+  size = "100%",
+  color = "var(--check-clr)",
+  onClick,
+}) {
   return (
     <svg
       width={size}

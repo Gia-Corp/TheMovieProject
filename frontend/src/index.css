@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=National+Park:wght@200..800&display=swap');
-/* CSS VARIABLES */
 
 :root {
   --title-font: "Bakbak One";
@@ -12,12 +11,14 @@
   --purple: rgba(111, 66, 193, 1);
   --purple-contrast: rgb(154, 128, 202);
   --white: rgb(255, 255, 255);
+  --green: #31cc02;
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
+  --check-clr: var(--green);
   
   /* TEXT SEMANTIC TOKENS */
   --text-clr: var(--white);
