@@ -4,13 +4,22 @@
   position: relative;
 }
 
-.search-form input {
-  padding: 8px;
-  border: none;
-  font-size: 1em;
+.search-form > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
+  background-color: var(--dropdown-clr);
+  padding: 8px;
+}
+
+.search-form input {
+  border: none;
+  background-color: transparent;
+  font-size: 1em;
+  flex: 1;
 
   &:focus, &:hover {
-    outline: 3px solid var(--bg-clr);
+    outline: none;
   }
 }

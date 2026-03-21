@@ -1,0 +1,7 @@
+.cancel-search-button {
+  fill: #000;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

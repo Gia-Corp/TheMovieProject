@@ -2,6 +2,7 @@ import "./SearchForm.css";
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "@/hooks/useRepos";
 import SearchResults from "@/components/SearchResults/SearchResults";
+import CancelSearchButton from "@/components/CancelSearchButton/CancelSearchButton";
 
 function SearchForm() {
   const { movieRepository } = useRepos();
@@ -34,17 +35,26 @@ function SearchForm() {
 
   const handleOnFocus = () => setIsFocused(true);
   const handleOnBlur = () => setTimeout(() => setIsFocused(false), 150);
+  const handleOnClick = () => {
+    setInputText("");
+    setMovies(null);
+  };
 
   return (
     <form className="search-form">
-      <input
-        placeholder="¿Qué peli buscás?"
-        type="text"
-        value={inputText}
-        onChange={handleInputChange}
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-      />
+      <div>
+        <input
+          placeholder="¿Qué peli buscás?"
+          type="text"
+          value={inputText}
+          onChange={handleInputChange}
+          onFocus={handleOnFocus}
+          onBlur={handleOnBlur}
+        />
+        {inputText.length > 0 ? (
+          <CancelSearchButton onClick={handleOnClick} size={20} />
+        ) : null}
+      </div>
       {isFocused ? <SearchResults movies={movies} /> : ""}
     </form>
   );
