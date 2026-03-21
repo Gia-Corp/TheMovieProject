@@ -10,6 +10,7 @@ function SearchForm() {
   const [inputText, setInputText] = useState("");
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
+  const blurTimeout = useRef(null);
 
   useEffect(() => {
     if (inputText === "") return;
@@ -22,7 +23,7 @@ function SearchForm() {
           size: 20,
           title: inputText,
         })
-        .then((res) => setMovies(res["movies"]))
+        .then((res) => setMovies(res.movies))
         .catch(() => setMovies([]));
     }, 500);
   }, [inputText, movieRepository]);
@@ -33,8 +34,13 @@ function SearchForm() {
     if (newInputText === "") setMovies(null);
   };
 
-  const handleOnFocus = () => setIsFocused(true);
-  const handleOnBlur = () => setTimeout(() => setIsFocused(false), 150);
+  const handleOnFocus = () => {
+    clearTimeout(blurTimeout.current);
+    setIsFocused(true);
+  };
+  const handleOnBlur = () => {
+    blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
+  };
   const handleOnClick = () => {
     setInputText("");
     setMovies(null);
@@ -44,6 +50,7 @@ function SearchForm() {
     <form className="search-form">
       <div>
         <input
+          id="search-input"
           placeholder="¿Qué peli buscás?"
           type="text"
           value={inputText}
@@ -51,9 +58,11 @@ function SearchForm() {
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
         />
-        {inputText.length > 0 ? (
-          <CancelSearchButton onClick={handleOnClick} size={20} />
-        ) : null}
+        <label htmlFor="search-input">
+          {inputText.length > 0 ? (
+            <CancelSearchButton onClick={handleOnClick} size={20} />
+          ) : null}
+        </label>
       </div>
       {isFocused ? <SearchResults movies={movies} /> : ""}
     </form>
