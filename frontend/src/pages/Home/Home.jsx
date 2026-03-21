@@ -17,6 +17,8 @@ function Home() {
   const MOVIES_PAGE_SIZE = 10;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLoading(true);
     movieRepository
       .getMovies({
         page: currentPage,
@@ -32,7 +34,6 @@ function Home() {
 
   function handlePageSelection(pageNumber) {
     setSearchParams({ page: pageNumber });
-    setIsLoading(true);
   }
 
   if (error) throw error;
