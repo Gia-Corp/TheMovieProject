@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { useRepos } from "../../hooks/useRepos.js";
-import MoviesList from "../../components/MoviesList/MoviesList.jsx";
-import Paginator from "../../components/Paginator/Paginator.jsx";
 import "./Home.css";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useRepos } from "@/hooks/useRepos.js";
+import MoviesList from "@/components/MoviesList/MoviesList";
+import Paginator from "@/components/Paginator/Paginator";
 
 function Home() {
   const { movieRepository } = useRepos();
@@ -10,11 +11,14 @@ function Home() {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
   const [totalPages, setTotalPages] = useState(0);
   const MOVIES_PAGE_SIZE = 10;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLoading(true);
     movieRepository
       .getMovies({
         page: currentPage,
@@ -28,10 +32,9 @@ function Home() {
       .catch(setError);
   }, [currentPage, movieRepository]);
 
-  const handlePageSelection = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    setIsLoading(true);
-  };
+  function handlePageSelection(pageNumber) {
+    setSearchParams({ page: pageNumber });
+  }
 
   if (error) throw error;
 

@@ -1,5 +1,5 @@
 import "./SearchResults.css";
-import SearchItem from "../SearchItem/SearchItem";
+import SearchItem from "@/components/SearchItem/SearchItem";
 
 function SearchResults({ movies }) {
   if (!movies) {

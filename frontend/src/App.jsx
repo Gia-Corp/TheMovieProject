@@ -1,11 +1,11 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
-import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
+import Navbar from "@/components/Navbar/Navbar";
+import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 
-const Home = lazy(() => import("./pages/Home/Home.jsx"));
+const Home = lazy(() => import("@/pages/Home/Home"));
 const MovieDetailWrapper = lazy(
-  () => import("./pages/MovieDetail/MovieDetailWrapper.jsx"),
+  () => import("@/pages/MovieDetail/MovieDetailWrapper"),
 );
 
 function AppContent() {

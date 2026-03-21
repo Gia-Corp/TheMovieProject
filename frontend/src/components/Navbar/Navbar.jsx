@@ -1,6 +1,6 @@
 import "./Navbar.css";
-import SearchForm from "../SearchForm/SearchForm";
 import { Link } from "react-router-dom";
+import SearchForm from "@/components/SearchForm/SearchForm";
 
 function Navbar() {
   return (

@@ -1,8 +1,8 @@
-import PaginatorPrev from "../PaginatorPrev/PaginatorPrev";
-import PaginatorItem from "../PaginatorItem/PaginatorItem";
-import PaginatorNext from "../PaginatorNext/PaginatorNext";
-import PaginatorEllipsis from "../PaginatorEllipsis/PaginatorEllipsis";
 import "./Paginator.css";
+import PaginatorPrev from "@/components/PaginatorPrev/PaginatorPrev";
+import PaginatorItem from "@/components/PaginatorItem/PaginatorItem";
+import PaginatorNext from "@/components/PaginatorNext/PaginatorNext";
+import PaginatorEllipsis from "@/components/PaginatorEllipsis/PaginatorEllipsis";
 
 function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
   const MAX_VISIBLE_PAGES = 5;
@@ -76,7 +76,7 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
     <div className={`paginator ${disabled ? "disabled-div" : ""}`}>
       {hidePrevButton ? null : (
         <PaginatorPrev
-          onClick={() => handlePageSelection((prev) => Math.max(prev - 1, 1))}
+          onClick={() => handlePageSelection(currentPage - 1)}
           disabled={hidePrevButton}
         />
       )}
@@ -89,9 +89,7 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
       )}
       {hideNextButton ? null : (
         <PaginatorNext
-          onClick={() =>
-            handlePageSelection((prev) => Math.min(prev + 1, totalPages))
-          }
+          onClick={() => handlePageSelection(currentPage + 1)}
           disabled={hideNextButton}
         />
       )}

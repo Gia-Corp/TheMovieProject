@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import MovieDetail from "./MovieDetail.jsx";
+import MovieDetail from "./MovieDetail";
 
 function MovieDetailWrapper() {
   const { id } = useParams();
