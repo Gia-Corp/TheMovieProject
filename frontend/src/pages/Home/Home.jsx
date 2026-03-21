@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useRepos } from "../../hooks/useRepos.js";
 import MoviesList from "../../components/MoviesList/MoviesList.jsx";
 import Paginator from "../../components/Paginator/Paginator.jsx";
@@ -10,7 +11,8 @@ function Home() {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
   const [totalPages, setTotalPages] = useState(0);
   const MOVIES_PAGE_SIZE = 10;
 
@@ -28,10 +30,10 @@ function Home() {
       .catch(setError);
   }, [currentPage, movieRepository]);
 
-  const handlePageSelection = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  function handlePageSelection(pageNumber) {
+    setSearchParams({ page: pageNumber });
     setIsLoading(true);
-  };
+  }
 
   if (error) throw error;
 
