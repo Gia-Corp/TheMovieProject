@@ -1,4 +1,4 @@
-import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
+import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieWatchedButton({ isWatched, onClick }) {
   return (

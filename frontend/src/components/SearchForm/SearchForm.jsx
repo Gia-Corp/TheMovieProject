@@ -1,7 +1,7 @@
 import "./SearchForm.css";
 import { useState, useEffect, useRef } from "react";
-import { useRepos } from "../../hooks/useRepos";
-import SearchResults from "../SearchResults/SearchResults";
+import { useRepos } from "@/hooks/useRepos";
+import SearchResults from "@/components/SearchResults/SearchResults";
 
 function SearchForm() {
   const { movieRepository } = useRepos();

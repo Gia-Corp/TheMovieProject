@@ -1,8 +1,8 @@
 import "./MovieCard.css";
 import { useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMoviePoster } from "../../hooks/useMoviePoster";
-import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
+import { useMoviePoster } from "@/hooks/useMoviePoster";
+import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
 function MovieCard({ movie }) {
   const posterUrl = useMoviePoster(movie);

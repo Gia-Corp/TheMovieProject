@@ -1,9 +1,9 @@
+import "./Home.css";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useRepos } from "../../hooks/useRepos.js";
-import MoviesList from "../../components/MoviesList/MoviesList.jsx";
-import Paginator from "../../components/Paginator/Paginator.jsx";
-import "./Home.css";
+import { useRepos } from "@/hooks/useRepos.js";
+import MoviesList from "@/components/MoviesList/MoviesList";
+import Paginator from "@/components/Paginator/Paginator";
 
 function Home() {
   const { movieRepository } = useRepos();

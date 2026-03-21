@@ -1,6 +1,6 @@
-import MovieCard from "../MovieCard/MovieCard";
-import MovieCardSkeleton from "../MovieCardSkeleton/MovieCardSkeleton";
 import "./MoviesList.css";
+import MovieCard from "@/components/MovieCard/MovieCard";
+import MovieCardSkeleton from "@/components/MovieCardSkeleton/MovieCardSkeleton";
 
 function MoviesList({ movies, isLoading }) {
   return (

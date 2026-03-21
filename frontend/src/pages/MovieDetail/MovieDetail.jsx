@@ -1,9 +1,9 @@
-import { useLocation, useParams } from "react-router-dom";
 import "./MovieDetail.css";
-import { useMoviePoster } from "../../hooks/useMoviePoster";
-import { useRepos } from "../../hooks/useRepos";
 import { useState, useEffect } from "react";
-import MovieWatchedButton from "../../components/MovieWatchedButton/MovieWatchedButton";
+import { useLocation, useParams } from "react-router-dom";
+import { useMoviePoster } from "@/hooks/useMoviePoster";
+import { useRepos } from "@/hooks/useRepos";
+import MovieWatchedButton from "@/components/MovieWatchedButton/MovieWatchedButton";
 
 function MovieDetail() {
   const { state } = useLocation();

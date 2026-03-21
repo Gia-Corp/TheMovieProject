@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "./useRepos";
-import { posterCache } from "../utils/PosterCache";
+import { posterCache } from "@/utils/PosterCache";
 
 export function useMoviePoster(movie) {
   const { posterRepository } = useRepos();

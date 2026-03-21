@@ -1,6 +1,6 @@
 import "./SearchItem.css";
 import { useNavigate } from "react-router-dom";
-import MovieWatchedIcon from "../MovieWatchedIcon/MovieWatchedIcon";
+import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
 function SearchItem({ movie }) {
   const navigate = useNavigate();
