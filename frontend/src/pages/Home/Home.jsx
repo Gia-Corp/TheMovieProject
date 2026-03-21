@@ -14,7 +14,7 @@ function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const [totalPages, setTotalPages] = useState(0);
-  const MOVIES_PAGE_SIZE = 10;
+  const MOVIES_PAGE_SIZE = 14;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -40,15 +40,12 @@ function Home() {
 
   return (
     <div className="home">
-      <Paginator
-        key="upper-paginator"
-        currentPage={currentPage}
-        totalPages={totalPages}
-        disabled={isLoading}
-        handlePageSelection={handlePageSelection}
-      />
       <main>
-        <MoviesList isLoading={isLoading} movies={movies} />
+        <MoviesList
+          isLoading={isLoading}
+          movies={movies}
+          maxMovies={MOVIES_PAGE_SIZE}
+        />
       </main>
       <Paginator
         key="bottom-paginator"
