@@ -1,5 +1,5 @@
 .cancel-search-button {
-  fill: #000;
+  fill: var(--search-form-dark-clr);
 
   &:hover {
     cursor: pointer;

@@ -2,26 +2,31 @@
 /* CSS VARIABLES */
 
 :root {
-  --regular-font: "National Park", sans-serif;
   --title-font: "Bakbak One";
+  --regular-font: "National Park", sans-serif;
 
   --tile-size: 15px;
   --dot-size: 0.75px;
   
   /* PRIMITIVE COLORS */
   --purple: rgba(111, 66, 193, 1);
+  --purple-contrast: rgb(154, 128, 202);
   --white: rgb(255, 255, 255);
 
-  /* SEMANTIC TOKENS */
+  /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
   
+  /* TEXT SEMANTIC TOKENS */
   --text-clr: var(--white);
   --strong-text-clr: var(--main-clr);
-  --dropdown-clr: var(--white);
-  --dropdown-hover-clr: color-mix(in srgb, var(--dropdown-clr) 90%, black);
+
+  /* SEARCH FORM SEMANTIC TOKENS */
+  --search-form-clr: var(--purple-contrast);
+  --search-form-hover-clr: color-mix(in srgb, var(--search-form-clr) 90%, black);
+  --search-form-dark-clr: hsl(from var(--search-form-clr) h s 20%);
 }
 
 /* CSS RESET */
