@@ -40,6 +40,28 @@ export class MovieRepository {
     return res.json();
   }
 
+  async createMovie(movie) {
+    const url = new URL(
+      MovieRepository.#MOVIES_PATH,
+      MovieRepository.#BASE_URL,
+    );
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(movie),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message);
+    }
+
+    return res.json();
+  }
+
   async updateMovie(movieId, movie) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${movieId}`,
