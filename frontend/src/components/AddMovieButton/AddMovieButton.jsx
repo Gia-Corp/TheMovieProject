@@ -24,7 +24,7 @@ function AddMovieButton() {
       </button>
 
       <Modal title="Nueva peli" ref={dialogRef} onClose={handleClose}>
-        <AddMovieForm />
+        <AddMovieForm onSuccess={handleClose} />
       </Modal>
     </>
   );
