@@ -1,13 +1,14 @@
 .modal {
   align-self: center;
   justify-self: center;
-  padding: 15px;
   border: none;
 }
 
 .modal[open] {
   display: flex;
   flex-direction: column;
+  width: 23dvw;
+  background-color: var(--bg-clr);
 }
 
 .modal::backdrop {
@@ -15,13 +16,25 @@
 }
 
 .modal header {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: row;
   align-items: center;
+  padding: 15px;
+  border-bottom: 2px solid var(--main-clr);
+}
+
+.modal header h2 {
+  flex: 1;
+  font-family: var(--title-font);
+  font-size: 1.5rem;
+  color: var(--strong-text-clr);
 }
 
 .modal header button {
-  width: fit-content;
+  --size: 8%;
+
+  width: var(--size);
+  height: var(--size);
   justify-self: end;
-  padding: 0 5px;
+  padding: 5px;
 }

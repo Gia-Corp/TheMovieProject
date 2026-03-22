@@ -29,18 +29,45 @@ function AddMovieForm({ onSuccess }) {
 
   return (
     <form key={state.successCount} className="add-movie-form" action={dispatch}>
-      <input type="text" maxLength="100" name="title" placeholder="Título" />
+      <label htmlFor="title">Título</label>
+      <input
+        type="text"
+        maxLength="100"
+        name="title"
+        id="title"
+        placeholder="Apocalypse Now"
+        required
+      />
+
+      <label htmlFor="director">Director/es</label>
       <input
         type="text"
         maxLength="100"
         name="director"
-        placeholder="Director/es"
+        id="director"
+        placeholder="Francis Ford Coppola"
+        required
       />
-      <input type="number" min="0" name="year" placeholder="Año" />
-      <input type="checkbox" name="watched" />
+
+      <label htmlFor="year">Año</label>
+      <input
+        type="number"
+        min="0"
+        name="year"
+        id="year"
+        placeholder="1979"
+        required
+      />
+
+      <label htmlFor="watched">
+        <p>Ya la vimos</p>
+        <input type="checkbox" name="watched" id="watched" required />
+      </label>
+
       {state.error && <p className="error">{state.error}</p>}
+
       <button type="submit" disabled={isPending}>
-        {isPending ? "Añadiendo..." : "Añadir peli"}
+        {isPending ? "Agregando..." : "Agregar"}
       </button>
     </form>
   );

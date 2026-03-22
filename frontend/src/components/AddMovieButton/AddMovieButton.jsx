@@ -20,10 +20,14 @@ function AddMovieButton() {
             d="M12 19V5m7 7H5"
           />
         </svg>
-        <p>Añadir peli</p>
+        <p>Agregar peli</p>
       </button>
 
-      <Modal title="Nueva peli" ref={dialogRef} onClose={handleClose}>
+      <Modal
+        title="Agregar peli a la lista"
+        ref={dialogRef}
+        onClose={handleClose}
+      >
         <AddMovieForm onSuccess={handleClose} />
       </Modal>
     </>
