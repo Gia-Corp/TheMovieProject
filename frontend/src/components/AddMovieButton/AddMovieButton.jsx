@@ -1,10 +1,12 @@
 import "./AddMovieButton.css";
 import { useRef } from "react";
+import AddMovieForm from "@/components/AddMovieForm/AddMovieForm";
+import Modal from "@/components/Modal/Modal";
 
 function AddMovieButton() {
   const dialogRef = useRef(null);
   const handleOpen = () => dialogRef.current.showModal();
-  // const handleClose = () => dialogRef.current.close();
+  const handleClose = () => dialogRef.current.close();
 
   return (
     <>
@@ -21,19 +23,9 @@ function AddMovieButton() {
         <p>Añadir peli</p>
       </button>
 
-      <dialog
-        style={{ "align-self": "center", "justify-self": "center" }}
-        ref={dialogRef}
-      >
-        {/* <FormularioPelicula onClose={handleClose} /> */}
-        <form style={{ display: "flex", "flex-direction": "column" }}>
-          <h2>Titulo del form</h2>
-          <input type="text" placeholder="titulo" />
-          <input type="text" placeholder="director" />
-          <input type="text" placeholder="año" />
-          <button disabled>Enviar</button>
-        </form>
-      </dialog>
+      <Modal title="Nueva peli" ref={dialogRef} onClose={handleClose}>
+        <AddMovieForm />
+      </Modal>
     </>
   );
 }
