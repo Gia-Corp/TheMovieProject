@@ -1,0 +1,14 @@
+.add-movie-button {
+  font-size: 0.9rem;
+  width: fit-content;
+  justify-self: end;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
