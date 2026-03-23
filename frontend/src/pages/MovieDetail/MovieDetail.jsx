@@ -29,9 +29,10 @@ function MovieDetail() {
   }, []);
 
   const handleOnClick = () => {
-    console.log("CLICKEADO");
     setIsWatched(!isWatched);
-    movieRepository.updateMovie(movie.id, { watched: !isWatched });
+    movieRepository
+      .updateMovie(movie.id, { watched: !isWatched })
+      .catch(() => setIsWatched(isWatched));
   };
 
   if (error) throw error;

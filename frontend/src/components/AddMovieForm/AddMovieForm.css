@@ -1,0 +1,41 @@
+.add-movie-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px;
+}
+
+.add-movie-form button {
+  width: fit-content;
+  align-self: end;
+  padding: 6px;
+  border: none;
+  background-color: var(--main-clr);
+  color: var(--text-clr);
+}
+
+.add-movie-form label {
+  color: var(--strong-text-clr);
+}
+
+label[for="watched"] {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.add-movie-form input {
+  background-color: var(--search-form-clr);
+  padding: 5px;
+  border: none;
+  width: 100%;
+}
+
+.add-movie-form input[type="checkbox"] {
+  width: fit-content;
+}
+
+.add-movie-form input::placeholder {
+  color: var(--search-form-dark-clr);
+  opacity: 0.5;
+}

@@ -1,0 +1,44 @@
+.modal {
+  align-self: center;
+  justify-self: center;
+  border: none;
+}
+
+.modal[open] {
+  display: flex;
+  flex-direction: column;
+  width: 23dvw;
+  background-color: var(--bg-clr);
+}
+
+.modal::backdrop {
+  background-color: rgb(0 0 0 / 66%);
+}
+
+.modal header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 2px solid var(--main-clr);
+}
+
+.modal header h2 {
+  flex: 1;
+  font-family: var(--title-font);
+  font-size: 1.5rem;
+  color: var(--strong-text-clr);
+}
+
+.modal header button {
+  width: 8%;
+  aspect-ratio: 1 / 1;
+  justify-self: end;
+  padding: 5px;
+  background: none;
+  border: none;
+  
+  svg {
+    fill: var(--strong-text-clr);
+  }
+}

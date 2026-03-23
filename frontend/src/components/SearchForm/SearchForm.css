@@ -29,3 +29,8 @@
     opacity: 0.5;
   }
 }
+
+.search-form label {
+  /* display: flex; */
+  height: fit-content;
+}
