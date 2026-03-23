@@ -24,7 +24,7 @@
   --text-clr: var(--white);
   --strong-text-clr: var(--main-clr);
 
-  /* SEARCH FORM SEMANTIC TOKENS */
+  /* FORM SEMANTIC TOKENS */
   --search-form-clr: var(--purple-contrast);
   --search-form-hover-clr: color-mix(in srgb, var(--search-form-clr) 90%, black);
   --search-form-dark-clr: hsl(from var(--search-form-clr) h s 20%);
@@ -96,6 +96,10 @@ svg {
 
 * {
   font-family: var(--regular-font);
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .disabled-div {

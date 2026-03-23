@@ -20,7 +20,7 @@ function AddMovieButton() {
             d="M12 19V5m7 7H5"
           />
         </svg>
-        <p>Agregar peli</p>
+        <p>Nueva peli</p>
       </button>
 
       <Modal

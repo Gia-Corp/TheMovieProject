@@ -7,8 +7,4 @@
   flex-direction: row;
   align-items: center;
   gap: 4px;
-
-  &:hover {
-    cursor: pointer;
-  }
 }

@@ -67,7 +67,7 @@ function AddMovieForm({ onSuccess }) {
       {state.error && <p className="error">{state.error}</p>}
 
       <button type="submit" disabled={isPending}>
-        {isPending ? "Agregando..." : "Agregar"}
+        {isPending ? "Cargando..." : "Confirmar"}
       </button>
     </form>
   );

@@ -31,10 +31,14 @@
 }
 
 .modal header button {
-  --size: 8%;
-
-  width: var(--size);
-  height: var(--size);
+  width: 8%;
+  aspect-ratio: 1 / 1;
   justify-self: end;
   padding: 5px;
+  background: none;
+  border: none;
+  
+  svg {
+    fill: var(--strong-text-clr);
+  }
 }

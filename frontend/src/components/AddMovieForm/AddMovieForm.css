@@ -9,6 +9,7 @@
   width: fit-content;
   align-self: end;
   padding: 4px;
+  border: none;
 }
 
 .add-movie-form label {
@@ -24,6 +25,7 @@ label[for="watched"] {
 .add-movie-form input {
   background-color: var(--search-form-clr);
   padding: 5px;
+  border: none;
 }
 
 .add-movie-form input::placeholder {
