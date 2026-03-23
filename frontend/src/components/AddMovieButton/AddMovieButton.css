@@ -7,4 +7,16 @@
   flex-direction: row;
   align-items: center;
   gap: 4px;
+  border: none;
+  background-color: var(--main-clr);
+  color: var(--text-clr);
+}
+
+.add-movie-button svg {
+  stroke: var(--text-clr);
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 2;
+  aspect-ratio: 1/1;
+  width: 23px;
 }

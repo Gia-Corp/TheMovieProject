@@ -29,39 +29,45 @@ function AddMovieForm({ onSuccess }) {
 
   return (
     <form key={state.successCount} className="add-movie-form" action={dispatch}>
-      <label htmlFor="title">Título</label>
-      <input
-        type="text"
-        maxLength="100"
-        name="title"
-        id="title"
-        placeholder="Apocalypse Now"
-        required
-      />
+      <label htmlFor="title">
+        <p>Título</p>
+        <input
+          type="text"
+          maxLength="100"
+          name="title"
+          id="title"
+          placeholder="Apocalypse Now"
+          required
+        />
+      </label>
 
-      <label htmlFor="director">Director/es</label>
-      <input
-        type="text"
-        maxLength="100"
-        name="director"
-        id="director"
-        placeholder="Francis Ford Coppola"
-        required
-      />
+      <label htmlFor="director">
+        <p>Director/es</p>
+        <input
+          type="text"
+          maxLength="100"
+          name="director"
+          id="director"
+          placeholder="Francis Ford Coppola"
+          required
+        />
+      </label>
 
-      <label htmlFor="year">Año</label>
-      <input
-        type="number"
-        min="0"
-        name="year"
-        id="year"
-        placeholder="1979"
-        required
-      />
+      <label htmlFor="year">
+        <p>Año</p>
+        <input
+          type="number"
+          min="0"
+          name="year"
+          id="year"
+          placeholder="1979"
+          required
+        />
+      </label>
 
       <label htmlFor="watched">
         <p>Ya la vimos</p>
-        <input type="checkbox" name="watched" id="watched" required />
+        <input type="checkbox" name="watched" id="watched" />
       </label>
 
       {state.error && <p className="error">{state.error}</p>}

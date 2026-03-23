@@ -11,20 +11,14 @@ function AddMovieButton() {
   return (
     <>
       <button onClick={handleOpen} className="add-movie-button">
-        <svg width="23" height="23" viewBox="0 0 24 24">
-          <path
-            fill="none"
-            stroke="#000000"
-            strokeLinecap="round"
-            strokeWidth="2"
-            d="M12 19V5m7 7H5"
-          />
+        <svg viewBox="0 0 24 24">
+          <path d="M12 19V5m7 7H5" />
         </svg>
         <p>Nueva peli</p>
       </button>
 
       <Modal
-        title="Agregar peli a la lista"
+        title="Agregar peli a la lista 📋"
         ref={dialogRef}
         onClose={handleClose}
       >
