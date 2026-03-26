@@ -10,8 +10,6 @@ function AddMovieForm({ onSuccess }) {
       try {
         const newMovie = {
           title: formData.get("title"),
-          director: formData.get("director"),
-          year: formData.get("year"),
           watched: formData.get("watched") ? true : false,
         };
         await movieRepository.createMovie(newMovie);
@@ -37,30 +35,6 @@ function AddMovieForm({ onSuccess }) {
           name="title"
           id="title"
           placeholder="Apocalypse Now"
-          required
-        />
-      </label>
-
-      <label htmlFor="director">
-        <p>Director/es</p>
-        <input
-          type="text"
-          maxLength="100"
-          name="director"
-          id="director"
-          placeholder="Francis Ford Coppola"
-          required
-        />
-      </label>
-
-      <label htmlFor="year">
-        <p>Año</p>
-        <input
-          type="number"
-          min="0"
-          name="year"
-          id="year"
-          placeholder="1979"
           required
         />
       </label>
