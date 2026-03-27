@@ -24,11 +24,15 @@ class TestMovie:
         assert "Movie director cannot be empty" in str(error)
 
     def test_movie_stores_its_attributes(self):
-        movie = Movie(1, "Argo", "Ben Affleck", 2012, True)
+        movie = Movie(1, "Argo", "Ben Affleck", 2012, watched=True)
+        print(movie)
         assert (
             movie.id == 1
             and movie.title == "Argo"
             and movie.director == "Ben Affleck"
             and movie.year == 2012
             and movie.watched
+            and not movie.plot
+            and not movie.runtime
+            and not movie.poster_url
         )

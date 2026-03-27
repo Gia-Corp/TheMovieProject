@@ -45,12 +45,12 @@ class TestGoogleSheetsMovieRepository:
             "",
         ]
         sheet.get.return_value = [
-            ["James Cameron", "Titanic", "1998", "TRUE", "1"],
-            ["John Lasseter", "Cars", "2006", "FALSE", "2"],
+            ["James Cameron", "Titanic", "1998", "TRUE", "1", "", "", ""],
+            ["John Lasseter", "Cars", "2006", "FALSE", "2", "", "", ""],
         ]
         repo = GoogleSheetsMovieRepository(sheet)
         repo.get_movies_by_page(Page(2, 2))
-        sheet.get.assert_called_with("A4:E5")
+        sheet.get.assert_called_with("A4:H5")
 
     def test_movie_repo_to_fetch_correct_sheet_range_when_different_page_size(self):
         sheet = Mock()
@@ -77,12 +77,30 @@ class TestGoogleSheetsMovieRepository:
             "a",
         ]
         sheet.get.return_value = [
-            ["James Cameron", "Titanic", "1998", "TRUE", "1"],
-            ["John Lasseter", "Cars", "2006", "FALSE", "2"],
+            [
+                "James Cameron",
+                "Titanic",
+                "1998",
+                "TRUE",
+                "1",
+                "120 min",
+                "A love story on a boat.",
+                "",
+            ],
+            [
+                "John Lasseter",
+                "Cars",
+                "2006",
+                "FALSE",
+                "2",
+                "90 min",
+                "Cars racing each other.",
+                "",
+            ],
         ]
         repo = GoogleSheetsMovieRepository(sheet)
         repo.get_movies_by_page(Page(2, 10))
-        sheet.get.assert_called_with("A12:E21")
+        sheet.get.assert_called_with("A12:H21")
 
     def test_get_movies_by_page_should_fail_when_is_out_of_bounds_of_the_list(self):
         with raises(PageOutOfBoundsError) as error:

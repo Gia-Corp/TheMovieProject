@@ -112,6 +112,15 @@ async def update_movie(
     if movie_dto.watched is not None:
         movie.watched = movie_dto.watched
 
+    if movie_dto.runtime:
+        movie.runtime = movie_dto.runtime
+
+    if movie_dto.plot:
+        movie.plot = movie_dto.plot
+
+    if movie_dto.poster_url:
+        movie.poster_url = movie_dto.poster_url
+
     movie.validate()
 
     movie = movie_repo.save(movie)

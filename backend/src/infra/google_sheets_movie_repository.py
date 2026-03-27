@@ -24,7 +24,17 @@ class GoogleSheetsMovieRepository:
 
     def _dicts_to_movies(self, dicts):
         raw_movies = utils.to_records(
-            ["director", "title", "year", "watched", "id", "runtime", "plot", "poster_url"], dicts
+            [
+                "director",
+                "title",
+                "year",
+                "watched",
+                "id",
+                "runtime",
+                "plot",
+                "poster_url",
+            ],
+            dicts,
         )
         return list(map(self._transform_into_movie, raw_movies))
 
@@ -37,7 +47,7 @@ class GoogleSheetsMovieRepository:
             watched=True if raw_movie["watched"] == "TRUE" else False,
             plot=raw_movie["plot"] if "plot" in raw_movie else None,
             runtime=raw_movie["runtime"] if "runtime" in raw_movie else None,
-            poster_url=raw_movie["poster_url"] if "poster_url" in raw_movie else None
+            poster_url=raw_movie["poster_url"] if "poster_url" in raw_movie else None,
         )
         return movie
 
@@ -78,7 +88,18 @@ class GoogleSheetsMovieRepository:
             return
 
         self.sheet.update(
-            [[movie.director, movie.title, movie.year, movie.watched, movie.id, movie.runtime, movie.plot, movie.poster_url]],
+            [
+                [
+                    movie.director,
+                    movie.title,
+                    movie.year,
+                    movie.watched,
+                    movie.id,
+                    movie.runtime,
+                    movie.plot,
+                    movie.poster_url,
+                ]
+            ],
             f"A{cell.row}:H{cell.row}",
         )
         return movie
