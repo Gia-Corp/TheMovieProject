@@ -8,6 +8,9 @@ class Movie:
     title: str
     director: str
     year: int
+    runtime: str
+    plot: str
+    poster_url: str
     watched: bool = False
 
     def __post_init__(self):

@@ -51,6 +51,9 @@ class GoogleSheetsMovieRepository:
             movie.year,
             movie.watched,
             next_id,
+            movie.runtime,
+            movie.plot,
+            movie.poster_url,
         ]
         self.sheet.append_row(movie_as_list)
         self.sheet.update([[next_id]], "last_id")
