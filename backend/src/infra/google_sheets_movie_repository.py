@@ -15,7 +15,7 @@ class GoogleSheetsMovieRepository:
         if self._next_available_row() <= page_first_row:
             raise PageOutOfBoundsError
 
-        raw_movies = self.sheet.get(f"A{page_first_row}:E{page_last_row}")
+        raw_movies = self.sheet.get(f"A{page_first_row}:H{page_last_row}")
         movies = self._dicts_to_movies(raw_movies)
         return movies
 
@@ -24,7 +24,7 @@ class GoogleSheetsMovieRepository:
 
     def _dicts_to_movies(self, dicts):
         raw_movies = utils.to_records(
-            ["director", "title", "year", "watched", "id"], dicts
+            ["director", "title", "year", "watched", "id", "runtime", "plot", "poster_url"], dicts
         )
         return list(map(self._transform_into_movie, raw_movies))
 
@@ -35,6 +35,9 @@ class GoogleSheetsMovieRepository:
             director=raw_movie["director"],
             year=int(raw_movie["year"]),
             watched=True if raw_movie["watched"] == "TRUE" else False,
+            plot=raw_movie["plot"] if "plot" in raw_movie else None,
+            runtime=raw_movie["runtime"] if "runtime" in raw_movie else None,
+            poster_url=raw_movie["poster_url"] if "poster_url" in raw_movie else None
         )
         return movie
 
@@ -65,7 +68,7 @@ class GoogleSheetsMovieRepository:
         if not cell:
             return
 
-        raw_movies = self.sheet.get(f"A{cell.row}:E{cell.row}")
+        raw_movies = self.sheet.get(f"A{cell.row}:H{cell.row}")
         movies = self._dicts_to_movies(raw_movies)
         return movies[0]
 
@@ -75,8 +78,8 @@ class GoogleSheetsMovieRepository:
             return
 
         self.sheet.update(
-            [[movie.director, movie.title, movie.year, movie.watched]],
-            f"A{cell.row}:D{cell.row}",
+            [[movie.director, movie.title, movie.year, movie.watched, movie.id, movie.runtime, movie.plot, movie.poster_url]],
+            f"A{cell.row}:H{cell.row}",
         )
         return movie
 
@@ -91,7 +94,7 @@ class GoogleSheetsMovieRepository:
         if not cells:
             return
 
-        row_ranges = [f"A{cell.row}:E{cell.row}" for cell in cells]
+        row_ranges = [f"A{cell.row}:H{cell.row}" for cell in cells]
 
         rows = self.sheet.batch_get(row_ranges)
         raw_movies = [row[0] for row in rows]
