@@ -7,7 +7,7 @@
 .modal[open] {
   display: flex;
   flex-direction: column;
-  width: 23dvw;
+  width: 32dvw;
   background-color: var(--bg-clr);
 }
 

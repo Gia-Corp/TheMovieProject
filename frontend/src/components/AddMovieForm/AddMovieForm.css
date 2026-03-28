@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 15px;
   padding: 15px;
+  position: relative;
 }
 
 .add-movie-form button {
@@ -29,6 +30,7 @@ label[for="watched"] {
   padding: 5px;
   border: none;
   width: 100%;
+  text-overflow: ellipsis;
 }
 
 .add-movie-form input[type="checkbox"] {
@@ -38,4 +40,29 @@ label[for="watched"] {
 .add-movie-form input::placeholder {
   color: var(--search-form-dark-clr);
   opacity: 0.5;
+}
+
+.add-movie-form ul {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: white;
+}
+
+.add-movie-form ul li {
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+
+  &:hover {
+    background-color: grey;
+    cursor: pointer;
+  }
+
+  img {
+    aspect-ratio: 2 / 3;
+    height: 90px;
+  }
 }
