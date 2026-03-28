@@ -23,14 +23,24 @@ label[for="watched"] {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  width: fit-content;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
-.add-movie-form input {
+.add-movie-form input[type="search"] {
   background-color: var(--search-form-clr);
   padding: 5px;
   border: none;
   width: 100%;
+  outline: none;
   text-overflow: ellipsis;
+  
+  &:focus, &:hover{
+    outline: 2px solid white;
+  }
 }
 
 .add-movie-form input[type="checkbox"] {
@@ -64,5 +74,9 @@ label[for="watched"] {
   img {
     aspect-ratio: 2 / 3;
     height: 90px;
+  }
+
+  span {
+    font-weight: 650;
   }
 }

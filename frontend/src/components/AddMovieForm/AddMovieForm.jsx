@@ -8,7 +8,7 @@ function AddMovieForm({ onSuccess }) {
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  
+
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
 
@@ -84,20 +84,20 @@ function AddMovieForm({ onSuccess }) {
         />
       </label>
 
-      {
-        isFocused && movies ? 
-        <ul id="movie-results">
-          {movies.length > 0 ? movies.map((movie) => 
-            <li 
-              onMouseDown={() => handleSelect(movie)} 
-              key={movie.imdbID}
-            >
-              {movie.Title} ({movie.Year})<img src={movie.Poster}/>
-            </li>
-          ) : <li>No se encontraron pelis</li> } 
-        </ul> : 
-        null
-      }
+      {isFocused && movies ? (
+        <ul id="movie-results" onMouseDown={(e) => e.preventDefault()}>
+          {movies.length > 0 ? (
+            movies.map((movie) => (
+              <li onMouseDown={() => handleSelect(movie)} key={movie.imdbID}>
+                <span>{movie.Title}</span> ({movie.Year})
+                <img src={movie.Poster} />
+              </li>
+            ))
+          ) : (
+            <li>No se encontraron pelis</li>
+          )}
+        </ul>
+      ) : null}
 
       <label htmlFor="watched">
         <p>Ya la vimos</p>
