@@ -1,6 +1,6 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import SearchForm from "@/components/SearchForm/SearchForm";
+import SearchBar from "@/components/SearchBar/SearchBar";
 import AddMovieButton from "@/components/AddMovieButton/AddMovieButton";
 
 function Navbar() {
@@ -9,7 +9,7 @@ function Navbar() {
       <div className="nav-buttons">
         <Link to="/">The Movie Project</Link>
       </div>
-      <SearchForm />
+      <SearchBar />
       <AddMovieButton />
     </nav>
   );

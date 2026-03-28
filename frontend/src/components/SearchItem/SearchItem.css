@@ -6,10 +6,10 @@
 
   &:hover {
     cursor: pointer;
-    background-color: var(--search-form-hover-clr);
+    background-color: var(--search-bar-hover-clr);
   }
 }
 
 .search-item svg {
-  fill: var(--search-form-dark-clr);
+  fill: var(--search-bar-dark-clr);
 }

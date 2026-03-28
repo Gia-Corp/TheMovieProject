@@ -31,7 +31,7 @@ label[for="watched"] {
 }
 
 .add-movie-form input[type="search"] {
-  background-color: var(--search-form-clr);
+  background-color: var(--search-bar-clr);
   padding: 5px;
   border: none;
   width: 100%;
@@ -48,7 +48,7 @@ label[for="watched"] {
 }
 
 .add-movie-form input::placeholder {
-  color: var(--search-form-dark-clr);
+  color: var(--search-bar-dark-clr);
   opacity: 0.5;
 }
 

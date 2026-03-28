@@ -1,10 +1,10 @@
-import "./SearchForm.css";
+import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "@/hooks/useRepos";
 import SearchResults from "@/components/SearchResults/SearchResults";
 import CancelSearchButton from "@/components/CancelSearchButton/CancelSearchButton";
 
-function SearchForm() {
+function SearchBar() {
   const { movieRepository } = useRepos();
   const timerRef = useRef(null);
   const [inputText, setInputText] = useState("");
@@ -47,7 +47,7 @@ function SearchForm() {
   };
 
   return (
-    <form className="search-form">
+    <div className="search-bar">
       <div>
         <input
           id="search-input"
@@ -65,8 +65,8 @@ function SearchForm() {
         </label>
       </div>
       {isFocused ? <SearchResults movies={movies} /> : ""}
-    </form>
+    </div>
   );
 }
 
-export default SearchForm;
+export default SearchBar;

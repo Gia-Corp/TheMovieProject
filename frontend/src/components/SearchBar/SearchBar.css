@@ -1,20 +1,20 @@
-.search-form {
+.search-bar {
   width: 100%;
   justify-self: center;
   position: relative;
-  color: var(--search-form-dark-clr);
+  color: var(--search-bar-dark-clr);
 }
 
-.search-form > div {
+.search-bar > div {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  background-color: var(--search-form-clr);
+  background-color: var(--search-bar-clr);
   padding: 8px;
 }
 
-.search-form input {
+.search-bar input {
   border: none;
   background-color: transparent;
   font-size: 1em;
@@ -30,7 +30,7 @@
   }
 }
 
-.search-form label {
+.search-bar label {
   /* display: flex; */
   height: fit-content;
 }
