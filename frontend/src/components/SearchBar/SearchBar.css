@@ -5,32 +5,20 @@
   color: var(--search-bar-dark-clr);
 }
 
-.search-bar > div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  background-color: var(--search-bar-clr);
-  padding: 8px;
-}
-
 .search-bar input {
+  width: 100%;
+  padding: 8px;
   border: none;
-  background-color: transparent;
+  background-color: var(--search-bar-clr);
   font-size: 1em;
   flex: 1;
 
   &:focus, &:hover {
-    outline: none;
+    outline: 2px solid var(--search-bar-outline-clr);
   }
 
   &::placeholder {
     color: inherit;
     opacity: 0.5;
   }
-}
-
-.search-bar label {
-  /* display: flex; */
-  height: fit-content;
 }

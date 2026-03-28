@@ -28,6 +28,7 @@
   --search-bar-clr: var(--purple-contrast);
   --search-bar-hover-clr: color-mix(in srgb, var(--search-bar-clr) 90%, black);
   --search-bar-dark-clr: hsl(from var(--search-bar-clr) h s 20%);
+  --search-bar-outline-clr: var(--white);
 }
 
 /* CSS RESET */

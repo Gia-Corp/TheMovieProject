@@ -2,7 +2,6 @@ import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
 import { useRepos } from "@/hooks/useRepos";
 import SearchResults from "@/components/SearchResults/SearchResults";
-import CancelSearchButton from "@/components/CancelSearchButton/CancelSearchButton";
 
 function SearchBar() {
   const { movieRepository } = useRepos();
@@ -38,32 +37,23 @@ function SearchBar() {
     clearTimeout(blurTimeout.current);
     setIsFocused(true);
   };
+
   const handleOnBlur = () => {
     blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
-  };
-  const handleOnClick = () => {
-    setInputText("");
-    setMovies(null);
   };
 
   return (
     <div className="search-bar">
-      <div>
-        <input
-          id="search-input"
-          placeholder="¿Qué peli buscás?"
-          type="text"
-          value={inputText}
-          onChange={handleInputChange}
-          onFocus={handleOnFocus}
-          onBlur={handleOnBlur}
-        />
-        <label htmlFor="search-input">
-          {inputText.length > 0 ? (
-            <CancelSearchButton onClick={handleOnClick} size={20} />
-          ) : null}
-        </label>
-      </div>
+      <input
+        id="search-input"
+        placeholder="¿Qué peli buscás?"
+        type="search"
+        autoComplete="off"
+        value={inputText}
+        onChange={handleInputChange}
+        onFocus={handleOnFocus}
+        onBlur={handleOnBlur}
+      />
       {isFocused ? <SearchResults movies={movies} /> : ""}
     </div>
   );
