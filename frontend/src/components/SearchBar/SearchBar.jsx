@@ -1,36 +1,29 @@
 import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
-import { useRepos } from "@/hooks/useRepos";
 import SearchResults from "@/components/SearchResults/SearchResults";
 
-function SearchBar() {
-  const { movieRepository } = useRepos();
+function SearchBar({ placeholder, searchCall }) {
   const timerRef = useRef(null);
-  const [inputText, setInputText] = useState("");
-  const [movies, setMovies] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
   const blurTimeout = useRef(null);
+  const [inputText, setInputText] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [results, setResults] = useState(null);
 
   useEffect(() => {
     if (inputText === "") return;
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      movieRepository
-        .getMovies({
-          page: 1,
-          size: 20,
-          title: inputText,
-        })
-        .then((res) => setMovies(res.movies))
-        .catch(() => setMovies([]));
+      searchCall(inputText)
+        .then((results) => setResults(results))
+        .catch(() => setResults([]));
     }, 500);
-  }, [inputText, movieRepository]);
+  }, [inputText, searchCall]);
 
   const handleInputChange = (event) => {
     const newInputText = event.target.value;
     setInputText(newInputText);
-    if (newInputText === "") setMovies(null);
+    if (newInputText === "") setResults(null);
   };
 
   const handleOnFocus = () => {
@@ -45,8 +38,8 @@ function SearchBar() {
   return (
     <div className="search-bar">
       <input
+        placeholder={placeholder}
         id="search-input"
-        placeholder="¿Qué peli buscás?"
         type="search"
         autoComplete="off"
         value={inputText}
@@ -54,7 +47,7 @@ function SearchBar() {
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
       />
-      {isFocused ? <SearchResults movies={movies} /> : ""}
+      {isFocused ? <SearchResults results={results} /> : ""}
     </div>
   );
 }

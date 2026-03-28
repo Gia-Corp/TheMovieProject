@@ -1,16 +1,16 @@
 import "./SearchResults.css";
 import SearchItem from "@/components/SearchItem/SearchItem";
 
-function SearchResults({ movies }) {
-  if (!movies) {
+function SearchResults({ results }) {
+  if (!results) {
     return;
   }
 
   return (
     <ul className="search-results">
-      {movies.length > 0
-        ? movies.map((movie) => <SearchItem key={movie.id} movie={movie} />)
-        : "No se encontraron pelis"}
+      {results.length > 0
+        ? results.map((item) => <SearchItem key={item.id} movie={item} />)
+        : "No hay resultados"}
     </ul>
   );
 }
