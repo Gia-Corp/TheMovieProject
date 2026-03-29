@@ -1,9 +1,8 @@
 import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
-function SearchBar({ placeholder, searchCall }) {
+function SearchBar({ placeholder, searchCall, renderItem }) {
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
   const [inputText, setInputText] = useState("");
@@ -61,15 +60,14 @@ function SearchBar({ placeholder, searchCall }) {
         results ? (
           <ul className="search-results">
             {results.length > 0
-              ? results.map((movie) => {
+              ? results.map((item) => {
                   return (
                     <li
-                      onClick={() => handleClick(movie)}
+                      onClick={() => handleClick(item)}
                       className="search-item"
-                      key={movie.id}
+                      key={item.id}
                     >
-                      <p>{`${movie.title} (${movie.year})`}</p>
-                      {movie.watched ? <MovieWatchedIcon size={20} /> : null}
+                      {renderItem(item)}
                     </li>
                   );
                 })
