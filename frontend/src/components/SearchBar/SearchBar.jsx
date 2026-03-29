@@ -1,6 +1,6 @@
 import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
-import SearchResults from "@/components/SearchResults/SearchResults";
+import SearchItem from "@/components/SearchItem/SearchItem";
 
 function SearchBar({ placeholder, searchCall }) {
   const timerRef = useRef(null);
@@ -47,7 +47,15 @@ function SearchBar({ placeholder, searchCall }) {
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
       />
-      {isFocused ? <SearchResults results={results} /> : ""}
+      {isFocused ? (
+        results ? (
+          <ul className="search-results">
+            {results.length > 0
+              ? results.map((item) => <SearchItem key={item.id} movie={item} />)
+              : "No hay resultados"}
+          </ul>
+        ) : null
+      ) : null}
     </div>
   );
 }
