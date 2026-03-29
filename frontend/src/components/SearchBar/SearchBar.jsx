@@ -1,6 +1,7 @@
 import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
-import SearchItem from "@/components/SearchItem/SearchItem";
+import { useNavigate } from "react-router-dom";
+import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
 function SearchBar({ placeholder, searchCall }) {
   const timerRef = useRef(null);
@@ -35,6 +36,15 @@ function SearchBar({ placeholder, searchCall }) {
     blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
   };
 
+  const navigate = useNavigate();
+
+  const handleClick = (movie) => {
+    navigate(`/movies/${movie.id}`, {
+      state: { movie },
+      id: movie.id,
+    });
+  };
+
   return (
     <div className="search-bar">
       <input
@@ -51,7 +61,18 @@ function SearchBar({ placeholder, searchCall }) {
         results ? (
           <ul className="search-results">
             {results.length > 0
-              ? results.map((item) => <SearchItem key={item.id} movie={item} />)
+              ? results.map((movie) => {
+                  return (
+                    <li
+                      onClick={() => handleClick(movie)}
+                      className="search-item"
+                      key={movie.id}
+                    >
+                      <p>{`${movie.title} (${movie.year})`}</p>
+                      {movie.watched ? <MovieWatchedIcon size={20} /> : null}
+                    </li>
+                  );
+                })
               : "No hay resultados"}
           </ul>
         ) : null
