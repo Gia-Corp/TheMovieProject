@@ -1,8 +1,14 @@
 import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
-function SearchBar({ placeholder, searchCall, renderItem }) {
+function SearchBar({
+  name,
+  required = false,
+  placeholder,
+  searchCall,
+  renderItem,
+  onItemClick,
+}) {
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
   const [inputText, setInputText] = useState("");
@@ -35,35 +41,31 @@ function SearchBar({ placeholder, searchCall, renderItem }) {
     blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
   };
 
-  const navigate = useNavigate();
-
-  const handleClick = (movie) => {
-    navigate(`/movies/${movie.id}`, {
-      state: { movie },
-      id: movie.id,
-    });
-  };
-
   return (
     <div className="search-bar">
       <input
         placeholder={placeholder}
-        id="search-input"
+        id={name}
+        name={name}
         type="search"
         autoComplete="off"
         value={inputText}
         onChange={handleInputChange}
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
+        required={required}
       />
       {isFocused ? (
         results ? (
-          <ul className="search-results">
+          <ul
+            className="search-results"
+            onMouseDown={(e) => e.preventDefault()}
+          >
             {results.length > 0
               ? results.map((item) => {
                   return (
                     <li
-                      onClick={() => handleClick(item)}
+                      onMouseDown={() => onItemClick(item)}
                       className="search-item"
                       key={item.id}
                     >

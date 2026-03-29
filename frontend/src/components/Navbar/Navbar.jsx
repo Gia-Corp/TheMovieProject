@@ -4,6 +4,7 @@ import SearchBar from "@/components/SearchBar/SearchBar";
 import AddMovieButton from "@/components/AddMovieButton/AddMovieButton";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { movieRepository } = useRepos();
@@ -27,6 +28,15 @@ function Navbar() {
     );
   }
 
+  const navigate = useNavigate();
+
+  const handleClick = (movie) => {
+    navigate(`/movies/${movie.id}`, {
+      state: { movie },
+      id: movie.id,
+    });
+  };
+
   return (
     <nav className="nav-bar">
       <div className="nav-buttons">
@@ -36,6 +46,7 @@ function Navbar() {
         placeholder="¿Qué peli buscás?"
         searchCall={searchCall}
         renderItem={renderMovieResult}
+        onItemClick={handleClick}
       />
       <AddMovieButton />
     </nav>
