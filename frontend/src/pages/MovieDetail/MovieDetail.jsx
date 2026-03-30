@@ -1,7 +1,6 @@
 import "./MovieDetail.css";
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { useMoviePoster } from "@/hooks/useMoviePoster";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedButton from "@/components/MovieWatchedButton/MovieWatchedButton";
 
@@ -10,13 +9,12 @@ function MovieDetail() {
   const { id } = useParams();
   const { movieRepository } = useRepos();
   const [movie, setMovie] = useState(state?.movie ?? null);
-  const posterUrl = useMoviePoster(movie);
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (movie) return;
+    if (movie.title) return;
 
     movieRepository
       .getMovie(id)
@@ -52,15 +50,17 @@ function MovieDetail() {
         <MovieWatchedButton isWatched={isWatched} onClick={handleOnClick} />
       </div>
       <div className="poster-section">
-        {!isImageReady && <div className="skeleton" />}
-        {posterUrl && (
+        {!isImageReady && movie.poster_url && <div className="skeleton" />}
+        {movie.poster_url ? (
           <img
-            src={posterUrl}
+            src={movie.poster_url}
             alt={movie.title}
             style={{ display: isImageReady ? "block" : "none" }}
             onLoad={() => setIsImageReady(true)}
             onError={() => setIsImageReady(true)}
           />
+        ) : (
+          <p>No tiene poster :/</p>
         )}
       </div>
     </div>
