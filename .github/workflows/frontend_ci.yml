@@ -41,6 +41,8 @@ jobs:
           VITE_MOVIE_API_URL: ${{ secrets.MOVIE_API_URL }}
           VITE_MOVIE_API_KEY: ${{ secrets.MOVIE_API_KEY }}
           VITE_MOVIE_API_IMAGES_URL: ${{ secrets.MOVIE_API_IMAGES_URL }}
+          VITE_MOVIE_API_KEY_2: ${{ secrets.MOVIE_API_KEY_2 }}
+          VITE_MOVIE_API_IMAGES_URL_2: ${{ secrets.MOVIE_API_IMAGES_URL_2 }}
       
       - name: Verify build output
         run: |
