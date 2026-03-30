@@ -1,15 +1,53 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import SearchForm from "@/components/SearchForm/SearchForm";
+import SearchBar from "@/components/SearchBar/SearchBar";
 import AddMovieButton from "@/components/AddMovieButton/AddMovieButton";
+import { useRepos } from "@/hooks/useRepos";
+import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const { movieRepository } = useRepos();
+
+  function searchCall(inputTextToSearch) {
+    return movieRepository
+      .getMovies({
+        page: 1,
+        size: 20,
+        title: inputTextToSearch,
+      })
+      .then((res) => res.movies);
+  }
+
+  function renderMovieResult(movie) {
+    return (
+      <>
+        <p>{`${movie.title} (${movie.year})`}</p>
+        {movie.watched ? <MovieWatchedIcon size={20} /> : null}
+      </>
+    );
+  }
+
+  const navigate = useNavigate();
+
+  const handleClick = (movie) => {
+    navigate(`/movies/${movie.id}`, {
+      state: { movie },
+      id: movie.id,
+    });
+  };
+
   return (
     <nav className="nav-bar">
       <div className="nav-buttons">
         <Link to="/">The Movie Project</Link>
       </div>
-      <SearchForm />
+      <SearchBar
+        placeholder="¿Qué peli buscás?"
+        searchCall={searchCall}
+        renderItem={renderMovieResult}
+        onItemClick={handleClick}
+      />
       <AddMovieButton />
     </nav>
   );

@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 15px;
   padding: 15px;
+  height: fit-content;
 }
 
 .add-movie-form button {
@@ -12,6 +13,12 @@
   border: none;
   background-color: var(--main-clr);
   color: var(--text-clr);
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 .add-movie-form label {
@@ -22,20 +29,62 @@ label[for="watched"] {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  width: fit-content;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
-.add-movie-form input {
-  background-color: var(--search-form-clr);
+.add-movie-form input[type="search"] {
+  width: 100%;
   padding: 5px;
   border: none;
-  width: 100%;
+  background-color: var(--search-bar-clr);
+  outline: none;
+  text-overflow: ellipsis;
+  
+  &:focus, &:hover{
+    outline: 2px solid var(--search-bar-outline-clr);
+  }
+
+  &::placeholder {
+    color: inherit;
+    opacity: 0.5;
+  }
 }
 
 .add-movie-form input[type="checkbox"] {
   width: fit-content;
 }
 
-.add-movie-form input::placeholder {
-  color: var(--search-form-dark-clr);
-  opacity: 0.5;
+.add-movie-form ul {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--search-bar-clr);
+  scrollbar-width: thin;
+  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
+}
+
+.add-movie-form ul li {
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--search-bar-hover-clr);
+  }
+
+  img {
+    aspect-ratio: 2 / 3;
+    height: 90px;
+  }
+
+  span {
+    font-weight: 650;
+  }
 }

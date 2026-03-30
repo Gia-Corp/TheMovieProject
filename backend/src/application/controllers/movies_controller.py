@@ -3,10 +3,11 @@ from src.infra import (
     GoogleSheetsMovieRepository,
     MovieNotFoundError,
     PageOutOfBoundsError,
+    ExternalAPIMovieRepository,
 )
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
-from src.dependencies import get_movie_repo
+from src.dependencies import get_movie_repo, get_external_api_movie_repo
 from src.application.dtos import CreateMovieDTO, UpdateMovieDTO
 from typing import Optional
 import math
@@ -66,13 +67,22 @@ async def get_movie(
 async def create_movie(
     movie_dto: CreateMovieDTO,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    external_api_movie_repo: ExternalAPIMovieRepository = Depends(
+        get_external_api_movie_repo
+    ),
 ):
+    movie = await external_api_movie_repo.get_by_title_and_year(
+        movie_dto.title, movie_dto.year
+    )
     movie = Movie(
         id=1,
-        title=movie_dto.title,
-        director=movie_dto.director,
-        year=movie_dto.year,
+        title=movie["Title"],
+        director=movie["Director"],
+        year=int(movie["Year"]),
         watched=movie_dto.watched,
+        runtime=movie["Runtime"],
+        plot=movie["Plot"],
+        poster_url=movie["Poster"],
     )
     return movie_repo.add(movie)
 
@@ -101,6 +111,15 @@ async def update_movie(
 
     if movie_dto.watched is not None:
         movie.watched = movie_dto.watched
+
+    if movie_dto.runtime:
+        movie.runtime = movie_dto.runtime
+
+    if movie_dto.plot:
+        movie.plot = movie_dto.plot
+
+    if movie_dto.poster_url:
+        movie.poster_url = movie_dto.poster_url
 
     movie.validate()
 

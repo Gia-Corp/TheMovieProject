@@ -1,5 +1,6 @@
 from src.application.exceptions import ApiException
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -8,6 +9,9 @@ class Movie:
     title: str
     director: str
     year: int
+    runtime: Optional[str] = None
+    plot: Optional[str] = None
+    poster_url: Optional[str] = None
     watched: bool = False
 
     def __post_init__(self):

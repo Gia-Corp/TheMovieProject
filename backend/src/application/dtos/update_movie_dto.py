@@ -7,3 +7,6 @@ class UpdateMovieDTO(BaseModel):
     director: Optional[str] = Field(None, min_length=1)
     year: Optional[int] = Field(None, ge=0)
     watched: Optional[bool] = None
+    runtime: Optional[str] = Field(None, min_length=1)
+    plot: Optional[str] = Field(None, min_length=1)
+    poster_url: Optional[str] = Field(None, min_length=1)

@@ -23,3 +23,7 @@ SHEET_CREDENTIALS = {
     "client_x509_cert_url": getenv("CLIENT_X509_CERT_URL"),
     "universe_domain": getenv("UNIVERSE_DOMAIN"),
 }
+
+# The Movie DB
+MOVIE_API_URL = getenv("MOVIE_API_URL")
+MOVIE_API_KEY = getenv("MOVIE_API_KEY")
