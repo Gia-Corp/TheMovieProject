@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 15px;
   padding: 15px;
-  position: relative;
+  height: fit-content;
 }
 
 .add-movie-form button {
@@ -13,6 +13,12 @@
   border: none;
   background-color: var(--main-clr);
   color: var(--text-clr);
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 .add-movie-form label {
@@ -31,15 +37,20 @@ label[for="watched"] {
 }
 
 .add-movie-form input[type="search"] {
-  background-color: var(--search-bar-clr);
+  width: 100%;
   padding: 5px;
   border: none;
-  width: 100%;
+  background-color: var(--search-bar-clr);
   outline: none;
   text-overflow: ellipsis;
   
   &:focus, &:hover{
-    outline: 2px solid white;
+    outline: 2px solid var(--search-bar-outline-clr);
+  }
+
+  &::placeholder {
+    color: inherit;
+    opacity: 0.5;
   }
 }
 
@@ -47,16 +58,13 @@ label[for="watched"] {
   width: fit-content;
 }
 
-.add-movie-form input::placeholder {
-  color: var(--search-bar-dark-clr);
-  opacity: 0.5;
-}
-
 .add-movie-form ul {
   max-height: 180px;
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: white;
+  background-color: var(--search-bar-clr);
+  scrollbar-width: thin;
+  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
 }
 
 .add-movie-form ul li {
@@ -67,8 +75,8 @@ label[for="watched"] {
   gap: 10px;
 
   &:hover {
-    background-color: grey;
     cursor: pointer;
+    background-color: var(--search-bar-hover-clr);
   }
 
   img {

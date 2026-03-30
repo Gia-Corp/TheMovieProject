@@ -89,8 +89,11 @@ function AddMovieForm({ onSuccess }) {
           {movies.length > 0 ? (
             movies.map((movie) => (
               <li onMouseDown={() => handleSelect(movie)} key={movie.imdbID}>
-                <span>{movie.Title}</span> ({movie.Year})
                 <img src={movie.Poster} />
+                <div>
+                  <span>{movie.Title}</span>
+                  <p>{movie.Year}</p>
+                </div>
               </li>
             ))
           ) : (

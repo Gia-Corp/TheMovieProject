@@ -10,6 +10,8 @@
   padding: 8px;
   border: none;
   background-color: var(--search-bar-clr);
+  outline: none;
+  text-overflow: ellipsis;
   font-size: 1em;
   flex: 1;
 
