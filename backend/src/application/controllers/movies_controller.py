@@ -8,7 +8,7 @@ from src.infra import (
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
 from src.dependencies import get_movie_repo, get_external_api_movie_repo
-from src.application.dtos import CreateMovieDTO, UpdateMovieDTO
+from src.application.dtos import CreateMovieDTO, UpdateMovieDTO, GetMoviesResponseDTO
 from typing import Optional
 import math
 
@@ -17,7 +17,7 @@ movies_controller = APIRouter(
 )
 
 
-@movies_controller.get("/movies")
+@movies_controller.get("/movies", response_model=GetMoviesResponseDTO)
 async def get_movies(
     page: int = Query(..., gt=0),
     size: int = Query(..., gt=0),
