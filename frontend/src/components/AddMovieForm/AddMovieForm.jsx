@@ -34,7 +34,7 @@ function AddMovieForm({ onSuccess }) {
   }, [state.successCount, onSuccess]);
 
   useEffect(() => {
-    if (inputText === "") return;
+    if (inputText === "" || selectedMovie !== null) return;
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -42,13 +42,17 @@ function AddMovieForm({ onSuccess }) {
         .getMovies({
           title: inputText,
         })
-        .then((res) => setMovies(res.Search))
+        .then((res) => {
+          console.log(res);
+          setMovies(res.Search ?? []);
+        })
         .catch(() => setMovies([]));
     }, 500);
-  }, [inputText, externalMovieRepository]);
+  }, [inputText, externalMovieRepository, selectedMovie]);
 
   const handleInputChange = (event) => {
     const newInputText = event.target.value;
+    if (selectedMovie) setSelectedMovie(null);
     setInputText(newInputText);
     if (newInputText === "") setMovies(null);
   };
@@ -57,9 +61,11 @@ function AddMovieForm({ onSuccess }) {
     clearTimeout(blurTimeout.current);
     setIsFocused(true);
   };
+
   const handleOnBlur = () => {
     blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
   };
+
   const handleSelect = (movie) => {
     setSelectedMovie(movie);
     setInputText(movie.Title);
