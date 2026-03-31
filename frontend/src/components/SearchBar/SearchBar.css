@@ -37,10 +37,13 @@
   font-size: 0.85rem;
 }
 
-.search-item {
+.search-results li {
   padding: 8px;
   display: flex;
   align-items: center;
+}
+
+.search-item {
   gap: 7px;
 
   &:hover {
