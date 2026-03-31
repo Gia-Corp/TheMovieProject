@@ -3,6 +3,10 @@
   max-width: 250px;
   position: relative;
   transition: scale 0.15s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-ghost-clr);
 
   &:hover {
     scale: 1.08;
