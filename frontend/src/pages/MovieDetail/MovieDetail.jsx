@@ -43,7 +43,9 @@ function MovieDetail() {
     <div className="movie-detail-page">
       <div className="detail-section">
         <h2>{movie.title}</h2>
+        <p>{movie.plot}</p>
         <p>Dirigida por: {movie.director}</p>
+        <p>Duración: {movie.runtime}</p>
         <span>
           <p>{movie.year}</p>
         </span>
