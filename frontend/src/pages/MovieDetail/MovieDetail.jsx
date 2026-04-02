@@ -12,15 +12,17 @@ function MovieDetail() {
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(!movie.plot);
 
   useEffect(() => {
-    if (movie.title) return;
+    if (movie.plot) return;
 
     movieRepository
       .getMovie(id)
       .then((res) => {
         setMovie(res);
         setIsWatched(res.watched);
+        setIsLoading(false);
       })
       .catch(setError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +37,7 @@ function MovieDetail() {
 
   if (error) throw error;
 
-  if (!movie) {
+  if (isLoading) {
     return <p>Cargando...</p>;
   }
 
@@ -44,8 +46,8 @@ function MovieDetail() {
       <div className="detail-section">
         <h2>{movie.title}</h2>
         <p>{movie.plot}</p>
-        {movie.director ? <p>Dirigida por: {movie.director}</p> : null}
-        {movie.runtime ? <p>Duración: {movie.runtime}</p> : null}
+        {movie.director !== null ? <p>Dirigida por: {movie.director}</p> : null}
+        {movie.runtime !== null ? <p>Duración: {movie.runtime}</p> : null}
         <span>
           <p>{movie.year}</p>
         </span>

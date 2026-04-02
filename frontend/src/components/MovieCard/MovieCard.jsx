@@ -24,7 +24,7 @@ function MovieCard({ movie }) {
           onError={() => setIsImageReady(true)}
         />
       ) : (
-        <p>No tiene poster :/</p>
+        <p>{movie.title}</p>
       )}
       <div>{movie.watched ? <MovieWatchedIcon /> : null}</div>
     </div>
