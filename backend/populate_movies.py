@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── Configuración ────────────────────────────────────────────────────────────
-API_BASE_URL = "http://backend:5000"
+API_BASE_URL = os.getenv("API_BASE_URL")
 OMDB_API_URL = os.getenv("MOVIE_API_URL")
 OMDB_API_KEY = os.getenv("MOVIE_API_KEY")
 PAGE = int(os.getenv("PAGE", 1))
