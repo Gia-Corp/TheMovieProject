@@ -80,9 +80,9 @@ async def create_movie(
         director=movie["Director"],
         year=int(movie["Year"]),
         watched=movie_dto.watched,
-        runtime=movie["Runtime"],
-        plot=movie["Plot"],
-        poster_url=movie["Poster"],
+        runtime=movie["Runtime"] if movie["Runtime"] != "N/A" in movie else None,
+        plot=movie["Plot"] if movie["Plot"] != "N/A" in movie else None,
+        poster_url=movie["Poster"] if movie["Poster"] != "N/A" in movie else None,
     )
     return movie_repo.add(movie)
 

@@ -35,12 +35,19 @@
   display: flex;
   flex-direction: column;
   font-size: 0.85rem;
+  max-height: 270px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
 }
 
-.search-item {
+.search-results li {
   padding: 8px;
   display: flex;
   align-items: center;
+}
+
+.search-item {
   gap: 7px;
 
   &:hover {

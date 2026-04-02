@@ -61,19 +61,21 @@ function SearchBar({
             className="search-results"
             onMouseDown={(e) => e.preventDefault()}
           >
-            {results.length > 0
-              ? results.map((item) => {
-                  return (
-                    <li
-                      onMouseDown={() => onItemClick(item)}
-                      className="search-item"
-                      key={item.id}
-                    >
-                      {renderItem(item)}
-                    </li>
-                  );
-                })
-              : "No hay resultados"}
+            {results.length > 0 ? (
+              results.map((item) => {
+                return (
+                  <li
+                    onMouseDown={() => onItemClick(item)}
+                    className="search-item"
+                    key={item.id}
+                  >
+                    {renderItem(item)}
+                  </li>
+                );
+              })
+            ) : (
+              <li>No hay resultados</li>
+            )}
           </ul>
         ) : null
       ) : null}
