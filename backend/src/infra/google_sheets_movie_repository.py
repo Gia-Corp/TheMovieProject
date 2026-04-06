@@ -141,3 +141,13 @@ class MovieNotFoundError(ApiException):
 
     def get_status_code(self):
         return self.NOT_FOUND
+
+
+class MovieAlreadyExistsError(ApiException):
+    CONFLICT = 409
+
+    def build_message(self, parameter):
+        return "Movie already exists"
+
+    def get_status_code(self):
+        return self.CONFLICT
