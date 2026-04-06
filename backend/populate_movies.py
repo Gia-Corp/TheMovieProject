@@ -29,6 +29,7 @@ PAGE_SIZE = int(os.getenv("PAGE_SIZE", 50))
 
 def extract_omdb_fields(omdb_data: dict) -> dict:
     """Extrae runtime, plot y poster_url del response de OMDB, ignorando 'N/A'."""
+
     def clean(value):
         return value if value and value != "N/A" else None
 
@@ -49,7 +50,9 @@ async def populate_movies():
 
     print(f"📥 Obteniendo películas de la API (página {PAGE}, tamaño {PAGE_SIZE})...")
     async with httpx.AsyncClient(timeout=15) as client:
-        response = await client.get(f"{API_BASE_URL}/movies", params={"page": PAGE, "size": PAGE_SIZE})
+        response = await client.get(
+            f"{API_BASE_URL}/movies", params={"page": PAGE, "size": PAGE_SIZE}
+        )
         response.raise_for_status()
         movies = response.json().get("movies", [])
 
@@ -77,7 +80,9 @@ async def populate_movies():
             omdb_data = await omdb_repo.get_by_title_and_year(title, year)
 
             if omdb_data.get("Response") == "False":
-                print(f"❌ No encontrada en OMDB: {omdb_data.get('Error', 'Unknown error')}")
+                print(
+                    f"❌ No encontrada en OMDB: {omdb_data.get('Error', 'Unknown error')}"
+                )
                 results["errors"] += 1
                 continue
 
@@ -90,7 +95,9 @@ async def populate_movies():
                 continue
 
             async with httpx.AsyncClient(timeout=10) as client:
-                response = await client.patch(f"{API_BASE_URL}/movies/{movie_id}", json=payload)
+                response = await client.patch(
+                    f"{API_BASE_URL}/movies/{movie_id}", json=payload
+                )
                 response.raise_for_status()
 
             print(f"✅ Actualizada — {list(payload.keys())}")

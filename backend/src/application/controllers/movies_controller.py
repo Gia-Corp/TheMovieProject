@@ -4,6 +4,7 @@ from src.infra import (
     MovieNotFoundError,
     PageOutOfBoundsError,
     ExternalAPIMovieRepository,
+    MovieAlreadyExistsError,
 )
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
@@ -71,18 +72,23 @@ async def create_movie(
         get_external_api_movie_repo
     ),
 ):
-    movie = await external_api_movie_repo.get_by_title_and_year(
+    matching_movies = movie_repo.find_by_title(movie_dto.title)
+    if matching_movies:
+        raise MovieAlreadyExistsError()
+
+    movie_info = await external_api_movie_repo.get_by_title_and_year(
         movie_dto.title, movie_dto.year
     )
+
     movie = Movie(
         id=1,
-        title=movie["Title"],
-        director=movie["Director"],
-        year=int(movie["Year"]),
+        title=movie_info["Title"],
+        director=movie_info["Director"],
+        year=int(movie_info["Year"]),
         watched=movie_dto.watched,
-        runtime=movie["Runtime"] if movie["Runtime"] != "N/A" in movie else None,
-        plot=movie["Plot"] if movie["Plot"] != "N/A" in movie else None,
-        poster_url=movie["Poster"] if movie["Poster"] != "N/A" in movie else None,
+        runtime=movie_info["Runtime"] if movie_info["Runtime"] != "N/A" else None,
+        plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
+        poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
     )
     return movie_repo.add(movie)
 
