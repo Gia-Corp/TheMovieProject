@@ -1,4 +1,5 @@
 import httpx
+from .google_sheets_movie_repository import MovieNotFoundError
 
 
 class ExternalAPIMovieRepository:
@@ -14,7 +15,9 @@ class ExternalAPIMovieRepository:
                 f"{self.api_url}", params={"apikey": self.api_key, **params}
             )
             response.raise_for_status()
-            movies = response.json()
+            movie = response.json()
 
-            return movies
+            if "Error" in movie:
+                raise MovieNotFoundError()
+            return movie
         return
