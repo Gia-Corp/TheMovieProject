@@ -8,7 +8,11 @@ from src.infra import (
 )
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie
-from src.dependencies import get_movie_repo, get_external_api_movie_repo
+from src.dependencies import (
+    get_movie_repo,
+    get_external_api_movie_repo,
+    get_current_user,
+)
 from src.application.dtos import CreateMovieDTO, UpdateMovieDTO, GetMoviesResponseDTO
 from typing import Optional
 import math
@@ -71,6 +75,7 @@ async def create_movie(
     external_api_movie_repo: ExternalAPIMovieRepository = Depends(
         get_external_api_movie_repo
     ),
+    current_user=Depends(get_current_user),
 ):
     matching_movies = movie_repo.find_by_title(movie_dto.title)
     if matching_movies:

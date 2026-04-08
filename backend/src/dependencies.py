@@ -55,8 +55,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user_repo = get_user_repo()
-
     user = user_repo.get_by_id(payload["sub"])
     if not user:
         raise HTTPException(status_code=404)
