@@ -1,46 +1,15 @@
 from fastapi import APIRouter, Depends, Response, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-from datetime import datetime, timedelta
 import bcrypt
-from src.dependencies import get_user_repo
+from src.dependencies import get_user_repo, get_jwt_handler
 from src.infra import GoogleSheetsUserRepository
-import src.settings as settings
+from src.application.auth import JWTHandler
+
 
 auth_controller = APIRouter(
     prefix="/auth",
     tags=["Auth"],
 )
-
-
-def create_access_token(data: dict):
-    expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return jwt.encode(
-        {**data, "exp": expire, "type": "access"},
-        settings.JWT_SECRET_KEY,
-        settings.JWT_ALGORITHM,
-    )
-
-
-def create_refresh_token(data: dict):
-    expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    return jwt.encode(
-        {**data, "exp": expire, "type": "refresh"},
-        settings.JWT_SECRET_KEY,
-        settings.JWT_ALGORITHM,
-    )
-
-
-def verify_token(token: str, token_type: str):
-    try:
-        payload = jwt.decode(
-            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
-        )
-        if payload.get("type") != token_type:
-            return None
-        return payload
-    except JWTError:
-        return None
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -54,6 +23,7 @@ async def login(
     response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
+    jwt_handler: JWTHandler = Depends(get_jwt_handler),
 ):
     user = user_repo.get_by_email(form_data.username)
 
@@ -63,8 +33,10 @@ async def login(
     if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 
-    access_token = create_access_token({"sub": str(user.id), "role": user.role})
-    refresh_token = create_refresh_token({"sub": str(user.id)})
+    access_token = jwt_handler.create_access_token(
+        {"sub": str(user.id), "role": user.role}
+    )
+    refresh_token = jwt_handler.create_refresh_token({"sub": str(user.id)})
 
     # Refresh token en cookie HttpOnly
     response.set_cookie(
