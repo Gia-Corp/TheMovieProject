@@ -6,6 +6,15 @@ class GoogleSheetsUserRepository:
     def __init__(self, sheet):
         self.sheet = sheet
 
+    def get_by_id(self, id):
+        cell = self.sheet.find(str(id), in_column=1)
+        if not cell:
+            return
+
+        raw_users = self.sheet.get(f"A{cell.row}:F{cell.row}")
+        users = self._dicts_to_users(raw_users)
+        return users[0]
+
     def get_by_email(self, email):
         cell = self.sheet.find(str(email), in_column=2)
         if not cell:
