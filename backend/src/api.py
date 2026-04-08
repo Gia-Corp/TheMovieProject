@@ -12,7 +12,7 @@ from .domain import (
 )
 from .infra import MovieNotFoundError, PageOutOfBoundsError, MovieAlreadyExistsError
 import src.settings as settings
-from .application.controllers import movies_controller
+from .application.controllers import movies_controller, auth_controller
 
 api = FastAPI(
     title="The Movie Project API",
@@ -44,6 +44,7 @@ async def api_error_handler(request: Request, exc: Exception):
 
 
 api.include_router(movies_controller)
+api.include_router(auth_controller)
 
 
 @api.get("/")
