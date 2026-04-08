@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import bcrypt
 from src.dependencies import get_user_repo
 from src.infra import GoogleSheetsUserRepository
+import src.settings as settings
 
 auth_controller = APIRouter(
     prefix="/auth",
@@ -12,31 +13,29 @@ auth_controller = APIRouter(
 )
 
 
-JWT_SECRET_KEY = (
-    "tu-clave-secreta-muy-larga"
-)
-JWT_ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-REFRESH_TOKEN_EXPIRE_DAYS = 7
-
-
 def create_access_token(data: dict):
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return jwt.encode(
-        {**data, "exp": expire, "type": "access"}, JWT_SECRET_KEY, JWT_ALGORITHM
+        {**data, "exp": expire, "type": "access"},
+        settings.JWT_SECRET_KEY,
+        settings.JWT_ALGORITHM,
     )
 
 
 def create_refresh_token(data: dict):
-    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     return jwt.encode(
-        {**data, "exp": expire, "type": "refresh"}, JWT_SECRET_KEY, JWT_ALGORITHM
+        {**data, "exp": expire, "type": "refresh"},
+        settings.JWT_SECRET_KEY,
+        settings.JWT_ALGORITHM,
     )
 
 
 def verify_token(token: str, token_type: str):
     try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(
+            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+        )
         if payload.get("type") != token_type:
             return None
         return payload
