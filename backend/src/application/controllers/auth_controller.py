@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, HTTPException
+from fastapi import APIRouter, Depends, Response, HTTPException, Cookie
 from fastapi.security import OAuth2PasswordRequestForm
 import bcrypt
 from src.dependencies import get_user_repo, get_jwt_handler
@@ -49,3 +49,22 @@ async def login(
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@auth_controller.post("/refresh")
+async def refresh(
+    response: Response,
+    refresh_token: str = Cookie(None),
+    jwt_handler: JWTHandler = Depends(get_jwt_handler),
+):
+    if not refresh_token:
+        raise HTTPException(status_code=401)
+
+    payload = jwt_handler.verify_token(refresh_token, "refresh")
+    if not payload:
+        raise HTTPException(status_code=401, detail="Refresh token inválido o expirado")
+
+    new_access_token = jwt_handler.create_access_token(
+        {"sub": payload["sub"], "role": payload["role"]}
+    )
+    return {"access_token": new_access_token, "token_type": "bearer"}
