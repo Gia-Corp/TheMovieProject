@@ -105,6 +105,7 @@ async def update_movie(
     ),
     movie_dto: UpdateMovieDTO = None,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    current_user=Depends(get_current_user),
 ):
     movie = movie_repo.get_by_id(movie_id)
 
@@ -147,6 +148,7 @@ async def delete_movie(
         ..., gt=0, description="El ID de la película debe ser mayor a 0"
     ),
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    current_user=Depends(get_current_user),
 ):
     movie = movie_repo.get_by_id(movie_id)
 
