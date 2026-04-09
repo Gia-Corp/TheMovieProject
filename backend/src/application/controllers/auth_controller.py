@@ -53,7 +53,6 @@ async def login(
 
 @auth_controller.post("/refresh")
 async def refresh(
-    response: Response,
     refresh_token: str = Cookie(None),
     jwt_handler: JWTHandler = Depends(get_jwt_handler),
 ):
@@ -68,3 +67,9 @@ async def refresh(
         {"sub": payload["sub"], "role": payload["role"]}
     )
     return {"access_token": new_access_token, "token_type": "bearer"}
+
+
+@auth_controller.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie("refresh_token")
+    return {"message": "Sesión cerrada"}
