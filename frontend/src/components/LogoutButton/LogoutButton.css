@@ -1,0 +1,12 @@
+.confirm-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.logout-confirm-button {
+  width: fit-content;
+  color: red;
+  align-self: center;
+}

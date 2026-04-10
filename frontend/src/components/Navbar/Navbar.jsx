@@ -7,6 +7,7 @@ import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import LoginButton from "@/components/LoginButton/LoginButton";
+import LogoutButton from "@/components/LogoutButton/LogoutButton";
 
 function Navbar() {
   const { movieRepository } = useRepos();
@@ -53,7 +54,7 @@ function Navbar() {
       />
       <div className="nav-buttons">
         <AddMovieButton />
-        {!accessToken ? <LoginButton /> : null}
+        {!accessToken ? <LoginButton /> : <LogoutButton />}
       </div>
     </nav>
   );
