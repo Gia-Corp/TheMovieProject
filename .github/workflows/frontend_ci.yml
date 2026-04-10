@@ -78,11 +78,8 @@ jobs:
           EOF
       
       - name: Verify netlify.toml
-        run: cat build/netlify.toml
+        run: cat ../netlify.toml
 
-      - name: Copy netlify.toml to build
-        run: cp netlify.toml build/netlify.toml
-      
   deploy:
     # Only run this job if the branch is main and build job has passed
     if: github.ref == 'refs/heads/main'
