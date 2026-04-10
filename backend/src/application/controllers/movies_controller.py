@@ -18,6 +18,7 @@ from typing import Optional
 import math
 
 movies_controller = APIRouter(
+    prefix="/api",
     tags=["Movies"],
 )
 
