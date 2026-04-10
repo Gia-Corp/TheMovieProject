@@ -60,7 +60,7 @@ jobs:
       
       - name: Generate netlify.toml
         run: |
-          cat > build/netlify.toml << EOF
+          cat > ../netlify.toml << EOF
           [[redirects]]
             from = "/auth/*"
             to = "${{ secrets.BACKEND_URL }}/auth/:splat"
@@ -117,5 +117,5 @@ jobs:
         run: netlify sites:list --auth $NETLIFY_AUTH_TOKEN
 
       - name: Deploy to production environment
-        run: netlify deploy --no-build --dir=build --prod --site=$NETLIFY_PROJECT_ID --auth=$NETLIFY_AUTH_TOKEN
+        run: netlify deploy --no-build --dir=build --prod --site=$NETLIFY_PROJECT_ID --auth=$NETLIFY_AUTH_TOKEN --config=../netlify.toml
 
