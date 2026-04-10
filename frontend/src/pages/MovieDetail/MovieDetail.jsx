@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedButton from "@/components/MovieWatchedButton/MovieWatchedButton";
+import { useAuth } from "@/hooks/useAuth";
 
 function MovieDetail() {
   const { state } = useLocation();
@@ -13,6 +14,7 @@ function MovieDetail() {
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(!movie.plot);
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     if (movie.plot) return;
@@ -31,7 +33,7 @@ function MovieDetail() {
   const handleOnClick = () => {
     setIsWatched(!isWatched);
     movieRepository
-      .updateMovie(movie.id, { watched: !isWatched })
+      .updateMovie(movie.id, { watched: !isWatched }, accessToken)
       .catch(() => setIsWatched(isWatched));
   };
 
