@@ -10,11 +10,6 @@ function LoginForm({ onSuccess }) {
   const [state, dispatch, isPending] = useActionState(
     async (prevState, formData) => {
       try {
-        // const loginCredentials = {
-        //   username: formData.get("email"),
-        //   password: formData.get("password"),
-        // };
-
         const response = await fetch(LOGIN_ENDPOINT, {
           method: "POST",
           body: formData,

@@ -1,11 +1,24 @@
 import "./LogoutButton.css";
 import { useRef } from "react";
 import Modal from "@/components/Modal/Modal";
+import { useAuth } from "@/hooks/useAuth";
 
 function LogoutButton() {
   const dialogRef = useRef(null);
+  const { setAccessToken } = useAuth();
+
   const handleOpen = () => dialogRef.current.showModal();
   const handleClose = () => dialogRef.current.close();
+  function handleClick() {
+    const LOGOUT_ENDPOINT = "/auth/logout";
+    fetch(LOGOUT_ENDPOINT, {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      setAccessToken(null);
+      handleClose();
+    });
+  }
 
   return (
     <>
@@ -19,7 +32,9 @@ function LogoutButton() {
         onClose={handleClose}
       >
         <div className="confirm-layout">
-          <button className="logout-confirm-button">Sí, cerrar</button>
+          <button onClick={handleClick} className="logout-confirm-button">
+            Sí, cerrar
+          </button>
         </div>
       </Modal>
     </>
