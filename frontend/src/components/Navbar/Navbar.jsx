@@ -5,9 +5,11 @@ import AddMovieButton from "@/components/AddMovieButton/AddMovieButton";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 function Navbar() {
   const { movieRepository } = useRepos();
+  const { accessToken } = useAuth();
 
   function searchCall(inputTextToSearch) {
     return movieRepository
@@ -48,7 +50,10 @@ function Navbar() {
         renderItem={renderMovieResult}
         onItemClick={handleClick}
       />
-      <AddMovieButton />
+      <div className="nav-buttons">
+        <AddMovieButton />
+        {!accessToken ? <button>Iniciar sesión</button> : null}
+      </div>
     </nav>
   );
 }

@@ -43,7 +43,6 @@ function AddMovieForm({ onSuccess }) {
           title: inputText,
         })
         .then((res) => {
-          console.log(res);
           setMovies(res.Search ?? []);
         })
         .catch(() => setMovies([]));
