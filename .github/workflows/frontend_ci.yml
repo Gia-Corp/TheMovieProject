@@ -58,28 +58,6 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       
-      - name: Generate netlify.toml
-        run: |
-          cat > ../netlify.toml << EOF
-          [[redirects]]
-            from = "/auth/*"
-            to = "${{ secrets.BACKEND_URL }}/auth/:splat"
-            status = 200
-
-          [[redirects]]
-            from = "/api/*"
-            to = "${{ secrets.BACKEND_URL }}/api/:splat"
-            status = 200
-
-          [[redirects]]
-            from = "/*"
-            to = "/index.html"
-            status = 200
-          EOF
-      
-      - name: Verify netlify.toml
-        run: cat ../netlify.toml
-
   deploy:
     # Only run this job if the branch is main and build job has passed
     if: github.ref == 'refs/heads/main'
@@ -113,14 +91,31 @@ jobs:
       - name: Check existing Netlify projects
         run: netlify sites:list --auth $NETLIFY_AUTH_TOKEN
 
-      - name: Verify netlify.toml exists
+      - name: Generate netlify.toml
+        working-directory: ${{ github.workspace }}
         run: |
-          cd ..
-          ls -la netlify.toml
-          cat netlify.toml
+          cat > netlify.toml << EOF
+          [[redirects]]
+            from = "/auth/*"
+            to = "${{ secrets.BACKEND_URL }}/auth/:splat"
+            status = 200
+
+          [[redirects]]
+            from = "/api/*"
+            to = "${{ secrets.BACKEND_URL }}/api/:splat"
+            status = 200
+
+          [[redirects]]
+            from = "/*"
+            to = "/index.html"
+            status = 200
+          EOF
+
+      - name: Verify netlify.toml
+        working-directory: ${{ github.workspace }}
+        run: cat netlify.toml
 
       - name: Deploy to production environment
-        run: |
-          cd ..
-          netlify deploy --no-build --dir=frontend/build --prod --site=$NETLIFY_PROJECT_ID --auth=$NETLIFY_AUTH_TOKEN
+        working-directory: ${{ github.workspace }}
+        run: netlify deploy --no-build --dir=frontend/build --prod --site=$NETLIFY_PROJECT_ID --auth=$NETLIFY_AUTH_TOKEN
 
