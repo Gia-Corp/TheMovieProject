@@ -7,12 +7,10 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     async function tryRefresh() {
-      const BASE_URL = import.meta.env.VITE_BACKEND_URL;
       const REFRESH_ENDPOINT = "/auth/refresh";
-      const url = BASE_URL + REFRESH_ENDPOINT;
 
       try {
-        const response = await fetch(url, {
+        const response = await fetch(REFRESH_ENDPOINT, {
           method: "POST",
           credentials: "include",
         });
