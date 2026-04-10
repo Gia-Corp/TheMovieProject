@@ -114,5 +114,7 @@ jobs:
         run: netlify sites:list --auth $NETLIFY_AUTH_TOKEN
 
       - name: Deploy to production environment
-        run: netlify deploy --no-build --dir=build --prod --site=$NETLIFY_PROJECT_ID --auth=$NETLIFY_AUTH_TOKEN --config=../netlify.toml
+        run: |
+          cd ..
+          netlify deploy --no-build --dir=frontend/build --prod --site=$NETLIFY_PROJECT_ID --auth=$NETLIFY_AUTH_TOKEN
 
