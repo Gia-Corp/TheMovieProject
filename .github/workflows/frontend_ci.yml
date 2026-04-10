@@ -77,6 +77,9 @@ jobs:
             status = 200
           EOF
       
+      - name: Verify netlify.toml
+        run: cat build/netlify.toml
+
       - name: Copy netlify.toml to build
         run: cp netlify.toml build/netlify.toml
       
