@@ -58,6 +58,28 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       
+      - name: Generate netlify.toml
+        run: |
+          cat > build/netlify.toml << EOF
+          [[redirects]]
+            from = "/auth/*"
+            to = "${{ secrets.BACKEND_URL }}/auth/:splat"
+            status = 200
+
+          [[redirects]]
+            from = "/api/*"
+            to = "${{ secrets.BACKEND_URL }}/api/:splat"
+            status = 200
+
+          [[redirects]]
+            from = "/*"
+            to = "/index.html"
+            status = 200
+          EOF
+      
+      - name: Copy netlify.toml to build
+        run: cp netlify.toml build/netlify.toml
+      
   deploy:
     # Only run this job if the branch is main and build job has passed
     if: github.ref == 'refs/heads/main'
