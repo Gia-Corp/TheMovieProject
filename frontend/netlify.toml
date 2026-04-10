@@ -1,4 +1,14 @@
 [[redirects]]
+  from = "/auth/*"
+  to = "https://realmovieproject.netlify.app/auth/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://realmovieproject.netlify.app/api/:splat"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

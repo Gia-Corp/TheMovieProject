@@ -26,3 +26,8 @@
     font-family: var(--title-font);
   }
 }
+
+.nav-buttons:last-of-type {
+  justify-self: end;
+  gap: 20px;
+}

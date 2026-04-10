@@ -9,7 +9,6 @@ FRONTEND_URL = getenv("FRONTEND_URL")
 
 # Google Sheets
 SHEET_NAME = getenv("SHEET_NAME")
-
 SHEET_CREDENTIALS = {
     "type": getenv("TYPE"),
     "project_id": getenv("PROJECT_ID"),
@@ -27,3 +26,9 @@ SHEET_CREDENTIALS = {
 # The Movie DB
 MOVIE_API_URL = getenv("MOVIE_API_URL")
 MOVIE_API_KEY = getenv("MOVIE_API_KEY")
+
+# JWT authentication
+JWT_SECRET_KEY = getenv("JWT_SECRET_KEY")
+JWT_ALGORITHM = getenv("JWT_ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFRESH_TOKEN_EXPIRE_DAYS = int(getenv("REFRESH_TOKEN_EXPIRE_DAYS"))

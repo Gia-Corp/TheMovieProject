@@ -88,3 +88,11 @@ label[for="watched"] {
     font-weight: 650;
   }
 }
+
+.error-sign {
+  background-color: color-mix(in srgb, red 10%, transparent);
+  color: red;
+  border: 1px solid red;
+  padding: 5px;
+  width: fit-content;
+}

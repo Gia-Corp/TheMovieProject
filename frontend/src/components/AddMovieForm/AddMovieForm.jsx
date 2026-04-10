@@ -1,6 +1,7 @@
 import "./AddMovieForm.css";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRepos } from "@/hooks/useRepos";
+import { useAuth } from "@/hooks/useAuth";
 
 function AddMovieForm({ onSuccess }) {
   const { movieRepository, externalMovieRepository } = useRepos();
@@ -8,6 +9,7 @@ function AddMovieForm({ onSuccess }) {
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const { accessToken } = useAuth();
 
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
@@ -20,7 +22,7 @@ function AddMovieForm({ onSuccess }) {
           year: selectedMovie.Year,
           watched: formData.get("watched") ? true : false,
         };
-        await movieRepository.createMovie(newMovie);
+        await movieRepository.createMovie(newMovie, accessToken);
         return { error: null, successCount: prevState.successCount + 1 };
       } catch (error) {
         return { error: error.message, successCount: prevState.successCount };
@@ -43,7 +45,6 @@ function AddMovieForm({ onSuccess }) {
           title: inputText,
         })
         .then((res) => {
-          console.log(res);
           setMovies(res.Search ?? []);
         })
         .catch(() => setMovies([]));
@@ -113,7 +114,7 @@ function AddMovieForm({ onSuccess }) {
         <input type="checkbox" name="watched" id="watched" />
       </label>
 
-      {state.error && <p className="error">{state.error}</p>}
+      {state.error && <p className="error-sign">{state.error}</p>}
 
       <button type="submit" disabled={isPending}>
         {isPending ? "Cargando..." : "Confirmar"}

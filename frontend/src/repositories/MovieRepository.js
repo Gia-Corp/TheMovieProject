@@ -1,12 +1,8 @@
 export class MovieRepository {
-  static #MOVIES_PATH = "/movies";
-  static #BASE_URL = import.meta.env.VITE_BACKEND_URL;
+  static #MOVIES_PATH = "/api/movies";
 
   async getMovies({ page, size, title }) {
-    const url = new URL(
-      MovieRepository.#MOVIES_PATH,
-      MovieRepository.#BASE_URL,
-    );
+    const url = new URL(MovieRepository.#MOVIES_PATH, window.location.origin);
     url.searchParams.set("page", page);
     url.searchParams.set("size", size);
 
@@ -27,7 +23,7 @@ export class MovieRepository {
   async getMovie(id) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${id}`,
-      MovieRepository.#BASE_URL,
+      window.location.origin,
     );
 
     const res = await fetch(url);
@@ -40,16 +36,14 @@ export class MovieRepository {
     return res.json();
   }
 
-  async createMovie(movie) {
-    const url = new URL(
-      MovieRepository.#MOVIES_PATH,
-      MovieRepository.#BASE_URL,
-    );
+  async createMovie(movie, accessToken) {
+    const url = new URL(MovieRepository.#MOVIES_PATH, window.location.origin);
 
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(movie),
     });
@@ -65,7 +59,7 @@ export class MovieRepository {
   async updateMovie(movieId, movie) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${movieId}`,
-      MovieRepository.#BASE_URL,
+      window.location.origin,
     );
 
     const res = await fetch(url, {

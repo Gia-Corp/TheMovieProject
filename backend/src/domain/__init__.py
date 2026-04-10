@@ -5,9 +5,12 @@ from .movie import (
     Movie,
 )
 
+from .user import User
+
 __all__ = [
     "EmptyMovieDirectorError",
     "EmptyMovieTitleError",
     "NegativeMovieYearError",
     "Movie",
+    "User",
 ]

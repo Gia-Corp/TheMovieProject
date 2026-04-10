@@ -1,18 +1,15 @@
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from fastapi import FastAPI, Request
-from .application.pagination import (
-    InvalidPageNumberError,
-    InvalidPageSizeError,
-)
-from .domain import (
-    EmptyMovieDirectorError,
-    EmptyMovieTitleError,
-    NegativeMovieYearError,
-)
-from .infra import MovieNotFoundError, PageOutOfBoundsError, MovieAlreadyExistsError
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi import FastAPI
 import src.settings as settings
-from .application.controllers import movies_controller
+from .application.controllers import movies_controller, auth_controller
+from .application.exceptions import (
+    ApiException,
+    validation_exception_handler,
+    http_exception_handler,
+    generic_exception_handler,
+)
 
 api = FastAPI(
     title="The Movie Project API",
@@ -30,20 +27,12 @@ api.add_middleware(
     allow_headers=["*"],
 )
 
-
-@api.exception_handler(MovieAlreadyExistsError)
-@api.exception_handler(PageOutOfBoundsError)
-@api.exception_handler(MovieNotFoundError)
-@api.exception_handler(NegativeMovieYearError)
-@api.exception_handler(EmptyMovieTitleError)
-@api.exception_handler(EmptyMovieDirectorError)
-@api.exception_handler(InvalidPageNumberError)
-@api.exception_handler(InvalidPageSizeError)
-async def api_error_handler(request: Request, exc: Exception):
-    return JSONResponse(status_code=exc.status_code, content=exc.to_dict())
-
+api.add_exception_handler(RequestValidationError, validation_exception_handler)
+api.add_exception_handler(StarletteHTTPException, http_exception_handler)
+api.add_exception_handler(ApiException, generic_exception_handler)
 
 api.include_router(movies_controller)
+api.include_router(auth_controller)
 
 
 @api.get("/")
