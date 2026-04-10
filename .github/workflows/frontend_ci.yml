@@ -113,6 +113,12 @@ jobs:
       - name: Check existing Netlify projects
         run: netlify sites:list --auth $NETLIFY_AUTH_TOKEN
 
+      - name: Verify netlify.toml exists
+        run: |
+          cd ..
+          ls -la netlify.toml
+          cat netlify.toml
+
       - name: Deploy to production environment
         run: |
           cd ..
