@@ -12,6 +12,7 @@
   --purple-contrast: rgb(154, 128, 202);
   --white: rgb(255, 255, 255);
   --green: #31cc02;
+  --red: red;
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
@@ -19,6 +20,7 @@
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
   --check-clr: var(--green);
+  --negative-clr: var(--red);
   
   /* TEXT SEMANTIC TOKENS */
   --text-clr: var(--white);
@@ -67,6 +69,19 @@ body {
 a {
   all: unset;
   cursor: pointer;
+}
+
+button {
+  border: none;
+  width: fit-content;
+  font-size: 0.9rem;
+  padding: 6px;
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 /* Make images easier to work with */
@@ -156,18 +171,13 @@ input {
 }
 
 .primary-button {
-  width: fit-content;
-  font-size: 0.9rem;
-  padding: 6px;
-  border: none;
-  background-color: var(--main-clr);
   color: var(--text-clr);
+  background-color: var(--main-clr);
+}
 
-  &:disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.5;
-  }
+.negative-button {
+  color: var(--text-clr);
+  background-color: var(--negative-clr);
 }
 
 .button-with-icon {

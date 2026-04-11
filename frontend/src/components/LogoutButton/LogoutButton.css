@@ -5,8 +5,6 @@
   padding: 20px;
 }
 
-.logout-confirm-button {
-  width: fit-content;
-  color: red;
+.confirm-layout button {
   align-self: center;
 }

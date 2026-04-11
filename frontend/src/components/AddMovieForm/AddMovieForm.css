@@ -61,9 +61,9 @@ label[for="watched"] {
 }
 
 .error-sign {
-  background-color: color-mix(in srgb, red 10%, transparent);
-  color: red;
-  border: 1px solid red;
+  background-color: color-mix(in srgb, var(--negative-clr) 10%, transparent);
+  color: var(--negative-clr);
+  border: 1px solid var(--negative-clr);
   padding: 5px;
   width: fit-content;
 }

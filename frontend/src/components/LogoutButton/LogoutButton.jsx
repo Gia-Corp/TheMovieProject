@@ -32,7 +32,7 @@ function LogoutButton() {
         onClose={handleClose}
       >
         <div className="confirm-layout">
-          <button onClick={handleClick} className="logout-confirm-button">
+          <button onClick={handleClick} className="negative-button">
             Sí, cerrar
           </button>
         </div>
