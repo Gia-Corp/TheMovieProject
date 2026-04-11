@@ -170,6 +170,13 @@ input:not([type="checkbox"]) {
   }
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--search-bar-clr) inset;
+  -webkit-text-fill-color: inherit;
+}
+
 .primary-button {
   color: var(--text-clr);
   background-color: var(--main-clr);
