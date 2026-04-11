@@ -110,7 +110,7 @@ function AddMovieForm({ onSuccess }) {
       ) : null}
 
       <label htmlFor="watched">
-        <p>Ya la vimos</p>
+        <p>☝️🤓 Ya la vimos</p>
         <input type="checkbox" name="watched" id="watched" />
       </label>
 
