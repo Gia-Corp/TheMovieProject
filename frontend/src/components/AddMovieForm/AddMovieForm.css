@@ -36,24 +36,6 @@ label[for="watched"] {
   }
 }
 
-.add-movie-form input[type="search"] {
-  width: 100%;
-  padding: 5px;
-  border: none;
-  background-color: var(--search-bar-clr);
-  outline: none;
-  text-overflow: ellipsis;
-  
-  &:focus, &:hover{
-    outline: 2px solid var(--search-bar-outline-clr);
-  }
-
-  &::placeholder {
-    color: inherit;
-    opacity: 0.5;
-  }
-}
-
 .add-movie-form input[type="checkbox"] {
   width: fit-content;
 }
