@@ -1,4 +1,3 @@
-import "./LoginButton.css";
 import { useRef } from "react";
 import Modal from "@/components/Modal/Modal";
 import LoginForm from "@/components/LoginForm/LoginForm";
@@ -10,7 +9,7 @@ function LoginButton() {
 
   return (
     <>
-      <button onClick={handleOpen} className="login-button">
+      <button onClick={handleOpen} className="primary-button">
         <p>Iniciar sesión</p>
       </button>
 

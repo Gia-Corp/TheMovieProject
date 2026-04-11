@@ -22,7 +22,7 @@ function LogoutButton() {
 
   return (
     <>
-      <button onClick={handleOpen} className="logout-button">
+      <button onClick={handleOpen} className="primary-button">
         <p>Cerrar sesión</p>
       </button>
 
