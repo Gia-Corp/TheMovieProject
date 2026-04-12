@@ -48,26 +48,63 @@ function MovieDetail() {
       <div className="detail-section">
         <h2>{movie.title}</h2>
         <p>{movie.plot}</p>
-        {movie.director !== null ? <p>Dirigida por: {movie.director}</p> : null}
-        {movie.runtime !== null ? <p>Duración: {movie.runtime}</p> : null}
-        <span>
-          <p>{movie.year}</p>
-        </span>
-        <MovieWatchedButton isWatched={isWatched} onClick={handleOnClick} />
       </div>
       <div className="poster-section">
-        {!isImageReady && movie.poster_url && <div className="skeleton" />}
-        {movie.poster_url ? (
-          <img
-            src={movie.poster_url}
-            alt={movie.title}
-            style={{ display: isImageReady ? "block" : "none" }}
-            onLoad={() => setIsImageReady(true)}
-            onError={() => setIsImageReady(true)}
-          />
-        ) : (
-          <p>No tiene poster :/</p>
-        )}
+        <div>
+          {!isImageReady && movie.poster_url && <div className="skeleton" />}
+          {movie.poster_url ? (
+            <img
+              src={movie.poster_url}
+              alt={movie.title}
+              style={{ display: isImageReady ? "block" : "none" }}
+              onLoad={() => setIsImageReady(true)}
+              onError={() => setIsImageReady(true)}
+            />
+          ) : (
+            <p>No tiene poster :/</p>
+          )}
+          <div className="info-section">
+            {movie.runtime !== null ? (
+              <div className="icon-text-box">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 6.5V12l3.5 2m5.5-2a9 9 0 1 1-18 0a9 9 0 0 1 18 0z" />
+                </svg>
+                <p>{movie.runtime}</p>
+              </div>
+            ) : null}
+            <div className="icon-text-box">
+              <svg viewBox="0 0 24 24">
+                <g fill="none" stroke="#000" strokeWidth="2">
+                  <path
+                    strokeLinejoin="round"
+                    d="M4 6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v4H4z"
+                  />
+                  <path strokeLinecap="round" d="M8 6.5v-3m8 3v-3" />
+                  <path
+                    strokeLinejoin="round"
+                    d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"
+                  />
+                </g>
+              </svg>
+              <p>{movie.year}</p>
+            </div>
+            {movie.director !== null ? (
+              <div className="icon-text-box">
+                <svg viewBox="0 0 24 24">
+                  <path d="m6 21l12-9M6 12l12 9M5 12h14M6 3v9m12-9v9M6 8h12M6 5h12" />
+                </svg>
+                <p>{movie.director}</p>
+              </div>
+            ) : null}
+            <div className="icon-text-box">
+              <MovieWatchedButton
+                isWatched={isWatched}
+                onClick={handleOnClick}
+              />
+              <p>{isWatched ? "Vista" : "No vista aún"}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

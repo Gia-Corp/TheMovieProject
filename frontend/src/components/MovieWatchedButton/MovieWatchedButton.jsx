@@ -5,7 +5,7 @@ function MovieWatchedButton({ isWatched, onClick }) {
     <div style={{ cursor: "pointer" }}>
       <MovieWatchedIcon
         onClick={onClick}
-        size={60}
+        size={30}
         color={isWatched ? undefined : "grey"}
       />
     </div>
