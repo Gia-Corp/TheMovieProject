@@ -7,18 +7,7 @@
 }
 
 .add-movie-form button {
-  width: fit-content;
   align-self: end;
-  padding: 6px;
-  border: none;
-  background-color: var(--main-clr);
-  color: var(--text-clr);
-
-  &:disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.5;
-  }
 }
 
 .add-movie-form label {
@@ -33,24 +22,6 @@ label[for="watched"] {
 
   &:hover {
     cursor: pointer;
-  }
-}
-
-.add-movie-form input[type="search"] {
-  width: 100%;
-  padding: 5px;
-  border: none;
-  background-color: var(--search-bar-clr);
-  outline: none;
-  text-overflow: ellipsis;
-  
-  &:focus, &:hover{
-    outline: 2px solid var(--search-bar-outline-clr);
-  }
-
-  &::placeholder {
-    color: inherit;
-    opacity: 0.5;
   }
 }
 
@@ -90,9 +61,9 @@ label[for="watched"] {
 }
 
 .error-sign {
-  background-color: color-mix(in srgb, red 10%, transparent);
-  color: red;
-  border: 1px solid red;
+  background-color: color-mix(in srgb, var(--negative-clr) 10%, transparent);
+  color: var(--negative-clr);
+  border: 1px solid var(--negative-clr);
   padding: 5px;
   width: fit-content;
 }

@@ -10,11 +10,6 @@ function LoginForm({ onSuccess }) {
   const [state, dispatch, isPending] = useActionState(
     async (prevState, formData) => {
       try {
-        // const loginCredentials = {
-        //   username: formData.get("email"),
-        //   password: formData.get("password"),
-        // };
-
         const response = await fetch(LOGIN_ENDPOINT, {
           method: "POST",
           body: formData,
@@ -68,7 +63,7 @@ function LoginForm({ onSuccess }) {
 
       {state.error && <p className="error-sign">{state.error}</p>}
 
-      <button type="submit" disabled={isPending}>
+      <button className="primary-button" type="submit" disabled={isPending}>
         {isPending ? "Cargando..." : "Confirmar"}
       </button>
     </form>

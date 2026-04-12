@@ -56,7 +56,7 @@ export class MovieRepository {
     return res.json();
   }
 
-  async updateMovie(movieId, movie) {
+  async updateMovie(movieId, movie, accessToken) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${movieId}`,
       window.location.origin,
@@ -66,6 +66,7 @@ export class MovieRepository {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(movie),
     });

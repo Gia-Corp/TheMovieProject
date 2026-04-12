@@ -12,6 +12,7 @@
   --purple-contrast: rgb(154, 128, 202);
   --white: rgb(255, 255, 255);
   --green: #31cc02;
+  --red: red;
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
@@ -19,6 +20,7 @@
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
   --check-clr: var(--green);
+  --negative-clr: var(--red);
   
   /* TEXT SEMANTIC TOKENS */
   --text-clr: var(--white);
@@ -67,6 +69,19 @@ body {
 a {
   all: unset;
   cursor: pointer;
+}
+
+button {
+  border: none;
+  width: fit-content;
+  font-size: 0.9rem;
+  padding: 6px;
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 /* Make images easier to work with */
@@ -133,4 +148,57 @@ body::before {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 5px;
+  border: none;
+  background-color: var(--search-bar-clr);
+  outline: none;
+  text-overflow: ellipsis;
+  font-size: 1em;
+  flex: 1;
+
+  &:focus, &:hover {
+    outline: 2px solid var(--search-bar-outline-clr);
+  }
+
+  &::placeholder {
+    color: inherit;
+    opacity: 0.5;
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--search-bar-clr) inset;
+  -webkit-text-fill-color: inherit;
+}
+
+.primary-button {
+  color: var(--text-clr);
+  background-color: var(--main-clr);
+}
+
+.negative-button {
+  color: var(--text-clr);
+  background-color: var(--negative-clr);
+}
+
+.button-with-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    stroke: var(--text-clr);
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 2;
+    aspect-ratio: 1/1;
+    width: 23px;
+  }
 }

@@ -110,13 +110,13 @@ function AddMovieForm({ onSuccess }) {
       ) : null}
 
       <label htmlFor="watched">
-        <p>Ya la vimos</p>
+        <p>☝️🤓 Ya la vimos</p>
         <input type="checkbox" name="watched" id="watched" />
       </label>
 
       {state.error && <p className="error-sign">{state.error}</p>}
 
-      <button type="submit" disabled={isPending}>
+      <button className="primary-button" type="submit" disabled={isPending}>
         {isPending ? "Cargando..." : "Confirmar"}
       </button>
     </form>

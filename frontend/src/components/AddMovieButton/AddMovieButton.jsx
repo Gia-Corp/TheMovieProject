@@ -1,16 +1,20 @@
-import "./AddMovieButton.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import AddMovieForm from "@/components/AddMovieForm/AddMovieForm";
 import Modal from "@/components/Modal/Modal";
 
 function AddMovieButton() {
   const dialogRef = useRef(null);
+  const [formKey, setFormKey] = useState(0);
+
   const handleOpen = () => dialogRef.current.showModal();
-  const handleClose = () => dialogRef.current.close();
+  const handleClose = () => {
+    dialogRef.current.close();
+    setFormKey((prev) => prev + 1);
+  };
 
   return (
     <>
-      <button onClick={handleOpen} className="add-movie-button">
+      <button onClick={handleOpen} className="primary-button button-with-icon">
         <svg viewBox="0 0 24 24">
           <path d="M12 19V5m7 7H5" />
         </svg>
@@ -22,7 +26,7 @@ function AddMovieButton() {
         ref={dialogRef}
         onClose={handleClose}
       >
-        <AddMovieForm onSuccess={handleClose} />
+        <AddMovieForm key={formKey} onSuccess={handleClose} />
       </Modal>
     </>
   );

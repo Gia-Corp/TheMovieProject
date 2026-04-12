@@ -1,21 +1,25 @@
-import "./LoginButton.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Modal from "@/components/Modal/Modal";
 import LoginForm from "@/components/LoginForm/LoginForm";
 
 function LoginButton() {
   const dialogRef = useRef(null);
+  const [formKey, setFormKey] = useState(0);
+
   const handleOpen = () => dialogRef.current.showModal();
-  const handleClose = () => dialogRef.current.close();
+  const handleClose = () => {
+    dialogRef.current.close();
+    setFormKey((prev) => prev + 1);
+  };
 
   return (
     <>
-      <button onClick={handleOpen} className="login-button">
+      <button onClick={handleOpen} className="primary-button">
         <p>Iniciar sesión</p>
       </button>
 
       <Modal title="Iniciar sesión" ref={dialogRef} onClose={handleClose}>
-        <LoginForm onSuccess={handleClose} />
+        <LoginForm key={formKey} onSuccess={handleClose} />
       </Modal>
     </>
   );
