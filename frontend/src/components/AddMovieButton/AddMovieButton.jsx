@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import AddMovieForm from "@/components/AddMovieForm/AddMovieForm";
 import Modal from "@/components/Modal/Modal";
 
-function AddMovieButton() {
+function AddMovieButton({ disabled }) {
   const dialogRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
 
@@ -14,9 +14,13 @@ function AddMovieButton() {
 
   return (
     <>
-      <button onClick={handleOpen} className="primary-button button-with-icon">
+      <button
+        disabled={disabled}
+        onClick={handleOpen}
+        className="primary-button button-with-icon"
+      >
         <svg viewBox="0 0 24 24">
-          <path d="M12 19V5m7 7H5" />
+          <path d="M3 19v-9a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zm0 0l4.293-4.293a1 1 0 0 1 1.414 0L14 20M7 6V5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1m-7-4v.01" />
         </svg>
         <p>Nueva peli</p>
       </button>

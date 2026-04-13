@@ -14,7 +14,7 @@ function LoginButton() {
 
   return (
     <>
-      <button onClick={handleOpen} className="primary-button">
+      <button onClick={handleOpen} className="primary-button button-with-icon">
         <p>Iniciar sesión</p>
       </button>
 

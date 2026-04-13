@@ -191,12 +191,11 @@ input:-webkit-autofill:focus {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 
   svg {
     stroke: var(--text-clr);
     fill: none;
-    stroke-linecap: round;
     stroke-width: 2;
     aspect-ratio: 1/1;
     width: 23px;
