@@ -25,11 +25,7 @@ function AddMovieButton({ disabled }) {
         <p>Nueva peli</p>
       </button>
 
-      <Modal
-        title="Agregar peli a la lista 📋"
-        ref={dialogRef}
-        onClose={handleClose}
-      >
+      <Modal title="Agregar nueva peli" ref={dialogRef} onClose={handleClose}>
         <AddMovieForm key={formKey} onSuccess={handleClose} />
       </Modal>
     </>

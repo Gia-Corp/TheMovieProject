@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=National+Park:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Cuprum:ital,wght@0,400..700;1,400..700&display=swap');
 
 :root {
   --title-font: "Bakbak One";
-  --regular-font: "National Park", sans-serif;
+  --regular-font: "Cuprum", sans-serif;
 
   --tile-size: 15px;
   --dot-size: 0.75px;
@@ -12,7 +12,7 @@
   --purple-contrast: rgb(154, 128, 202);
   --white: rgb(255, 255, 255);
   --green: #31cc02;
-  --red: red;
+  --red: rgb(160, 0, 0);
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
@@ -157,7 +157,6 @@ input:not([type="checkbox"]) {
   background-color: var(--search-bar-clr);
   outline: none;
   text-overflow: ellipsis;
-  font-size: 1em;
   flex: 1;
 
   &:focus, &:hover {
