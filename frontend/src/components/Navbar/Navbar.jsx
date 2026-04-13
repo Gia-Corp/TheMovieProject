@@ -53,7 +53,7 @@ function Navbar() {
         onItemClick={handleClick}
       />
       <div className="nav-buttons">
-        <AddMovieButton />
+        <AddMovieButton disabled={!accessToken} />
         {!accessToken ? <LoginButton /> : <LogoutButton />}
       </div>
     </nav>
