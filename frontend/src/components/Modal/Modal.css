@@ -27,7 +27,7 @@
   flex: 1;
   font-family: var(--title-font);
   font-size: 1.5rem;
-  color: var(--strong-text-clr);
+  color: var(--text-clr);
 }
 
 .modal header button {

@@ -63,7 +63,11 @@ function LoginForm({ onSuccess }) {
 
       {state.error && <p className="error-sign">{state.error}</p>}
 
-      <button className="primary-button" type="submit" disabled={isPending}>
+      <button
+        className="primary-button positive-button"
+        type="submit"
+        disabled={isPending}
+      >
         {isPending ? "Cargando..." : "Confirmar"}
       </button>
     </form>

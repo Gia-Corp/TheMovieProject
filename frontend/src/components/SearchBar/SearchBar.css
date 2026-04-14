@@ -2,7 +2,7 @@
   width: 100%;
   justify-self: center;
   position: relative;
-  color: var(--search-bar-dark-clr);
+  color: var(--text-clr);
 }
 
 .search-results {
@@ -18,7 +18,7 @@
   max-height: 270px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
+  scrollbar-color: var(--text-clr) var(--search-bar-clr);
 }
 
 .search-results li {
