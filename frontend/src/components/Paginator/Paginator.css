@@ -1,15 +1,9 @@
 .paginator {
   display: flex;
   gap: 5px;
-}
 
-.pagination {
-  background-color: transparent;
-  padding: 10px;
-  border: var(--main-clr) solid 1px;
-  
-  &:hover {
-    cursor: pointer;
+  * {
+    font-size: 1rem;
   }
 }
 

@@ -84,7 +84,7 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
       {totalPages > 0 ? (
         createItemsList()
       ) : (
-        <PaginatorItem key={1} active disabled>
+        <PaginatorItem key={1} disabled>
           <SpinnerIcon size={30} />
         </PaginatorItem>
       )}

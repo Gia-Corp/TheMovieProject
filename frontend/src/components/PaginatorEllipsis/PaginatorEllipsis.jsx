@@ -1,7 +1,7 @@
 import "./PaginatorEllipsis.css";
 
 function PaginatorEllipsis() {
-  return <span className="pagination">...</span>;
+  return <span className="">...</span>;
 }
 
 export default PaginatorEllipsis;
