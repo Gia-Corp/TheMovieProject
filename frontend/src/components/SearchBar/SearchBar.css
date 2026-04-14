@@ -1,5 +1,5 @@
 .search-bar {
-  width: 100%;
+  width: 80%;
   justify-self: center;
   position: relative;
   color: var(--text-clr);
@@ -18,7 +18,7 @@
   max-height: 270px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--text-clr) var(--search-bar-clr);
+  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
 }
 
 .search-results li {
@@ -37,5 +37,5 @@
 }
 
 .search-item svg {
-  fill: var(--search-bar-dark-clr);
+  fill: var(--text-clr);
 }
