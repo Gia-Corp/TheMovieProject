@@ -1,0 +1,5 @@
+.spinner-icon {
+  fill: var(--strong-text-clr);
+  aspect-ratio: 1 / 1;
+  width: 50px;
+}

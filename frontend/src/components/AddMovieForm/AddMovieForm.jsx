@@ -2,6 +2,7 @@ import "./AddMovieForm.css";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRepos } from "@/hooks/useRepos";
 import { useAuth } from "@/hooks/useAuth";
+import SpinnerIcon from "../SpinnerIcon/SpinnerIcon";
 
 function AddMovieForm({ onSuccess }) {
   const { movieRepository, externalMovieRepository } = useRepos();
@@ -121,7 +122,7 @@ function AddMovieForm({ onSuccess }) {
         type="submit"
         disabled={isPending}
       >
-        {isPending ? "Cargando..." : "Confirmar"}
+        {isPending ? <SpinnerIcon size={30} /> : "Confirmar"}
       </button>
     </form>
   );

@@ -4,6 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedButton from "@/components/MovieWatchedButton/MovieWatchedButton";
 import { useAuth } from "@/hooks/useAuth";
+import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 function MovieDetail() {
   const { state } = useLocation();
@@ -40,7 +41,11 @@ function MovieDetail() {
   if (error) throw error;
 
   if (isLoading) {
-    return <p>Cargando...</p>;
+    return (
+      <div className="spinner-container">
+        <SpinnerIcon />
+      </div>
+    );
   }
 
   return (

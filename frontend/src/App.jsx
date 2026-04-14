@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar/Navbar";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
+import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 const Home = lazy(() => import("@/pages/Home/Home"));
 const MovieDetailWrapper = lazy(
@@ -14,7 +15,13 @@ function AppContent() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={<div>Cargando...</div>}>
+      <Suspense
+        fallback={
+          <div className="spinner-container">
+            <SpinnerIcon />
+          </div>
+        }
+      >
         <Routes>
           <Route
             path="/"

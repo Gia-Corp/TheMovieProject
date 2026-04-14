@@ -207,3 +207,10 @@ input:-webkit-autofill:focus {
     width: 23px;
   }
 }
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
