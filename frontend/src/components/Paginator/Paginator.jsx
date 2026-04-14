@@ -3,6 +3,7 @@ import PaginatorPrev from "@/components/PaginatorPrev/PaginatorPrev";
 import PaginatorItem from "@/components/PaginatorItem/PaginatorItem";
 import PaginatorNext from "@/components/PaginatorNext/PaginatorNext";
 import PaginatorEllipsis from "@/components/PaginatorEllipsis/PaginatorEllipsis";
+import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
   const MAX_VISIBLE_PAGES = 5;
@@ -84,7 +85,7 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
         createItemsList()
       ) : (
         <PaginatorItem key={1} active disabled>
-          {"Cargando..."}
+          <SpinnerIcon size={30} />
         </PaginatorItem>
       )}
       {hideNextButton ? null : (

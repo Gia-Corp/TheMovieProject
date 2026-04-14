@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "@/hooks/useAuth";
+import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
@@ -32,7 +33,12 @@ export function AuthProvider({ children }) {
     tryRefresh();
   }, []);
 
-  if (loading) return <div>Cargando...</div>;
+  if (loading)
+    return (
+      <div className="spinner-container">
+        <SpinnerIcon />
+      </div>
+    );
 
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken }}>

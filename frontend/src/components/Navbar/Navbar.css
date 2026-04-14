@@ -1,11 +1,11 @@
 .nav-bar {
   background-color: var(--bg-clr);
-  padding: 15px 30px;
+  padding: 10px 30px;
   height: fit-content;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  border-bottom: 2px solid var(--main-clr);
+  /* border-bottom: 2px solid var(--main-clr); */
 
   position: sticky;
   top: 0;

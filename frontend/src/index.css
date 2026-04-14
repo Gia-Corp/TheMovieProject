@@ -9,10 +9,11 @@
   
   /* PRIMITIVE COLORS */
   --purple: rgba(111, 66, 193, 1);
-  --purple-contrast: rgb(154, 128, 202);
+  --purple-contrast: rgb(68, 39, 118);
   --white: rgb(255, 255, 255);
   --green: #31cc02;
   --red: rgb(160, 0, 0);
+  --dark-green: #1a7100;
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
@@ -20,6 +21,7 @@
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
   --check-clr: var(--green);
+  --positive-clr: var(--dark-green);
   --negative-clr: var(--red);
   
   /* TEXT SEMANTIC TOKENS */
@@ -76,6 +78,8 @@ button {
   width: fit-content;
   font-size: 0.9rem;
   padding: 6px;
+  color: var(--text-clr);
+  background-color: transparent;
 
   &:disabled {
     cursor: not-allowed;
@@ -152,15 +156,16 @@ body::before {
 
 input:not([type="checkbox"]) {
   width: 100%;
-  padding: 5px;
+  padding: 4px;
   border: none;
   background-color: var(--search-bar-clr);
   outline: none;
   text-overflow: ellipsis;
   flex: 1;
+  color: var(--text-clr);
 
   &:focus, &:hover {
-    outline: 2px solid var(--search-bar-outline-clr);
+    outline: 1px solid var(--search-bar-outline-clr);
   }
 
   &::placeholder {
@@ -173,16 +178,18 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px var(--search-bar-clr) inset;
-  -webkit-text-fill-color: inherit;
+  -webkit-text-fill-color: var(--text-clr);
 }
 
-.primary-button {
-  color: var(--text-clr);
-  background-color: var(--main-clr);
+.primary-button:hover {
+  background-color: var(--main-ghost-clr);
 }
 
-.negative-button {
-  color: var(--text-clr);
+.positive-button:hover {
+  background-color: var(--positive-clr);
+}
+
+.negative-button:hover {
   background-color: var(--negative-clr);
 }
 
@@ -199,4 +206,11 @@ input:-webkit-autofill:focus {
     aspect-ratio: 1/1;
     width: 23px;
   }
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
