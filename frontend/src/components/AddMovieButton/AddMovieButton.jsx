@@ -1,15 +1,26 @@
 import { useRef, useState } from "react";
 import AddMovieForm from "@/components/AddMovieForm/AddMovieForm";
 import Modal from "@/components/Modal/Modal";
+import { useNavigate } from "react-router-dom";
 
 function AddMovieButton({ disabled }) {
-  const dialogRef = useRef(null);
+  const formModalRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
+  const [addedMovie, setAddedMovie] = useState(null);
 
-  const handleOpen = () => dialogRef.current.showModal();
-  const handleClose = () => {
-    dialogRef.current.close();
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/movies/${addedMovie.id}`, { state: { addedMovie } });
+    setAddedMovie(null);
+  };
+
+  const handleOpen = () => formModalRef.current.showModal();
+  const handleClose = (newMovie) => {
+    formModalRef.current.close();
     setFormKey((prev) => prev + 1);
+    if (newMovie) {
+      setAddedMovie(newMovie);
+    }
   };
 
   return (
@@ -25,9 +36,22 @@ function AddMovieButton({ disabled }) {
         <p>Nueva peli</p>
       </button>
 
-      <Modal title="Agregar nueva peli" ref={dialogRef} onClose={handleClose}>
+      <Modal
+        title="Agregar nueva peli"
+        ref={formModalRef}
+        onClose={handleClose}
+      >
         <AddMovieForm key={formKey} onSuccess={handleClose} />
       </Modal>
+
+      {addedMovie ? (
+        <dialog open className="notification">
+          <h4>¡Agregada con éxito!</h4>
+          <span>
+            Ir a<button onClick={handleClick}>{addedMovie.title}</button>
+          </span>
+        </dialog>
+      ) : null}
     </>
   );
 }

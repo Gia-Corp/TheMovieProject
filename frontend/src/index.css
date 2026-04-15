@@ -33,6 +33,9 @@
   --search-bar-hover-clr: color-mix(in srgb, var(--search-bar-clr) 90%, black);
   --search-bar-dark-clr: hsl(from var(--search-bar-clr) h s 20%);
   --search-bar-outline-clr: var(--white);
+
+  /* NOTIFICATIONS SEMANTIC TOKENS */
+  --positive-notification-bg-clr: color-mix(in srgb, var(--green) 90%, transparent);
 }
 
 /* CSS RESET */
@@ -213,4 +216,34 @@ input:-webkit-autofill:focus {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+.notification {
+  display: flex;
+  flex-direction: column;
+  
+  position: fixed;
+  right: 20px;
+  top: 75px;
+  left: auto;
+  
+  padding: 10px;
+  border: none;
+  background-color: var(--positive-notification-bg-clr);
+}
+
+.notification span {
+  display: flex;
+  gap: 6px;
+}
+
+.notification button {
+  padding: 0;
+  color: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.notification button:hover {
+  text-decoration: underline 2px solid black;
 }

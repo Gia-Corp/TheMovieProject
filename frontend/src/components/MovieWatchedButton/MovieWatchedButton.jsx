@@ -1,14 +1,15 @@
+import "./MovieWatchedButton.css";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
-function MovieWatchedButton({ isWatched, onClick }) {
+function MovieWatchedButton({ isWatched, onClick, disabled }) {
   return (
-    <div style={{ cursor: "pointer" }}>
-      <MovieWatchedIcon
-        onClick={onClick}
-        size={30}
-        color={isWatched ? undefined : "grey"}
-      />
-    </div>
+    <button
+      className="movie-watched-button"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <MovieWatchedIcon size={30} color={isWatched ? undefined : "grey"} />
+    </button>
   );
 }
 

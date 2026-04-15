@@ -14,11 +14,11 @@ function MovieDetail() {
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(!movie.plot);
+  const [isLoading, setIsLoading] = useState(!movie?.plot);
   const { accessToken } = useAuth();
 
   useEffect(() => {
-    if (movie.plot) return;
+    if (movie?.plot) return;
 
     movieRepository
       .getMovie(id)
@@ -105,6 +105,7 @@ function MovieDetail() {
               <MovieWatchedButton
                 isWatched={isWatched}
                 onClick={handleOnClick}
+                disabled={!accessToken}
               />
               <p>{isWatched ? "Vista" : "No vista aún"}</p>
             </div>

@@ -23,7 +23,11 @@ function AddMovieForm({ onSuccess }) {
           year: selectedMovie.Year,
           watched: formData.get("watched") ? true : false,
         };
-        await movieRepository.createMovie(newMovie, accessToken);
+        const createdMovie = await movieRepository.createMovie(
+          newMovie,
+          accessToken,
+        );
+        setSelectedMovie(createdMovie);
         return { error: null, successCount: prevState.successCount + 1 };
       } catch (error) {
         return { error: error.message, successCount: prevState.successCount };
@@ -33,8 +37,8 @@ function AddMovieForm({ onSuccess }) {
   );
 
   useEffect(() => {
-    if (state.successCount > 0) onSuccess();
-  }, [state.successCount, onSuccess]);
+    if (state.successCount > 0) onSuccess(selectedMovie);
+  }, [state.successCount, onSuccess, selectedMovie]);
 
   useEffect(() => {
     if (inputText === "" || selectedMovie !== null) return;
