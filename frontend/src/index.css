@@ -214,3 +214,35 @@ input:-webkit-autofill:focus {
   justify-content: center;
   height: 100%;
 }
+
+.notification {
+  display: flex;
+  flex-direction: column;
+  
+  position: fixed;
+  bottom: 45px;
+  right: 20px;
+  top: auto;
+  left: auto;
+  margin: 0;
+  
+  padding: 10px;
+  border: none;
+  background-color: var(--check-clr);
+}
+
+.notification span {
+  display: flex;
+  gap: 6px;
+}
+
+.notification button {
+  padding: 0;
+  color: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.notification button:hover {
+  text-decoration: underline 2px solid black;
+}

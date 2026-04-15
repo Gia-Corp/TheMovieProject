@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
 
-  & a {
+  & > a {
     margin: 0;
     text-decoration: none;
     font-size: 1.4rem;
