@@ -4,7 +4,6 @@ import viteCompression from 'vite-plugin-compression'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-  console.log("BACKEND URL:", env.VITE_BACKEND_URL);
 
   return {
     plugins: [
