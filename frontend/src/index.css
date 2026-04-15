@@ -33,6 +33,9 @@
   --search-bar-hover-clr: color-mix(in srgb, var(--search-bar-clr) 90%, black);
   --search-bar-dark-clr: hsl(from var(--search-bar-clr) h s 20%);
   --search-bar-outline-clr: var(--white);
+
+  /* NOTIFICATIONS SEMANTIC TOKENS */
+  --positive-notification-bg-clr: color-mix(in srgb, var(--green) 90%, transparent);
 }
 
 /* CSS RESET */
@@ -220,15 +223,13 @@ input:-webkit-autofill:focus {
   flex-direction: column;
   
   position: fixed;
-  bottom: 45px;
   right: 20px;
-  top: auto;
+  top: 75px;
   left: auto;
-  margin: 0;
   
   padding: 10px;
   border: none;
-  background-color: var(--check-clr);
+  background-color: var(--positive-notification-bg-clr);
 }
 
 .notification span {

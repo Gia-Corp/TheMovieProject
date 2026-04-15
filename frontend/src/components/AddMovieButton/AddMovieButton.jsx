@@ -15,11 +15,11 @@ function AddMovieButton({ disabled }) {
   };
 
   const handleOpen = () => formModalRef.current.showModal();
-  const handleClose = (addedMovie) => {
+  const handleClose = (newMovie) => {
     formModalRef.current.close();
     setFormKey((prev) => prev + 1);
-    if (addedMovie) {
-      setAddedMovie(addedMovie);
+    if (newMovie) {
+      setAddedMovie(newMovie);
     }
   };
 
@@ -46,7 +46,7 @@ function AddMovieButton({ disabled }) {
 
       {addedMovie ? (
         <dialog open className="notification">
-          <h4>¡Peli agregada con éxito!</h4>
+          <h4>¡Agregada con éxito!</h4>
           <span>
             Ir a<button onClick={handleClick}>{addedMovie.title}</button>
           </span>
