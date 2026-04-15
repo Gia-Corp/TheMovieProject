@@ -105,6 +105,7 @@ function MovieDetail() {
               <MovieWatchedButton
                 isWatched={isWatched}
                 onClick={handleOnClick}
+                disabled={!accessToken}
               />
               <p>{isWatched ? "Vista" : "No vista aún"}</p>
             </div>
