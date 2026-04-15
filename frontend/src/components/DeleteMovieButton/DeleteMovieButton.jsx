@@ -1,27 +1,23 @@
 import Modal from "@/components/Modal/Modal";
 import { useRef } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useRepos } from "@/hooks/useRepos";
+import { useAuth } from "@/hooks/useAuth";
 
 function DeleteMovieButton({ movieId }) {
   const formModalRef = useRef(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { movieRepository } = useRepos();
+  const { accessToken } = useAuth();
 
   const handleOpen = () => formModalRef.current.showModal();
   const handleClose = () => formModalRef.current.close();
 
-  console.log(movieId);
-
   function handleClick() {
-    const MOVIES_ENDPOINT = "/api/movies";
-    const url = MOVIES_ENDPOINT + `/${movieId}`;
-    console.log(url);
-    // fetch(MOVIES_ENDPOINT, {
-    //   method: "DELETE",
-    //   credentials: "include",
-    // }).then(() => {
-    //   handleClose();
-    //   navigate("/", { state: null });
-    // });
+    movieRepository.deleteMovie(movieId, accessToken).then(() => {
+      handleClose();
+      navigate("/", { state: null });
+    });
   }
 
   return (
