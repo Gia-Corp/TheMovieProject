@@ -35,7 +35,7 @@
   --search-bar-outline-clr: var(--white);
 
   /* NOTIFICATIONS SEMANTIC TOKENS */
-  --positive-notification-bg-clr: color-mix(in srgb, var(--green) 90%, transparent);
+  --positive-notification-bg-clr: color-mix(in srgb, var(--green) 75%, transparent);
 }
 
 /* CSS RESET */
@@ -221,6 +221,7 @@ input:-webkit-autofill:focus {
 .notification {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   
   position: fixed;
   right: 20px;
@@ -232,9 +233,9 @@ input:-webkit-autofill:focus {
   background-color: var(--positive-notification-bg-clr);
 }
 
-.notification span {
-  display: flex;
-  gap: 6px;
+.notification img {
+  aspect-ratio: 2 / 3;
+  height: 90px;
 }
 
 .notification button {
@@ -242,6 +243,9 @@ input:-webkit-autofill:focus {
   color: inherit;
   font-size: 1rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .notification button:hover {

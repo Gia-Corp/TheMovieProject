@@ -47,9 +47,10 @@ function AddMovieButton({ disabled }) {
       {addedMovie ? (
         <dialog open className="notification">
           <h4>¡Agregada con éxito!</h4>
-          <span>
-            Ir a<button onClick={handleClick}>{addedMovie.title}</button>
-          </span>
+          <button onClick={handleClick}>
+            <img src={addedMovie.poster_url} alt="" />
+            {addedMovie.title}
+          </button>
         </dialog>
       ) : null}
     </>
