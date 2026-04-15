@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 function AddMovieButton({ disabled }) {
   const formModalRef = useRef(null);
-  const notificationRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
   const [addedMovie, setAddedMovie] = useState(null);
 
@@ -13,7 +12,7 @@ function AddMovieButton({ disabled }) {
   const handleClick = () => {
     navigate(`/movies/${addedMovie.id}`, { state: { addedMovie } });
     setAddedMovie(null);
-  }
+  };
 
   const handleOpen = () => formModalRef.current.showModal();
   const handleClose = (addedMovie) => {
@@ -37,25 +36,22 @@ function AddMovieButton({ disabled }) {
         <p>Nueva peli</p>
       </button>
 
-      <Modal title="Agregar nueva peli" ref={formModalRef} onClose={handleClose}>
+      <Modal
+        title="Agregar nueva peli"
+        ref={formModalRef}
+        onClose={handleClose}
+      >
         <AddMovieForm key={formKey} onSuccess={handleClose} />
       </Modal>
 
-      {
-        addedMovie ? 
+      {addedMovie ? (
         <dialog open className="notification">
           <h4>¡Peli agregada con éxito!</h4>
           <span>
-            Ir a 
-            <button onClick={handleClick}>
-              {addedMovie.title}
-            </button>
+            Ir a<button onClick={handleClick}>{addedMovie.title}</button>
           </span>
         </dialog>
-        :
-        null
-      }
-
+      ) : null}
     </>
   );
 }
