@@ -1,6 +1,5 @@
 import "./LogoutButton.css";
 import { useRef } from "react";
-// import Modal from "@/components/Modal/Modal";
 import { useAuth } from "@/hooks/useAuth";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 

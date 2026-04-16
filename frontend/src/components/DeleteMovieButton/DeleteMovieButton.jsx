@@ -1,4 +1,3 @@
-// import Modal from "@/components/Modal/Modal";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
