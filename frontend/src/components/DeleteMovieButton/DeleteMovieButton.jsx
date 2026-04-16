@@ -1,8 +1,9 @@
-import Modal from "@/components/Modal/Modal";
+// import Modal from "@/components/Modal/Modal";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
 import { useAuth } from "@/hooks/useAuth";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 function DeleteMovieButton({ movieId }) {
   const formModalRef = useRef(null);
@@ -31,13 +32,14 @@ function DeleteMovieButton({ movieId }) {
         </svg>
         <p>Eliminar</p>
       </button>
-      <Modal title="¿Eliminar peli?" ref={formModalRef} onClose={handleClose}>
-        <div className="confirm-layout">
-          <button onClick={handleClick} className="negative-button">
-            Sí, eliminar
-          </button>
-        </div>
-      </Modal>
+      <ConfirmationModal
+        title="¿Eliminar peli?"
+        ref={formModalRef}
+        rejectText="No"
+        onReject={handleClose}
+        confirmText="Sí, eliminar"
+        onConfirm={handleClick}
+      />
     </>
   );
 }
