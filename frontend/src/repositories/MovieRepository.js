@@ -1,6 +1,19 @@
 export class MovieRepository {
   static #MOVIES_PATH = "/api/movies";
 
+  constructor(apiFetch) {
+    this.fetch = apiFetch;
+  }
+
+  async getBodyContent(response) {
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    return response.json();
+  }
+
   async getMovies({ page, size, title }) {
     const url = new URL(MovieRepository.#MOVIES_PATH, window.location.origin);
     url.searchParams.set("page", page);
@@ -10,14 +23,9 @@ export class MovieRepository {
       url.searchParams.set("title", title);
     }
 
-    const res = await fetch(url);
+    const response = await this.fetch(url);
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
-    }
-
-    return res.json();
+    return this.getBodyContent(response);
   }
 
   async getMovie(id) {
@@ -26,20 +34,15 @@ export class MovieRepository {
       window.location.origin,
     );
 
-    const res = await fetch(url);
+    const response = await this.fetch(url);
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
-    }
-
-    return res.json();
+    return this.getBodyContent(response);
   }
 
   async createMovie(movie, accessToken) {
     const url = new URL(MovieRepository.#MOVIES_PATH, window.location.origin);
 
-    const res = await fetch(url, {
+    const response = await this.fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,12 +51,7 @@ export class MovieRepository {
       body: JSON.stringify(movie),
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
-    }
-
-    return res.json();
+    return this.getBodyContent(response);
   }
 
   async updateMovie(id, movie, accessToken) {
@@ -62,7 +60,7 @@ export class MovieRepository {
       window.location.origin,
     );
 
-    const res = await fetch(url, {
+    const response = await this.fetch(url, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -71,12 +69,7 @@ export class MovieRepository {
       body: JSON.stringify(movie),
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw error;
-    }
-
-    return res.json();
+    return this.getBodyContent(response);
   }
 
   async deleteMovie(id, accessToken) {
@@ -85,7 +78,7 @@ export class MovieRepository {
       window.location.origin,
     );
 
-    const res = await fetch(url, {
+    const response = await this.fetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -93,11 +86,6 @@ export class MovieRepository {
       },
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
-    }
-
-    return res.json();
+    return this.getBodyContent(response);
   }
 }

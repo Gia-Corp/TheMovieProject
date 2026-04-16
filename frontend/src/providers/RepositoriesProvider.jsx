@@ -1,17 +1,28 @@
+import { useMemo } from "react";
 import { MovieRepository } from "@/repositories/MovieRepository";
 import { ExternalMovieRepository } from "@/repositories/ExternalMovieRepository";
-import { PosterRepository } from "@/repositories/PosterRepository";
 import { RepositoriesContext } from "@/hooks/useRepos";
-
-const movieRepository = new MovieRepository();
-const posterRepository = new PosterRepository();
-const externalMovieRepository = new ExternalMovieRepository();
+import { useAuth } from "@/hooks/useAuth";
+import { buildApiFetch } from "@/apiFetch";
 
 export function RepositoriesProvider({ children }) {
+  const { setAccessToken } = useAuth();
+
+  const apiFetch = useMemo(
+    () => buildApiFetch(setAccessToken),
+    [setAccessToken],
+  );
+
+  const repositories = useMemo(
+    () => ({
+      movieRepo: new MovieRepository(apiFetch),
+      externalMovieRepo: new ExternalMovieRepository(apiFetch),
+    }),
+    [apiFetch],
+  );
+
   return (
-    <RepositoriesContext.Provider
-      value={{ movieRepository, posterRepository, externalMovieRepository }}
-    >
+    <RepositoriesContext.Provider value={repositories}>
       {children}
     </RepositoriesContext.Provider>
   );

@@ -10,11 +10,11 @@ import LoginButton from "@/components/LoginButton/LoginButton";
 import LogoutButton from "@/components/LogoutButton/LogoutButton";
 
 function Navbar() {
-  const { movieRepository } = useRepos();
+  const { movieRepo } = useRepos();
   const { accessToken } = useAuth();
 
   function searchCall(inputTextToSearch) {
-    return movieRepository
+    return movieRepo
       .getMovies({
         page: 1,
         size: 20,
