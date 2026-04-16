@@ -1,5 +1,5 @@
 .movie-card {
-  aspect-ratio: 273 / 409;
+  aspect-ratio: 2 / 3;
   max-width: 250px;
   position: relative;
   transition: scale 0.15s ease-out;

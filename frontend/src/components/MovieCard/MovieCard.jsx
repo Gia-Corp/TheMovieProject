@@ -18,7 +18,7 @@ function MovieCard({ movie }) {
     >
       {movie.poster_url ? (
         <img
-          src={movie.poster_url === null ? null : movie.poster_url}
+          src={movie.poster_url ?? undefined}
           style={{ display: isImageReady ? "block" : "none" }}
           onLoad={() => setIsImageReady(true)}
           onError={() => setIsImageReady(true)}
@@ -26,7 +26,7 @@ function MovieCard({ movie }) {
       ) : (
         <p>{movie.title}</p>
       )}
-      <div>{movie.watched ? <MovieWatchedIcon /> : null}</div>
+      <div>{movie.watched && <MovieWatchedIcon />}</div>
     </div>
   );
 }
