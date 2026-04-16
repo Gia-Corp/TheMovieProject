@@ -6,8 +6,8 @@ import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import LoginButton from "@/components/LoginButton/LoginButton";
-import LogoutButton from "@/components/LogoutButton/LogoutButton";
+import LoginButton from "@/components/auth/LoginButton/LoginButton";
+import LogoutButton from "@/components/auth/LogoutButton/LogoutButton";
 
 function Navbar() {
   const { movieRepo } = useRepos();
