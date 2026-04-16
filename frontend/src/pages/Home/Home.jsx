@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos.js";
 import MoviesGrid from "@/components/MoviesGrid/MoviesGrid";
-import Paginator from "@/components/Paginator/Paginator";
+import Paginator from "@/components/pagination/Paginator";
 
 function Home() {
   const { movieRepo } = useRepos();
