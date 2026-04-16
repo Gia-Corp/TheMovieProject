@@ -1,7 +1,7 @@
 import "./LogoutButton.css";
 import { useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import ConfirmationModal from "@/components/modals/ConfirmationModal/ConfirmationModal";
 
 function LogoutButton() {
   const dialogRef = useRef(null);

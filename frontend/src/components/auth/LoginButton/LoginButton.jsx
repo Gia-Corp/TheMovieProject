@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import Modal from "@/components/Modal/Modal";
+import Modal from "@/components/modals/Modal/Modal";
 import LoginForm from "@/components/auth/LoginForm/LoginForm";
 
 function LoginButton() {
