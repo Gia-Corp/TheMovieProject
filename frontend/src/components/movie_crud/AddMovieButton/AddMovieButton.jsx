@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import AddMovieForm from "@/components/AddMovieForm/AddMovieForm";
+import AddMovieForm from "@/components/movie_crud/AddMovieForm/AddMovieForm";
 import Modal from "@/components/modals/Modal/Modal";
 import { useNavigate } from "react-router-dom";
 

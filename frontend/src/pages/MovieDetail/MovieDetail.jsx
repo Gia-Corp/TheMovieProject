@@ -2,10 +2,10 @@ import "./MovieDetail.css";
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
-import MovieWatchedButton from "@/components/MovieWatchedButton/MovieWatchedButton";
+import MovieWatchedButton from "@/components/movie_crud/MovieWatchedButton/MovieWatchedButton";
 import { useAuth } from "@/hooks/useAuth";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
-import DeleteMovieButton from "@/components/DeleteMovieButton/DeleteMovieButton";
+import DeleteMovieButton from "@/components/movie_crud/DeleteMovieButton/DeleteMovieButton";
 
 function MovieDetail() {
   const { state } = useLocation();
