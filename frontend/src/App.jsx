@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar/Navbar";
-import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
+import { ErrorBoundary } from "@/error_handling/ErrorBoundary/ErrorBoundary";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 const Home = lazy(() => import("@/pages/Home/Home"));
