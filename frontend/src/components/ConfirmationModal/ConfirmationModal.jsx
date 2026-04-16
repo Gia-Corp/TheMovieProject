@@ -15,7 +15,9 @@ function ConfirmationModal({
     <dialog className="modal confirmation-modal" ref={ref}>
       <h3>{title}</h3>
       <div>
-        <button onClick={() => onReject()}>{rejectText}</button>
+        <button className="negative-button" onClick={() => onReject()}>
+          {rejectText}
+        </button>
         <SubmitButton
           text={confirmText}
           isLoading={isLoading}
