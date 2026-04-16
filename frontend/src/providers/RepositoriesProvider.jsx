@@ -15,8 +15,8 @@ export function RepositoriesProvider({ children }) {
 
   const repositories = useMemo(
     () => ({
-      movieRepository: new MovieRepository(apiFetch),
-      externalMovieRepository: new ExternalMovieRepository(apiFetch),
+      movieRepo: new MovieRepository(apiFetch),
+      externalMovieRepo: new ExternalMovieRepository(apiFetch),
     }),
     [apiFetch],
   );

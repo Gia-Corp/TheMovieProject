@@ -10,7 +10,7 @@ import DeleteMovieButton from "@/components/DeleteMovieButton/DeleteMovieButton"
 function MovieDetail() {
   const { state } = useLocation();
   const { id } = useParams();
-  const { movieRepository } = useRepos();
+  const { movieRepo } = useRepos();
   const [movie, setMovie] = useState(state?.movie ?? null);
   const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
   const [isImageReady, setIsImageReady] = useState(false);
@@ -21,7 +21,7 @@ function MovieDetail() {
   useEffect(() => {
     if (movie?.plot) return;
 
-    movieRepository
+    movieRepo
       .getMovie(id)
       .then((res) => {
         setMovie(res);
@@ -34,7 +34,7 @@ function MovieDetail() {
 
   const handleOnClick = () => {
     setIsWatched(!isWatched);
-    movieRepository
+    movieRepo
       .updateMovie(movie.id, { watched: !isWatched }, accessToken)
       .catch(() => setIsWatched(isWatched));
   };

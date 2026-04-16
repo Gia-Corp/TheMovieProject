@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function AddMovieForm({ onSuccess }) {
-  const { movieRepository, externalMovieRepository } = useRepos();
+  const { movieRepo, externalMovieRepo } = useRepos();
   const [inputText, setInputText] = useState("");
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -23,10 +23,7 @@ function AddMovieForm({ onSuccess }) {
           year: selectedMovie.Year,
           watched: formData.get("watched") ? true : false,
         };
-        const createdMovie = await movieRepository.createMovie(
-          newMovie,
-          accessToken,
-        );
+        const createdMovie = await movieRepo.createMovie(newMovie, accessToken);
         setSelectedMovie(createdMovie);
         return { error: null, successCount: prevState.successCount + 1 };
       } catch (error) {
@@ -45,7 +42,7 @@ function AddMovieForm({ onSuccess }) {
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      externalMovieRepository
+      externalMovieRepo
         .getMovies({
           title: inputText,
         })
@@ -54,7 +51,7 @@ function AddMovieForm({ onSuccess }) {
         })
         .catch(() => setMovies([]));
     }, 500);
-  }, [inputText, externalMovieRepository, selectedMovie]);
+  }, [inputText, externalMovieRepo, selectedMovie]);
 
   const handleInputChange = (event) => {
     const newInputText = event.target.value;

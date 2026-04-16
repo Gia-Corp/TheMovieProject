@@ -7,7 +7,7 @@ import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal"
 function DeleteMovieButton({ movieId }) {
   const formModalRef = useRef(null);
   const navigate = useNavigate();
-  const { movieRepository } = useRepos();
+  const { movieRepo } = useRepos();
   const { accessToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,7 +16,7 @@ function DeleteMovieButton({ movieId }) {
 
   function handleClick() {
     setIsLoading(true);
-    movieRepository
+    movieRepo
       .deleteMovie(movieId, accessToken)
       .then(() => {
         handleClose();
