@@ -1,6 +1,6 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import SearchBar from "@/components/SearchBar/SearchBar";
+import SearchBar from "@/components/navigation/SearchBar/SearchBar";
 import AddMovieButton from "@/components/AddMovieButton/AddMovieButton";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
