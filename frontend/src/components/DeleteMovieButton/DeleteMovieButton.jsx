@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,15 +9,20 @@ function DeleteMovieButton({ movieId }) {
   const navigate = useNavigate();
   const { movieRepository } = useRepos();
   const { accessToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpen = () => formModalRef.current.showModal();
   const handleClose = () => formModalRef.current.close();
 
   function handleClick() {
-    movieRepository.deleteMovie(movieId, accessToken).then(() => {
-      handleClose();
-      navigate("/", { state: null });
-    });
+    setIsLoading(true);
+    movieRepository
+      .deleteMovie(movieId, accessToken)
+      .then(() => {
+        handleClose();
+        navigate("/", { state: null });
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
@@ -31,6 +36,7 @@ function DeleteMovieButton({ movieId }) {
         </svg>
         <p>Eliminar</p>
       </button>
+
       <ConfirmationModal
         title="¿Eliminar peli?"
         ref={formModalRef}
@@ -38,6 +44,7 @@ function DeleteMovieButton({ movieId }) {
         onReject={handleClose}
         confirmText="Sí, eliminar"
         onConfirm={handleClick}
+        isLoading={isLoading}
       />
     </>
   );

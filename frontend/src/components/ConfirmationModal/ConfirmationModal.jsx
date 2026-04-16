@@ -1,4 +1,5 @@
 import "./ConfirmationModal.css";
+import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function ConfirmationModal({
   title,
@@ -7,6 +8,7 @@ function ConfirmationModal({
   onReject,
   confirmText,
   onConfirm,
+  isLoading,
   children,
 }) {
   return (
@@ -14,7 +16,11 @@ function ConfirmationModal({
       <h3>{title}</h3>
       <div>
         <button onClick={() => onReject()}>{rejectText}</button>
-        <button onClick={() => onConfirm()}>{confirmText}</button>
+        <SubmitButton
+          text={confirmText}
+          isLoading={isLoading}
+          onClick={() => onConfirm()}
+        />
       </div>
       {children}
     </dialog>
