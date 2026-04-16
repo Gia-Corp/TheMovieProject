@@ -1,7 +1,7 @@
 import "./LoginForm.css";
 import { useActionState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import SpinnerIcon from "../SpinnerIcon/SpinnerIcon";
+import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function LoginForm({ onSuccess }) {
   const LOGIN_ENDPOINT = "/auth/login";
@@ -64,13 +64,7 @@ function LoginForm({ onSuccess }) {
 
       {state.error && <p className="error-sign">{state.error}</p>}
 
-      <button
-        className="primary-button positive-button"
-        type="submit"
-        disabled={isPending}
-      >
-        {isPending ? <SpinnerIcon size={30} /> : "Confirmar"}
-      </button>
+      <SubmitButton text="Confirmar" isLoading={isPending} />
     </form>
   );
 }

@@ -48,6 +48,36 @@
   }
 }
 
+.icon-text-box:nth-of-type(3), .icon-text-box:nth-of-type(4) {
+  grid-column: span 2;
+}
+
+.utility-box {
+  padding: 0;
+  font-size: 1rem;
+  color: grey;
+}
+
+.utility-box > svg {
+  * {
+    stroke: grey;
+  }
+}
+
+.edit-button:hover {
+  * {
+    color: orange;
+    stroke: orange;
+  }
+}
+
+.delete-button:hover {
+  * {
+    color: var(--negative-clr);
+    stroke: var(--negative-clr);
+  }
+}
+
 .poster-section {
   display: flex;
   flex-direction: column;
@@ -72,8 +102,4 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   row-gap: 10px;
-}
-
-.icon-text-box:nth-of-type(3) {
-  grid-column: span 2;
 }

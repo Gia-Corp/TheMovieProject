@@ -1,0 +1,10 @@
+.confirmation-modal div {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.confirmation-modal h3 {
+  color: var(--text-clr);
+  text-align: center;
+}

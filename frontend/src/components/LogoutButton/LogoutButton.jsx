@@ -1,23 +1,26 @@
 import "./LogoutButton.css";
-import { useRef } from "react";
-import Modal from "@/components/Modal/Modal";
+import { useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 function LogoutButton() {
   const dialogRef = useRef(null);
   const { setAccessToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpen = () => dialogRef.current.showModal();
   const handleClose = () => dialogRef.current.close();
   function handleClick() {
-    const LOGOUT_ENDPOINT = "/auth/logout";
-    fetch(LOGOUT_ENDPOINT, {
+    setIsLoading(true);
+    fetch("/auth/logout", {
       method: "POST",
       credentials: "include",
-    }).then(() => {
-      setAccessToken(null);
-      handleClose();
-    });
+    })
+      .then(() => {
+        setAccessToken(null);
+        handleClose();
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
@@ -32,17 +35,15 @@ function LogoutButton() {
         <p>Cerrar sesión</p>
       </button>
 
-      <Modal
+      <ConfirmationModal
         title="¿Cerrar sesión, en serio?"
         ref={dialogRef}
-        onClose={handleClose}
-      >
-        <div className="confirm-layout">
-          <button onClick={handleClick} className="negative-button">
-            Sí, cerrar
-          </button>
-        </div>
-      </Modal>
+        rejectText="No"
+        onReject={handleClose}
+        confirmText="Sí, cerrar"
+        onConfirm={handleClick}
+        isLoading={isLoading}
+      />
     </>
   );
 }

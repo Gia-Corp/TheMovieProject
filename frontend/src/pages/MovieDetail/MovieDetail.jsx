@@ -5,6 +5,7 @@ import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedButton from "@/components/MovieWatchedButton/MovieWatchedButton";
 import { useAuth } from "@/hooks/useAuth";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
+import DeleteMovieButton from "@/components/DeleteMovieButton/DeleteMovieButton";
 
 function MovieDetail() {
   const { state } = useLocation();
@@ -109,6 +110,17 @@ function MovieDetail() {
               />
               <p>{isWatched ? "Vista" : "No vista aún"}</p>
             </div>
+            {accessToken ? (
+              <>
+                <button className="icon-text-box utility-box edit-button">
+                  <svg viewBox="0 0 24 24">
+                    <path d="m13.5 7.5l3 3M4 20v-3.5L15.293 5.207a1 1 0 0 1 1.414 0l2.086 2.086a1 1 0 0 1 0 1.414L7.5 20H4z" />
+                  </svg>
+                  <p>Editar</p>
+                </button>
+                <DeleteMovieButton movieId={movie.id} />
+              </>
+            ) : null}
           </div>
         </div>
       </div>

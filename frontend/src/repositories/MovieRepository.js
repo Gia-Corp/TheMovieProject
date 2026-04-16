@@ -56,9 +56,9 @@ export class MovieRepository {
     return res.json();
   }
 
-  async updateMovie(movieId, movie, accessToken) {
+  async updateMovie(id, movie, accessToken) {
     const url = new URL(
-      `${MovieRepository.#MOVIES_PATH}/${movieId}`,
+      `${MovieRepository.#MOVIES_PATH}/${id}`,
       window.location.origin,
     );
 
@@ -74,6 +74,28 @@ export class MovieRepository {
     if (!res.ok) {
       const error = await res.json();
       throw error;
+    }
+
+    return res.json();
+  }
+
+  async deleteMovie(id, accessToken) {
+    const url = new URL(
+      `${MovieRepository.#MOVIES_PATH}/${id}`,
+      window.location.origin,
+    );
+
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message);
     }
 
     return res.json();

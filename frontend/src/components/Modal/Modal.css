@@ -1,14 +1,15 @@
 .modal {
-  align-self: center;
-  justify-self: center;
+  margin: auto;
   border: none;
 }
 
 .modal[open] {
   display: flex;
   flex-direction: column;
-  width: 32dvw;
+  gap: 20px;
+  padding: 15px;
   background-color: var(--bg-clr);
+  overflow-x: hidden;
 }
 
 .modal::backdrop {
@@ -19,24 +20,24 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 15px;
-  border-bottom: 2px solid var(--main-clr);
+  justify-content: space-between;
+  gap: 50px;
 }
 
 .modal header h2 {
-  flex: 1;
   font-family: var(--title-font);
   font-size: 1.5rem;
   color: var(--text-clr);
 }
 
 .modal header button {
-  width: 8%;
+  min-width: 40px;
   aspect-ratio: 1 / 1;
   justify-self: end;
   padding: 5px;
   background: none;
   border: none;
+  flex-shrink: 0;
   
   svg {
     fill: var(--strong-text-clr);
