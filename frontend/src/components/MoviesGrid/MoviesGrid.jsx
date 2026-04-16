@@ -1,10 +1,10 @@
-import "./MoviesList.css";
+import "./MoviesGrid.css";
 import MovieCard from "@/components/MovieCard/MovieCard";
 import MovieCardSkeleton from "@/components/MovieCardSkeleton/MovieCardSkeleton";
 
-function MoviesList({ movies, isLoading, maxMovies }) {
+function MoviesGrid({ movies, isLoading, maxMovies }) {
   return (
-    <ul className="movies-list">
+    <ul className="movies-grid">
       {isLoading
         ? Array.from({ length: maxMovies }).map((_, i) => (
             <MovieCardSkeleton key={i} />
@@ -14,4 +14,4 @@ function MoviesList({ movies, isLoading, maxMovies }) {
   );
 }
 
-export default MoviesList;
+export default MoviesGrid;

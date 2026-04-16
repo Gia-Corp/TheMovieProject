@@ -2,7 +2,7 @@ import "./Home.css";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos.js";
-import MoviesList from "@/components/MoviesList/MoviesList";
+import MoviesGrid from "@/components/MoviesGrid/MoviesGrid";
 import Paginator from "@/components/Paginator/Paginator";
 
 function Home() {
@@ -40,14 +40,13 @@ function Home() {
   return (
     <div className="home">
       <main>
-        <MoviesList
+        <MoviesGrid
           isLoading={isLoading}
           movies={movies}
           maxMovies={MOVIES_PAGE_SIZE}
         />
       </main>
       <Paginator
-        key="bottom-paginator"
         currentPage={currentPage}
         totalPages={totalPages}
         disabled={isLoading}

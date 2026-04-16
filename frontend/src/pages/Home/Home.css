@@ -17,5 +17,5 @@ main {
   justify-content: center;
   flex-grow: 1;
   width: 100%;
-  max-width: 1500px;
+  max-width: 85dvw;
 }
