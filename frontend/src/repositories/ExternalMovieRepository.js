@@ -2,6 +2,10 @@ export class ExternalMovieRepository {
   static #BASE_URL = import.meta.env.VITE_MOVIE_API_URL_2;
   static #API_KEY = import.meta.env.VITE_MOVIE_API_KEY_2;
 
+  constructor(apiFetch) {
+    this.fetch = apiFetch;
+  }
+
   async getBodyContent(response) {
     if (!response.ok) {
       const error = await response.json();
@@ -20,7 +24,7 @@ export class ExternalMovieRepository {
       url.searchParams.set("s", title);
     }
 
-    const response = await fetch(url);
+    const response = await this.fetch(url);
 
     return this.getBodyContent(response);
   }
