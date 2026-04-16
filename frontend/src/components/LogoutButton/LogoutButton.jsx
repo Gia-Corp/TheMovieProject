@@ -1,7 +1,8 @@
 import "./LogoutButton.css";
 import { useRef } from "react";
-import Modal from "@/components/Modal/Modal";
+// import Modal from "@/components/Modal/Modal";
 import { useAuth } from "@/hooks/useAuth";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 function LogoutButton() {
   const dialogRef = useRef(null);
@@ -32,17 +33,14 @@ function LogoutButton() {
         <p>Cerrar sesión</p>
       </button>
 
-      <Modal
+      <ConfirmationModal
         title="¿Cerrar sesión, en serio?"
         ref={dialogRef}
-        onClose={handleClose}
-      >
-        <div className="confirm-layout">
-          <button onClick={handleClick} className="negative-button">
-            Sí, cerrar
-          </button>
-        </div>
-      </Modal>
+        rejectText="No"
+        onReject={handleClose}
+        confirmText="Sí, cerrar"
+        onConfirm={handleClick}
+      />
     </>
   );
 }
