@@ -1,23 +1,26 @@
 import "./LogoutButton.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 function LogoutButton() {
   const dialogRef = useRef(null);
   const { setAccessToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpen = () => dialogRef.current.showModal();
   const handleClose = () => dialogRef.current.close();
   function handleClick() {
-    const LOGOUT_ENDPOINT = "/auth/logout";
-    fetch(LOGOUT_ENDPOINT, {
+    setIsLoading(true);
+    fetch("/auth/logout", {
       method: "POST",
       credentials: "include",
-    }).then(() => {
-      setAccessToken(null);
-      handleClose();
-    });
+    })
+      .then(() => {
+        setAccessToken(null);
+        handleClose();
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
@@ -39,6 +42,7 @@ function LogoutButton() {
         onReject={handleClose}
         confirmText="Sí, cerrar"
         onConfirm={handleClick}
+        isLoading={isLoading}
       />
     </>
   );
