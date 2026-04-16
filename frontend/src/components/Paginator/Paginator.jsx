@@ -74,7 +74,7 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
   }
 
   return (
-    <div className={`paginator ${disabled ? "disabled-div" : ""}`}>
+    <div className={`paginator ${disabled ? "disabled" : ""}`}>
       {hidePrevButton ? null : (
         <PaginatorPrev
           onClick={() => handlePageSelection(currentPage - 1)}

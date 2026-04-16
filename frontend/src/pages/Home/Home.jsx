@@ -27,14 +27,13 @@ function Home() {
       .then((res) => {
         setMovies(res.movies);
         setTotalPages(res.metadata.page_count);
-        setIsLoading(false);
       })
-      .catch(setError);
+      .catch(setError)
+      .finally(() => setIsLoading(false));
   }, [currentPage, movieRepo]);
 
-  function handlePageSelection(pageNumber) {
+  const handlePageSelection = (pageNumber) =>
     setSearchParams({ page: pageNumber });
-  }
 
   if (error) throw error;
 

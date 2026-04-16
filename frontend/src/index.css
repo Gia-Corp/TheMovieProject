@@ -125,11 +125,6 @@ button:hover {
   cursor: pointer;
 }
 
-.disabled-div {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
 body {
   background-color: var(--bg-clr);
   position: relative;
@@ -198,7 +193,6 @@ input:-webkit-autofill:focus {
 
 .button-with-icon {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 6px;
 

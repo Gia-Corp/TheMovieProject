@@ -10,3 +10,8 @@
 .active {
   background-color: var(--main-clr);
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
