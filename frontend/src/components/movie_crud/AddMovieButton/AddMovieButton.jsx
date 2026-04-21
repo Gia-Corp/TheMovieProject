@@ -1,26 +1,25 @@
 import { useRef, useState } from "react";
 import AddMovieForm from "@/components/movie_crud/AddMovieForm/AddMovieForm";
 import Modal from "@/components/modals/Modal/Modal";
-import { useNavigate } from "react-router-dom";
-import NotificationPopup from "@/components/NotificacionPopup/NotificationPopup";
+// import { useNavigate } from "react-router-dom";
+import { useNotification } from "@/hooks/useNotification";
 
 function AddMovieButton({ disabled }) {
   const formModalRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
-  const [addedMovie, setAddedMovie] = useState(null);
+  const { notify } = useNotification();
 
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate(`/movies/${addedMovie.id}`, { state: { addedMovie } });
-    setAddedMovie(null);
-  };
+  // const navigate = useNavigate();
+  // const handleClick = () => {
+  //   navigate(`/movies/${addedMovie.id}`, { state: { addedMovie } });
+  // };
 
   const handleOpen = () => formModalRef.current.showModal();
   const handleClose = (newMovie) => {
     formModalRef.current.close();
     setFormKey((prev) => prev + 1);
     if (newMovie) {
-      setAddedMovie(newMovie);
+      notify(`"${newMovie.title}" agregada correctamente!`);
     }
   };
 
@@ -44,14 +43,6 @@ function AddMovieButton({ disabled }) {
       >
         <AddMovieForm key={formKey} onSuccess={handleClose} />
       </Modal>
-
-      {addedMovie ? (
-        <NotificationPopup
-          title="¡Agregada con éxito!"
-          movie={addedMovie}
-          handleClick={handleClick}
-        />
-      ) : null}
     </>
   );
 }
