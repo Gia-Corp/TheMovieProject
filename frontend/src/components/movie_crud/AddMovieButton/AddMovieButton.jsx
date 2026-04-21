@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import AddMovieForm from "@/components/movie_crud/AddMovieForm/AddMovieForm";
 import Modal from "@/components/modals/Modal/Modal";
 import { useNavigate } from "react-router-dom";
+import NotificationPopup from "@/components/NotificacionPopup/NotificationPopup";
 
 function AddMovieButton({ disabled }) {
   const formModalRef = useRef(null);
@@ -45,13 +46,11 @@ function AddMovieButton({ disabled }) {
       </Modal>
 
       {addedMovie ? (
-        <dialog open className="notification">
-          <h4>¡Agregada con éxito!</h4>
-          <button onClick={handleClick}>
-            <img src={addedMovie.poster_url} alt="" />
-            {addedMovie.title}
-          </button>
-        </dialog>
+        <NotificationPopup
+          title="¡Agregada con éxito!"
+          movie={addedMovie}
+          handleClick={handleClick}
+        />
       ) : null}
     </>
   );
