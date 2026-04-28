@@ -35,7 +35,8 @@
   --search-bar-outline-clr: var(--white);
 
   /* NOTIFICATIONS SEMANTIC TOKENS */
-  --positive-notification-bg-clr: color-mix(in srgb, var(--green) 75%, transparent);
+  --notification-bg-clr: color-mix(in srgb, var(--main-clr) 75%, transparent);
+  --notification-border-clr: var(--dot-clr);
 }
 
 /* CSS RESET */

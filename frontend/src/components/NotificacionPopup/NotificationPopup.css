@@ -10,7 +10,9 @@
   
   padding: 10px;
   border: none;
-  background-color: var(--positive-notification-bg-clr);
+  color: var(--text-clr);
+  background-color: var(--notification-bg-clr);
+  border-right: solid 4px var(--notification-border-clr);
 }
 
 .notification img {
@@ -29,5 +31,5 @@
 }
 
 .notification button:hover {
-  text-decoration: underline 2px solid black;
+  text-decoration: underline 2px solid inherit;
 }
