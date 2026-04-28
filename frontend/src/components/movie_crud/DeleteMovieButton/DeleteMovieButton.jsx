@@ -2,13 +2,15 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
 import { useAuth } from "@/hooks/useAuth";
-import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import { useNotification } from "@/hooks/useNotification";
+import ConfirmationModal from "@/components/modals/ConfirmationModal/ConfirmationModal";
 
 function DeleteMovieButton({ movieId }) {
   const formModalRef = useRef(null);
   const navigate = useNavigate();
   const { movieRepo } = useRepos();
   const { accessToken } = useAuth();
+  const { notify } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOpen = () => formModalRef.current.showModal();
@@ -18,8 +20,9 @@ function DeleteMovieButton({ movieId }) {
     setIsLoading(true);
     movieRepo
       .deleteMovie(movieId, accessToken)
-      .then(() => {
+      .then((movie) => {
         handleClose();
+        notify(`"${movie.title}" eliminada correctamente`);
         navigate("/", { state: null });
       })
       .finally(() => setIsLoading(false));

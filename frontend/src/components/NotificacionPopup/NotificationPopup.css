@@ -1,0 +1,35 @@
+.notification {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
+  position: fixed;
+  right: 20px;
+  top: 75px;
+  left: auto;
+  
+  padding: 10px;
+  border: none;
+  color: var(--text-clr);
+  background-color: var(--notification-bg-clr);
+  border-right: solid 4px var(--notification-border-clr);
+}
+
+.notification img {
+  aspect-ratio: 2 / 3;
+  height: 90px;
+}
+
+.notification button {
+  padding: 0;
+  color: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification button:hover {
+  text-decoration: underline 2px solid inherit;
+}

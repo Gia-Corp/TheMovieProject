@@ -35,7 +35,8 @@
   --search-bar-outline-clr: var(--white);
 
   /* NOTIFICATIONS SEMANTIC TOKENS */
-  --positive-notification-bg-clr: color-mix(in srgb, var(--green) 75%, transparent);
+  --notification-bg-clr: color-mix(in srgb, var(--main-clr) 75%, transparent);
+  --notification-border-clr: var(--dot-clr);
 }
 
 /* CSS RESET */
@@ -125,11 +126,6 @@ button:hover {
   cursor: pointer;
 }
 
-.disabled-div {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
 body {
   background-color: var(--bg-clr);
   position: relative;
@@ -198,7 +194,6 @@ input:-webkit-autofill:focus {
 
 .button-with-icon {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 6px;
 
@@ -216,38 +211,4 @@ input:-webkit-autofill:focus {
   align-items: center;
   justify-content: center;
   height: 100%;
-}
-
-.notification {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  
-  position: fixed;
-  right: 20px;
-  top: 75px;
-  left: auto;
-  
-  padding: 10px;
-  border: none;
-  background-color: var(--positive-notification-bg-clr);
-}
-
-.notification img {
-  aspect-ratio: 2 / 3;
-  height: 90px;
-}
-
-.notification button {
-  padding: 0;
-  color: inherit;
-  font-size: 1rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.notification button:hover {
-  text-decoration: underline 2px solid black;
 }

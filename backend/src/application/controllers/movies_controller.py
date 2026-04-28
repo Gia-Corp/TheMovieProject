@@ -50,7 +50,7 @@ async def get_movies(
         movies = movie_repo.get_movies_by_page(page)
         movie_count = movie_repo.get_movie_count()
 
-    metadata = PageMetadataCalculator().calculate(page, movie_count, "/movies")
+    metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
     return {"metadata": metadata, "movies": movies}
 
 

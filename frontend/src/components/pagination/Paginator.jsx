@@ -1,8 +1,8 @@
 import "./Paginator.css";
-import PaginatorPrev from "@/components/PaginatorPrev/PaginatorPrev";
-import PaginatorItem from "@/components/PaginatorItem/PaginatorItem";
-import PaginatorNext from "@/components/PaginatorNext/PaginatorNext";
-import PaginatorEllipsis from "@/components/PaginatorEllipsis/PaginatorEllipsis";
+import PaginatorPrev from "@/components/pagination/PaginatorPrev";
+import PaginatorNext from "@/components/pagination/PaginatorNext";
+import PaginatorItem from "@/components/pagination/PaginatorItem";
+import PaginatorEllipsis from "@/components/pagination/PaginatorEllipsis";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
@@ -74,7 +74,7 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
   }
 
   return (
-    <div className={`paginator ${disabled ? "disabled-div" : ""}`}>
+    <div className={`paginator ${disabled ? "disabled" : ""}`}>
       {hidePrevButton ? null : (
         <PaginatorPrev
           onClick={() => handlePageSelection(currentPage - 1)}

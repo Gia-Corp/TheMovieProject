@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
-import Navbar from "@/components/Navbar/Navbar";
+import Navbar from "@/components/navigation/Navbar/Navbar";
 import { ErrorBoundary } from "@/error_handling/ErrorBoundary";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 

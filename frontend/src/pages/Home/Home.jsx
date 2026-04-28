@@ -2,8 +2,8 @@ import "./Home.css";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos.js";
-import MoviesList from "@/components/MoviesList/MoviesList";
-import Paginator from "@/components/Paginator/Paginator";
+import MoviesGrid from "@/components/MoviesGrid/MoviesGrid";
+import Paginator from "@/components/pagination/Paginator";
 
 function Home() {
   const { movieRepo } = useRepos();
@@ -27,28 +27,26 @@ function Home() {
       .then((res) => {
         setMovies(res.movies);
         setTotalPages(res.metadata.page_count);
-        setIsLoading(false);
       })
-      .catch(setError);
+      .catch(setError)
+      .finally(() => setIsLoading(false));
   }, [currentPage, movieRepo]);
 
-  function handlePageSelection(pageNumber) {
+  const handlePageSelection = (pageNumber) =>
     setSearchParams({ page: pageNumber });
-  }
 
   if (error) throw error;
 
   return (
     <div className="home">
       <main>
-        <MoviesList
+        <MoviesGrid
           isLoading={isLoading}
           movies={movies}
           maxMovies={MOVIES_PAGE_SIZE}
         />
       </main>
       <Paginator
-        key="bottom-paginator"
         currentPage={currentPage}
         totalPages={totalPages}
         disabled={isLoading}

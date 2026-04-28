@@ -7,4 +7,6 @@
 .confirmation-modal h3 {
   color: var(--text-clr);
   text-align: center;
+  font-size: 1.4rem;
+  font-weight: 900;
 }
