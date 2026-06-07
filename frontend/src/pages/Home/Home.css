@@ -12,10 +12,13 @@
 }
 
 main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 13fr 1fr;
+  gap: 30px;
   flex-grow: 1;
   width: 100%;
-  max-width: 85dvw;
+}
+
+main > ul {
+  align-self: center;
 }

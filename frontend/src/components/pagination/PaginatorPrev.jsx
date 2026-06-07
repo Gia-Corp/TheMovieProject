@@ -1,6 +1,10 @@
-function PaginatorPrev({ onClick, disabled }) {
+function PaginatorPrev({ onClick, isHidden }) {
   return (
-    <button className="primary-button" onClick={onClick} disabled={disabled}>
+    <button
+      className="navigation"
+      onClick={onClick}
+      style={{ visibility: isHidden ? "hidden" : "visible" }}
+    >
       {"<"}
     </button>
   );
