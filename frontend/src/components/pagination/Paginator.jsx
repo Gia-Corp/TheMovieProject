@@ -75,24 +75,12 @@ function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
 
   return (
     <div className={`paginator ${disabled ? "disabled" : ""}`}>
-      {hidePrevButton ? null : (
-        <PaginatorPrev
-          onClick={() => handlePageSelection(currentPage - 1)}
-          disabled={hidePrevButton}
-        />
-      )}
       {totalPages > 0 ? (
         createItemsList()
       ) : (
         <PaginatorItem key={1} disabled>
           <SpinnerIcon size={30} />
         </PaginatorItem>
-      )}
-      {hideNextButton ? null : (
-        <PaginatorNext
-          onClick={() => handlePageSelection(currentPage + 1)}
-          disabled={hideNextButton}
-        />
       )}
     </div>
   );
