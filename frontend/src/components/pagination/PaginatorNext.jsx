@@ -1,7 +1,7 @@
 function PaginatorNext({ onClick, isHidden }) {
   return (
     <button
-      className="primary-button navigation"
+      className="navigation"
       onClick={onClick}
       style={{ visibility: isHidden ? "hidden" : "visible" }}
     >

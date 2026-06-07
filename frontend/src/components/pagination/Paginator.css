@@ -19,7 +19,7 @@
 .navigation {
   width: 100%;
   font-size: 4rem;
-  color: transparent;
+  color: var(--text-ghost-clr);
 
   &:hover {
     color: var(--text-clr);

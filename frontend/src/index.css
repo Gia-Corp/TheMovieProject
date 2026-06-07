@@ -26,6 +26,7 @@
   
   /* TEXT SEMANTIC TOKENS */
   --text-clr: var(--white);
+  --text-ghost-clr: color-mix(in srgb, var(--text-clr) 20%, transparent);
   --strong-text-clr: var(--main-clr);
 
   /* FORM SEMANTIC TOKENS */
