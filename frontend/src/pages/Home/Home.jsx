@@ -45,7 +45,7 @@ function Home() {
   return (
     <div className="home">
       <main>
-        <PaginatorPrev 
+        <PaginatorPrev
           onClick={() => handlePageSelection(currentPage - 1)}
           isHidden={hidePrevButton}
         />
@@ -54,7 +54,7 @@ function Home() {
           movies={movies}
           maxMovies={MOVIES_PAGE_SIZE}
         />
-        <PaginatorNext 
+        <PaginatorNext
           onClick={() => handlePageSelection(currentPage + 1)}
           isHidden={hideNextButton}
         />

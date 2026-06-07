@@ -1,14 +1,10 @@
 import "./Paginator.css";
-import PaginatorPrev from "@/components/pagination/PaginatorPrev";
-import PaginatorNext from "@/components/pagination/PaginatorNext";
 import PaginatorItem from "@/components/pagination/PaginatorItem";
 import PaginatorEllipsis from "@/components/pagination/PaginatorEllipsis";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 function Paginator({ currentPage, totalPages, disabled, handlePageSelection }) {
   const MAX_VISIBLE_PAGES = 5;
-  const hidePrevButton = currentPage === 1 || totalPages === 0;
-  const hideNextButton = currentPage === totalPages || totalPages === 0;
 
   function calculateLimits() {
     let startPage = Math.max(
