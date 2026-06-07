@@ -45,19 +45,21 @@ function Home() {
   return (
     <div className="home">
       <main>
-        <PaginatorPrev
-          onClick={() => handlePageSelection(currentPage - 1)}
-          isHidden={hidePrevButton}
-        />
+        {hidePrevButton ? (
+          <div />
+        ) : (
+          <PaginatorPrev onClick={() => handlePageSelection(currentPage - 1)} />
+        )}
         <MoviesGrid
           isLoading={isLoading}
           movies={movies}
           maxMovies={MOVIES_PAGE_SIZE}
         />
-        <PaginatorNext
-          onClick={() => handlePageSelection(currentPage + 1)}
-          isHidden={hideNextButton}
-        />
+        {hideNextButton ? (
+          <div />
+        ) : (
+          <PaginatorNext onClick={() => handlePageSelection(currentPage + 1)} />
+        )}
       </main>
       <Paginator
         currentPage={currentPage}
