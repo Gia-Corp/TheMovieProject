@@ -2,7 +2,7 @@ import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function EditMovieForm() {
   return (
-    <form action="">
+    <form className="modal-form">
       <label htmlFor="title">
         <p>Título</p>
         <input

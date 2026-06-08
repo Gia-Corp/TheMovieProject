@@ -213,3 +213,62 @@ input:-webkit-autofill:focus {
   justify-content: center;
   height: 100%;
 }
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: fit-content;
+}
+
+.modal-form button {
+  align-self: end;
+}
+
+.modal-form label {
+  color: var(--strong-text-clr);
+}
+
+.modal-form input[type="checkbox"] {
+  width: fit-content;
+}
+
+.modal-form ul {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--search-bar-clr);
+  scrollbar-width: thin;
+  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
+}
+
+.modal-form ul li {
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-clr);
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--search-bar-hover-clr);
+  }
+
+  img {
+    aspect-ratio: 2 / 3;
+    height: 90px;
+  }
+
+  span {
+    font-weight: 650;
+  }
+}
+
+.error-sign {
+  background-color: color-mix(in srgb, var(--negative-clr) 10%, transparent);
+  color: var(--negative-clr);
+  border: 1px solid var(--negative-clr);
+  padding: 5px;
+  width: fit-content;
+}

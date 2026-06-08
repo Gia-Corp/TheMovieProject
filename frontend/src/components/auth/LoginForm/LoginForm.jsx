@@ -37,7 +37,7 @@ function LoginForm({ onSuccess }) {
   }, [state.successCount, onSuccess]);
 
   return (
-    <form key={state.successCount} className="add-movie-form" action={dispatch}>
+    <form key={state.successCount} className="modal-form" action={dispatch}>
       <label htmlFor="username">
         <p>Email</p>
         <input
