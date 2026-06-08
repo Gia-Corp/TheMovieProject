@@ -45,11 +45,12 @@ function EditMovieForm() {
       </label>
       <label htmlFor="plot">
         <p>Sinopsis</p>
-        <input
-          type="text"
+        <textarea
           maxLength="500"
           name="plot"
           id="plot"
+          rows="5"
+          cols="70"
           defaultValue="Andy, a smart but sensible young journalist, starts working as an assistant to the cynical high fashion magazine editor Miranda Priestly."
         />
       </label>
