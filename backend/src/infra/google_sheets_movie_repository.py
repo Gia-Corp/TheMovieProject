@@ -122,6 +122,10 @@ class GoogleSheetsMovieRepository:
         movies = self._dicts_to_movies(raw_movies)
         return movies
 
+    def exists_by_title(self, title):
+        pattern = re.compile(r"^\s*" + re.escape(title) + r"\s*$", re.IGNORECASE)
+        return self.sheet.findall(pattern, in_column=2)
+
 
 class PageOutOfBoundsError(ApiException):
     NOT_FOUND = 400
