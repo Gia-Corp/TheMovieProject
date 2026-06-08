@@ -1,6 +1,6 @@
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
-function EditMovieForm() {
+function EditMovieForm({ movie }) {
   return (
     <form className="modal-form" /*action={dispatch}*/>
       <label htmlFor="title">
@@ -10,7 +10,7 @@ function EditMovieForm() {
           maxLength="200"
           name="title"
           id="title"
-          defaultValue="Devil Wears Prada"
+          defaultValue={movie.title}
         />
       </label>
       <label htmlFor="director">
@@ -20,7 +20,7 @@ function EditMovieForm() {
           maxLength="200"
           name="director"
           id="director"
-          defaultValue="David Frankel"
+          defaultValue={movie.director}
         />
       </label>
       <label htmlFor="year">
@@ -30,7 +30,7 @@ function EditMovieForm() {
           min="1"
           name="year"
           id="year"
-          defaultValue="2006"
+          defaultValue={movie.year}
         />
       </label>
       <label htmlFor="runtime">
@@ -40,7 +40,7 @@ function EditMovieForm() {
           min="1"
           name="runtime"
           id="runtime"
-          defaultValue="109"
+          defaultValue={movie.runtime.substring(0, movie.runtime.length - 4)}
         />
       </label>
       <label htmlFor="plot">
@@ -51,7 +51,7 @@ function EditMovieForm() {
           id="plot"
           rows="5"
           cols="70"
-          defaultValue="Andy, a smart but sensible young journalist, starts working as an assistant to the cynical high fashion magazine editor Miranda Priestly."
+          defaultValue={movie.plot}
         />
       </label>
       <SubmitButton text="Confirmar" /*isLoading={isPending}*/ />

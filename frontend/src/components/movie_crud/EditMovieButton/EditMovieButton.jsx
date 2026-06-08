@@ -2,7 +2,7 @@ import { useRef } from "react";
 import Modal from "@/components/modals/Modal/Modal";
 import EditMovieForm from "@/components/movie_crud/EditMovieForm/EditMovieForm";
 
-function EditMovieButton() {
+function EditMovieButton({ movie }) {
   const formModalRef = useRef(null);
 
   const handleOpen = () => formModalRef.current.showModal();
@@ -21,7 +21,9 @@ function EditMovieButton() {
       </button>
 
       <Modal title="Editar peli" ref={formModalRef} onClose={handleClose}>
-        <EditMovieForm /*key={formKey} onSuccess={handleClose}*/ />
+        <EditMovieForm
+          movie={movie} /*key={formKey} onSuccess={handleClose}*/
+        />
       </Modal>
     </>
   );

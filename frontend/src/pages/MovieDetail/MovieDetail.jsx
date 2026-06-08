@@ -113,7 +113,7 @@ function MovieDetail() {
             </div>
             {accessToken ? (
               <>
-                <EditMovieButton />
+                <EditMovieButton movie={movie} />
                 <DeleteMovieButton movieId={movie.id} />
               </>
             ) : null}
