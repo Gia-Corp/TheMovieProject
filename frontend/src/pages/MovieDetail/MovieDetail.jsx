@@ -40,6 +40,8 @@ function MovieDetail() {
       .catch(() => setIsWatched(isWatched));
   };
 
+  const handleOnEdit = (editedMovie) => setMovie(editedMovie);
+
   if (error) throw error;
 
   if (isLoading) {
@@ -113,7 +115,7 @@ function MovieDetail() {
             </div>
             {accessToken ? (
               <>
-                <EditMovieButton movie={movie} />
+                <EditMovieButton movie={movie} onEdit={handleOnEdit} />
                 <DeleteMovieButton movieId={movie.id} />
               </>
             ) : null}

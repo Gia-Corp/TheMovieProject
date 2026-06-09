@@ -1,11 +1,12 @@
-import { useActionState, useEffect } from "react";
-// import { useRepos } from "@/hooks/useRepos";
-// import { useAuth } from "@/hooks/useAuth";
+import { useActionState, useEffect, useState } from "react";
+import { useRepos } from "@/hooks/useRepos";
+import { useAuth } from "@/hooks/useAuth";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function EditMovieForm({ movie, onSuccess }) {
-  // const { movieRepo } = useRepos();
-  // const { accessToken } = useAuth();
+  const { movieRepo } = useRepos();
+  const { accessToken } = useAuth();
+  const [editedMovie, setEditedMovie] = useState(null);
 
   const [state, dispatch, isPending] = useActionState(
     async (prevState, formData) => {
@@ -16,9 +17,15 @@ function EditMovieForm({ movie, onSuccess }) {
         if (Object.keys(movieToEdit).length === 0)
           return { error: null, successCount: prevState.successCount + 1 };
 
-        console.log(movieToEdit);
-        // const createdMovie = await movieRepo.createMovie(newMovie, accessToken);
-        // setSelectedMovie(createdMovie);
+        if (movieToEdit.runtime)
+          movieToEdit.runtime = `${movieToEdit.runtime} min`;
+
+        const newMovie = await movieRepo.updateMovie(
+          movie.id,
+          movieToEdit,
+          accessToken,
+        );
+        setEditedMovie(newMovie);
         return { error: null, successCount: prevState.successCount + 1 };
       } catch (error) {
         return { error: error.message, successCount: prevState.successCount };
@@ -28,8 +35,8 @@ function EditMovieForm({ movie, onSuccess }) {
   );
 
   useEffect(() => {
-    if (state.successCount > 0) onSuccess();
-  }, [state.successCount, onSuccess]);
+    if (state.successCount > 0) onSuccess(editedMovie);
+  }, [state.successCount, onSuccess, editedMovie]);
 
   return (
     <form key={state.successCount} className="modal-form" action={dispatch}>
