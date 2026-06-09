@@ -1,18 +1,3 @@
-.add-movie-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  height: fit-content;
-}
-
-.add-movie-form button {
-  align-self: end;
-}
-
-.add-movie-form label {
-  color: var(--strong-text-clr);
-}
-
 label[for="watched"] {
   display: flex;
   flex-direction: row;
@@ -22,48 +7,4 @@ label[for="watched"] {
   &:hover {
     cursor: pointer;
   }
-}
-
-.add-movie-form input[type="checkbox"] {
-  width: fit-content;
-}
-
-.add-movie-form ul {
-  max-height: 180px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: var(--search-bar-clr);
-  scrollbar-width: thin;
-  scrollbar-color: var(--search-bar-dark-clr) var(--search-bar-clr);
-}
-
-.add-movie-form ul li {
-  padding: 8px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-clr);
-
-  &:hover {
-    cursor: pointer;
-    background-color: var(--search-bar-hover-clr);
-  }
-
-  img {
-    aspect-ratio: 2 / 3;
-    height: 90px;
-  }
-
-  span {
-    font-weight: 650;
-  }
-}
-
-.error-sign {
-  background-color: color-mix(in srgb, var(--negative-clr) 10%, transparent);
-  color: var(--negative-clr);
-  border: 1px solid var(--negative-clr);
-  padding: 5px;
-  width: fit-content;
 }

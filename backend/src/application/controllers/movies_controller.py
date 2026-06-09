@@ -78,8 +78,8 @@ async def create_movie(
     ),
     current_user=Depends(get_current_user),
 ):
-    matching_movies = movie_repo.find_by_title(movie_dto.title)
-    if matching_movies:
+    movie_exists = movie_repo.exists_by_title(movie_dto.title)
+    if movie_exists:
         raise MovieAlreadyExistsError()
 
     movie_info = await external_api_movie_repo.get_by_title_and_year(
