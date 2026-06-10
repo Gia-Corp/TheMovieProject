@@ -7,7 +7,7 @@ from src.infra import (
     MovieAlreadyExistsError,
 )
 from src.application.pagination import Page, PageMetadataCalculator
-from src.domain import Movie
+from src.domain import Movie, WatchEvent
 from src.dependencies import (
     get_movie_repo,
     get_external_api_movie_repo,
@@ -86,12 +86,14 @@ async def create_movie(
         movie_dto.title, movie_dto.year
     )
 
+    watch_events = [WatchEvent(user_id=user_id) for user_id in movie_dto.watched_by]
+
     movie = Movie(
         id=1,
         title=movie_info["Title"],
         director=movie_info["Director"],
         year=int(movie_info["Year"]),
-        watched=movie_dto.watched,
+        watched_by=watch_events,
         runtime=movie_info["Runtime"] if movie_info["Runtime"] != "N/A" else None,
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
