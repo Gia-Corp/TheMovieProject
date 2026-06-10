@@ -1,7 +1,8 @@
 from pydantic import BaseModel
+from .watch_event_input_dto import WatchEventInputDTO
 
 
 class CreateMovieDTO(BaseModel):
     title: str
     year: int
-    watched: bool
+    watched_by: list[WatchEventInputDTO] = []
