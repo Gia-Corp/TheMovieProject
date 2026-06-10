@@ -1,5 +1,6 @@
 from gspread import utils
 from src.domain import User
+from src.application.exceptions import ApiException
 
 
 class GoogleSheetsUserRepository:
@@ -39,3 +40,18 @@ class GoogleSheetsUserRepository:
             role=raw_user["role"],
         )
         return user
+
+    def all_exist(self, ids):
+        ids = set([str(id) for id in ids])
+        existing_ids = set(self.sheet.col_values(1))
+        return ids.issubset(existing_ids)
+
+
+class UserNotFoundError(ApiException):
+    NOT_FOUND = 404
+
+    def build_message(self, parameter):
+        return "User not found"
+
+    def get_status_code(self):
+        return self.NOT_FOUND

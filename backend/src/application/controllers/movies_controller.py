@@ -5,12 +5,15 @@ from src.infra import (
     PageOutOfBoundsError,
     ExternalAPIMovieRepository,
     MovieAlreadyExistsError,
+    GoogleSheetsUserRepository,
+    UserNotFoundError,
 )
 from src.application.pagination import Page, PageMetadataCalculator
 from src.domain import Movie, WatchEvent
 from src.dependencies import (
     get_movie_repo,
     get_external_api_movie_repo,
+    get_user_repo,
     get_current_user,
 )
 from src.application.dtos import CreateMovieDTO, UpdateMovieDTO, GetMoviesResponseDTO
@@ -76,6 +79,7 @@ async def create_movie(
     external_api_movie_repo: ExternalAPIMovieRepository = Depends(
         get_external_api_movie_repo
     ),
+    user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
     current_user=Depends(get_current_user),
 ):
     movie_exists = movie_repo.exists_by_title(movie_dto.title)
@@ -86,14 +90,17 @@ async def create_movie(
         movie_dto.title, movie_dto.year
     )
 
-    watch_events = [WatchEvent(user_id=user_id) for user_id in movie_dto.watched_by]
+    if movie_dto.watched_by:
+        users_exist = user_repo.all_exist(movie_dto.watched_by)
+        if not users_exist:
+            raise UserNotFoundError()
 
     movie = Movie(
         id=1,
         title=movie_info["Title"],
         director=movie_info["Director"],
         year=int(movie_info["Year"]),
-        watched_by=watch_events,
+        watched_by=[WatchEvent(user_id=user_id) for user_id in movie_dto.watched_by],
         runtime=movie_info["Runtime"] if movie_info["Runtime"] != "N/A" else None,
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
