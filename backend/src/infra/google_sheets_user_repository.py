@@ -7,6 +7,14 @@ class GoogleSheetsUserRepository:
     def __init__(self, sheet):
         self.sheet = sheet
 
+    def get_user_count(self):
+        return len(self.get_all())
+
+    def get_all(self):
+        raw_users = self.sheet.get_all_records()
+        users = list(map(self._transform_into_user, raw_users))
+        return users
+
     def get_by_id(self, id):
         cell = self.sheet.find(str(id), in_column=1)
         if not cell:
