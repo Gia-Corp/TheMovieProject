@@ -1,7 +1,8 @@
 from gspread import utils
 from src.application.exceptions import ApiException
-from src.domain import Movie
+from src.domain import Movie, WatchEvent
 import re
+from datetime import datetime
 
 
 class GoogleSheetsMovieRepository:
@@ -16,7 +17,7 @@ class GoogleSheetsMovieRepository:
         if self._next_available_row() <= page_first_row:
             raise PageOutOfBoundsError
 
-        raw_movies = self.movies_sheet.get(f"A{page_first_row}:H{page_last_row}")
+        raw_movies = self.movies_sheet.get(f"A{page_first_row}:G{page_last_row}")
         movies = self._dicts_to_movies(raw_movies)
         return movies
 
@@ -29,7 +30,6 @@ class GoogleSheetsMovieRepository:
                 "director",
                 "title",
                 "year",
-                "watched",
                 "id",
                 "runtime",
                 "plot",
@@ -40,17 +40,42 @@ class GoogleSheetsMovieRepository:
         return list(map(self._transform_into_movie, raw_movies))
 
     def _transform_into_movie(self, raw_movie):
+        watched_by = []
+        cells = self.watch_events_sheet.findall(raw_movie["id"], in_column=2)
+        if cells:
+            row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
+            rows = self.watch_events_sheet.batch_get(row_ranges)
+            raw_watch_events = [row[0] for row in rows]
+            watched_by = self._dicts_to_watch_events(raw_watch_events)
+
         movie = Movie(
             id=int(raw_movie["id"]),
             title=raw_movie["title"],
             director=raw_movie["director"],
             year=int(raw_movie["year"]),
-            # watched=True if raw_movie["watched"] == "TRUE" else False,
             plot=raw_movie["plot"] if "plot" in raw_movie else None,
             runtime=raw_movie["runtime"] if "runtime" in raw_movie else None,
             poster_url=raw_movie["poster_url"] if "poster_url" in raw_movie else None,
+            watched_by=watched_by,
         )
         return movie
+
+    def _dicts_to_watch_events(self, dicts):
+        raw_watch_events = utils.to_records(
+            ["id", "movie_id", "user_id", "watched_at"],
+            dicts,
+        )
+        return list(map(self._transform_into_watch_event, raw_watch_events))
+
+    def _transform_into_watch_event(self, raw_watch_event):
+        watch_event = WatchEvent(
+            id=int(raw_watch_event["id"]),
+            user_id=int(raw_watch_event["user_id"]),
+            watched_at=datetime.strptime(
+                raw_watch_event["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
+            ),
+        )
+        return watch_event
 
     def get_movie_count(self):
         return self._next_available_row() - 2
@@ -96,7 +121,7 @@ class GoogleSheetsMovieRepository:
         if not cell:
             return
 
-        raw_movies = self.movies_sheet.get(f"A{cell.row}:H{cell.row}")
+        raw_movies = self.movies_sheet.get(f"A{cell.row}:G{cell.row}")
         movies = self._dicts_to_movies(raw_movies)
         return movies[0]
 
@@ -111,14 +136,13 @@ class GoogleSheetsMovieRepository:
                     movie.director,
                     movie.title,
                     movie.year,
-                    movie.watched,
                     movie.id,
                     movie.runtime,
                     movie.plot,
                     movie.poster_url,
                 ]
             ],
-            f"A{cell.row}:H{cell.row}",
+            f"A{cell.row}:G{cell.row}",
         )
         return movie
 
@@ -133,7 +157,7 @@ class GoogleSheetsMovieRepository:
         if not cells:
             return
 
-        row_ranges = [f"A{cell.row}:H{cell.row}" for cell in cells]
+        row_ranges = [f"A{cell.row}:G{cell.row}" for cell in cells]
 
         rows = self.movies_sheet.batch_get(row_ranges)
         raw_movies = [row[0] for row in rows]
