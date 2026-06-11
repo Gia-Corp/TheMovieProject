@@ -9,7 +9,7 @@ from src.infra import (
     UserNotFoundError,
 )
 from src.application.pagination import Page, PageMetadataCalculator
-from src.application.assemble import MovieSummaryAssembler
+from src.application.assemble import MovieSummaryAssembler, MovieDetailAssembler
 from src.domain import Movie, WatchEvent
 from src.dependencies import (
     get_movie_repo,
@@ -57,8 +57,8 @@ async def get_movies(
 
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
 
-    total_users = user_repo.get_user_count()
-    movies = MovieSummaryAssembler(total_users).assemble_many(movies)
+    user_count = user_repo.get_user_count()
+    movies = MovieSummaryAssembler(user_count).assemble_many(movies)
 
     return {"metadata": metadata, "movies": movies}
 
@@ -69,13 +69,15 @@ async def get_movie(
         ..., gt=0, description="El ID de la película debe ser mayor a 0"
     ),
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
 ):
     movie = movie_repo.get_by_id(movie_id)
 
     if not movie:
         raise MovieNotFoundError(movie_id)
 
-    return movie
+    users = user_repo.get_all()
+    return MovieDetailAssembler(users).assemble(movie)
 
 
 @movies_controller.post("/movies")
@@ -106,10 +108,10 @@ async def create_movie(
         title=movie_info["Title"],
         director=movie_info["Director"],
         year=int(movie_info["Year"]),
-        watched_by=[WatchEvent(user_id=user_id) for user_id in movie_dto.watched_by],
         runtime=movie_info["Runtime"] if movie_info["Runtime"] != "N/A" else None,
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
+        watched_by=[WatchEvent(user_id=user_id) for user_id in movie_dto.watched_by],
     )
     return movie_repo.add(movie)
 
