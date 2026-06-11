@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from .watched_by_dto import WatchedByDTO
 
 
 class MovieSummaryDTO(BaseModel):
@@ -6,4 +7,4 @@ class MovieSummaryDTO(BaseModel):
     title: str
     year: int
     poster_url: str | None
-    watched: bool
+    watched_by: WatchedByDTO
