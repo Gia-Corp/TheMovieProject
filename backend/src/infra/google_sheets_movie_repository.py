@@ -117,7 +117,7 @@ class GoogleSheetsMovieRepository:
         return movie
 
     def get_by_id(self, id):
-        cell = self.movies_sheet.find(str(id), in_column=5)
+        cell = self.movies_sheet.find(str(id), in_column=4)
         if not cell:
             return
 
@@ -126,7 +126,7 @@ class GoogleSheetsMovieRepository:
         return movies[0]
 
     def save(self, movie):
-        cell = self.movies_sheet.find(str(movie.id), in_column=5)
+        cell = self.movies_sheet.find(str(movie.id), in_column=4)
         if not cell:
             return
 
@@ -147,7 +147,7 @@ class GoogleSheetsMovieRepository:
         return movie
 
     def delete(self, id):
-        cell = self.movies_sheet.find(str(id), in_column=5)
+        cell = self.movies_sheet.find(str(id), in_column=4)
         if not cell:
             return
         self.movies_sheet.delete_rows(cell.row)
