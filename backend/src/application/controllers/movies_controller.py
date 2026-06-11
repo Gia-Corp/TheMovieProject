@@ -9,6 +9,7 @@ from src.infra import (
     UserNotFoundError,
 )
 from src.application.pagination import Page, PageMetadataCalculator
+from src.application.assemble import MovieSummaryAssembler
 from src.domain import Movie, WatchEvent
 from src.dependencies import (
     get_movie_repo,
@@ -32,6 +33,7 @@ async def get_movies(
     size: int = Query(..., gt=0),
     title: Optional[str] = None,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
 ):
     page = Page(page, size)
 
@@ -54,6 +56,10 @@ async def get_movies(
         movie_count = movie_repo.get_movie_count()
 
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
+
+    total_users = user_repo.get_user_count()
+    movies = MovieSummaryAssembler(total_users).assemble_many(movies)
+
     return {"metadata": metadata, "movies": movies}
 
 
