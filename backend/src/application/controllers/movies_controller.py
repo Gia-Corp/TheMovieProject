@@ -36,6 +36,7 @@ async def get_movies(
     title: Optional[str] = None,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
 ):
     page = Page(page, size)
 
@@ -60,7 +61,8 @@ async def get_movies(
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
 
     user_count = user_repo.get_user_count()
-    movies = MovieSummaryAssembler(user_count).assemble_many(movies)
+    watch_events = watch_event_repo.find_all_by_movies(movies)
+    movies = MovieSummaryAssembler(user_count, watch_events).assemble_many(movies)
 
     return {"metadata": metadata, "movies": movies}
 
