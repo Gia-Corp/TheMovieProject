@@ -3,7 +3,11 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi import FastAPI
 import src.settings as settings
-from .application.controllers import movies_controller, auth_controller
+from .application.controllers import (
+    movies_controller,
+    auth_controller,
+    watch_events_controller,
+)
 from .application.exceptions import (
     ApiException,
     validation_exception_handler,
@@ -31,8 +35,9 @@ api.add_exception_handler(RequestValidationError, validation_exception_handler)
 api.add_exception_handler(StarletteHTTPException, http_exception_handler)
 api.add_exception_handler(ApiException, generic_exception_handler)
 
-api.include_router(movies_controller)
 api.include_router(auth_controller)
+api.include_router(movies_controller)
+api.include_router(watch_events_controller)
 
 
 @api.get("/")
