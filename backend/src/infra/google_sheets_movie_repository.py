@@ -171,6 +171,24 @@ class GoogleSheetsMovieRepository:
             return
         self.movies_sheet.delete_rows(cell.row)
 
+        cells = self.watch_events_sheet.findall(str(id), in_column=2)
+        if cells:
+            rows_to_delete = [cell.row for cell in cells]
+            requests = [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.watch_events_sheet.id,
+                            "dimension": "ROWS",
+                            "startIndex": i - 1,
+                            "endIndex": i,
+                        }
+                    }
+                }
+                for i in sorted(rows_to_delete, reverse=True)
+            ]
+            self.watch_events_sheet.spreadsheet.batch_update({"requests": requests})
+
     def find_by_title(self, title):
         cells = self.movies_sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
         if not cells:
