@@ -5,7 +5,10 @@ from .google_sheets_movie_repository import (
     MovieAlreadyExistsError,
 )
 from .google_sheets_user_repository import GoogleSheetsUserRepository, UserNotFoundError
-from .google_sheets_watch_event_repository import GoogleSheetsWatchEventRepository
+from .google_sheets_watch_event_repository import (
+    GoogleSheetsWatchEventRepository,
+    WatchEventNotFoundError,
+)
 from .external_api_movie_repository import ExternalAPIMovieRepository
 
 __all__ = [
@@ -17,4 +20,5 @@ __all__ = [
     "GoogleSheetsUserRepository",
     "UserNotFoundError",
     "GoogleSheetsWatchEventRepository",
+    "WatchEventNotFoundError",
 ]

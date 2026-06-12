@@ -8,6 +8,15 @@ class GoogleSheetsWatchEventRepository:
     def __init__(self, sheet):
         self.sheet = sheet
 
+    def get_by_id(self, id):
+        cell = self.sheet.find(str(id), in_column=1)
+        if not cell:
+            return
+
+        raw_watch_events = self.sheet.get(f"A{cell.row}:D{cell.row}")
+        watch_events = self._dicts_to_watch_events(raw_watch_events)
+        return watch_events[0]
+
     def find_all_by_movies(self, movies):
         filas = self.sheet.get_all_records(
             expected_headers=["id", "movie_id", "user_id", "watched_at"]
@@ -89,6 +98,22 @@ class GoogleSheetsWatchEventRepository:
 
         if next_id:
             self.sheet.update([[next_id]], "last_watch_event_id")
+
+    def delete(self, id):
+        cell = self.sheet.find(str(id), in_column=1)
+        if not cell:
+            return
+        self.sheet.delete_rows(cell.row)
+
+
+class WatchEventNotFoundError(ApiException):
+    NOT_FOUND = 404
+
+    def build_message(self, parameter):
+        return "Watch event not found"
+
+    def get_status_code(self):
+        return self.NOT_FOUND
 
 
 class WatchEventAlreadyExistsError(ApiException):
