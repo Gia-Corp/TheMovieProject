@@ -5,6 +5,7 @@ from typing import Optional
 
 @dataclass
 class WatchEvent:
+    movie_id: int
     user_id: int
     id: Optional[int] = None
     watched_at: Optional[datetime] = None

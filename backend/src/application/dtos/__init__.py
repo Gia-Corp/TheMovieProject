@@ -7,6 +7,7 @@ from .movie_detail_dto import MovieDetailDTO
 from .detail_watch_event_dto import DetailWatchEventDTO
 from .detail_watched_by_dto import DetailWatchedByDTO
 from .user_summary_dto import UserSummaryDTO
+from .create_watch_event_dto import CreateWatchEventDTO
 
 __all__ = [
     "CreateMovieDTO",
@@ -18,4 +19,5 @@ __all__ = [
     "DetailWatchEventDTO",
     "DetailWatchedByDTO",
     "UserSummaryDTO",
+    "CreateWatchEventDTO",
 ]

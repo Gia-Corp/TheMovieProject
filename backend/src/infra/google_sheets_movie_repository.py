@@ -1,8 +1,7 @@
 from gspread import utils
 from src.application.exceptions import ApiException
-from src.domain import Movie, WatchEvent
+from src.domain import Movie
 import re
-from datetime import datetime
 
 
 class GoogleSheetsMovieRepository:
@@ -41,12 +40,12 @@ class GoogleSheetsMovieRepository:
 
     def _transform_into_movie(self, raw_movie):
         watched_by = []
-        cells = self.watch_events_sheet.findall(raw_movie["id"], in_column=2)
-        if cells:
-            row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
-            rows = self.watch_events_sheet.batch_get(row_ranges)
-            raw_watch_events = [row[0] for row in rows]
-            watched_by = self._dicts_to_watch_events(raw_watch_events)
+        # cells = self.watch_events_sheet.findall(raw_movie["id"], in_column=2)
+        # if cells:
+        #     row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
+        #     rows = self.watch_events_sheet.batch_get(row_ranges)
+        #     raw_watch_events = [row[0] for row in rows]
+        #     watched_by = self._dicts_to_watch_events(raw_watch_events)
 
         movie = Movie(
             id=int(raw_movie["id"]),
@@ -60,22 +59,22 @@ class GoogleSheetsMovieRepository:
         )
         return movie
 
-    def _dicts_to_watch_events(self, dicts):
-        raw_watch_events = utils.to_records(
-            ["id", "movie_id", "user_id", "watched_at"],
-            dicts,
-        )
-        return list(map(self._transform_into_watch_event, raw_watch_events))
+    # def _dicts_to_watch_events(self, dicts):
+    #     raw_watch_events = utils.to_records(
+    #         ["id", "movie_id", "user_id", "watched_at"],
+    #         dicts,
+    #     )
+    #     return list(map(self._transform_into_watch_event, raw_watch_events))
 
-    def _transform_into_watch_event(self, raw_watch_event):
-        watch_event = WatchEvent(
-            id=int(raw_watch_event["id"]),
-            user_id=int(raw_watch_event["user_id"]),
-            watched_at=datetime.strptime(
-                raw_watch_event["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
-            ),
-        )
-        return watch_event
+    # def _transform_into_watch_event(self, raw_watch_event):
+    #     watch_event = WatchEvent(
+    #         id=int(raw_watch_event["id"]),
+    #         user_id=int(raw_watch_event["user_id"]),
+    #         watched_at=datetime.strptime(
+    #             raw_watch_event["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
+    #         ),
+    #     )
+    #     return watch_event
 
     def get_movie_count(self):
         return self._next_available_row() - 2
@@ -98,42 +97,42 @@ class GoogleSheetsMovieRepository:
         self.movies_sheet.update([[next_id]], "last_id")
         movie.id = next_id
 
-        self._save_watch_events(movie)
+        # self._save_watch_events(movie)
 
         return movie
 
-    def _save_watch_events(self, movie):
-        last_id = int(self.watch_events_sheet.get("last_watch_event_id")[0][0])
-        next_id = None
+    # def _save_watch_events(self, movie):
+    #     last_id = int(self.watch_events_sheet.get("last_watch_event_id")[0][0])
+    #     next_id = None
 
-        # if not movie.watched_by:
-        #     cells = self.watch_events_sheet.findall(str(movie.id), in_column=2)
-        #     if cells:
-        #         rows_to_delete = [cell.row for cell in cells]
-        #         requests = [
-        #             {"deleteDimension": {"range": {"sheetId": self.watch_events_sheet.id, "dimension": "ROWS", "startIndex": i - 1, "endIndex": i}}}
-        #             for i in sorted(rows_to_delete, reverse=True)
-        #         ]
-        #         self.watch_events_sheet.spreadsheet.batch_update({"requests": requests})
+    #     # if not movie.watched_by:
+    #     #     cells = self.watch_events_sheet.findall(str(movie.id), in_column=2)
+    #     #     if cells:
+    #     #         rows_to_delete = [cell.row for cell in cells]
+    #     #         requests = [
+    #     #             {"deleteDimension": {"range": {"sheetId": self.watch_events_sheet.id, "dimension": "ROWS", "startIndex": i - 1, "endIndex": i}}}
+    #     #             for i in sorted(rows_to_delete, reverse=True)
+    #     #         ]
+    #     #         self.watch_events_sheet.spreadsheet.batch_update({"requests": requests})
 
-        for watch_event in movie.watched_by:
-            if watch_event.id:
-                continue
+    #     for watch_event in movie.watched_by:
+    #         if watch_event.id:
+    #             continue
 
-            next_id = last_id + 1
-            watch_event_as_list = [
-                next_id,
-                movie.id,
-                watch_event.user_id,
-                str(watch_event.watched_at),
-            ]
+    #         next_id = last_id + 1
+    #         watch_event_as_list = [
+    #             next_id,
+    #             movie.id,
+    #             watch_event.user_id,
+    #             str(watch_event.watched_at),
+    #         ]
 
-            self.watch_events_sheet.append_row(watch_event_as_list)
-            watch_event.id = next_id
-            last_id = next_id
+    #         self.watch_events_sheet.append_row(watch_event_as_list)
+    #         watch_event.id = next_id
+    #         last_id = next_id
 
-        if next_id:
-            self.watch_events_sheet.update([[next_id]], "last_watch_event_id")
+    #     if next_id:
+    #         self.watch_events_sheet.update([[next_id]], "last_watch_event_id")
 
     def get_by_id(self, id):
         cell = self.movies_sheet.find(str(id), in_column=4)
