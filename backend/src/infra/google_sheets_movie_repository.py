@@ -98,11 +98,29 @@ class GoogleSheetsMovieRepository:
         self.movies_sheet.update([[next_id]], "last_id")
         movie.id = next_id
 
-        # ACA REGISTRO LAS VISUALIZACIONES
-        for watch_event in movie.watched_by:
-            last_id = int(self.watch_events_sheet.get("last_watch_event_id")[0][0])
-            next_id = last_id + 1
+        self._save_watch_events(movie)
 
+        return movie
+
+    def _save_watch_events(self, movie):
+        last_id = int(self.watch_events_sheet.get("last_watch_event_id")[0][0])
+        next_id = None
+
+        # if not movie.watched_by:
+        #     cells = self.watch_events_sheet.findall(str(movie.id), in_column=2)
+        #     if cells:
+        #         rows_to_delete = [cell.row for cell in cells]
+        #         requests = [
+        #             {"deleteDimension": {"range": {"sheetId": self.watch_events_sheet.id, "dimension": "ROWS", "startIndex": i - 1, "endIndex": i}}}
+        #             for i in sorted(rows_to_delete, reverse=True)
+        #         ]
+        #         self.watch_events_sheet.spreadsheet.batch_update({"requests": requests})
+
+        for watch_event in movie.watched_by:
+            if watch_event.id:
+                continue
+
+            next_id = last_id + 1
             watch_event_as_list = [
                 next_id,
                 movie.id,
@@ -111,10 +129,11 @@ class GoogleSheetsMovieRepository:
             ]
 
             self.watch_events_sheet.append_row(watch_event_as_list)
-            self.watch_events_sheet.update([[next_id]], "last_watch_event_id")
             watch_event.id = next_id
+            last_id = next_id
 
-        return movie
+        if next_id:
+            self.watch_events_sheet.update([[next_id]], "last_watch_event_id")
 
     def get_by_id(self, id):
         cell = self.movies_sheet.find(str(id), in_column=4)

@@ -139,8 +139,22 @@ async def update_movie(
     if movie_dto.year:
         movie.year = movie_dto.year
 
-    if movie_dto.watched is not None:
-        movie.watched = movie_dto.watched
+    # if movie_dto.watched_by is not None:
+    #     if movie_dto.watched_by:
+    #         users_exist = user_repo.all_exist(movie_dto.watched_by)
+    #         if not users_exist:
+    #             raise UserNotFoundError()
+
+    #         new_user_ids = set(movie_dto.watched_by)
+    #         current_user_ids = set([w.user_id for w in movie.watched_by])
+    #         user_ids_to_add = new_user_ids.difference(current_user_ids)
+    #         if not user_ids_to_add:
+    #             if len(new_user_ids) < len(current_user_ids):
+    #                 print(f"HAY QUE BORRAR TODOS MENOS {new_user_ids}")
+    #         watch_events_to_add = [WatchEvent(user_id=w) for w in user_ids_to_add]
+    #         movie.watched_by.extend(watch_events_to_add)
+    #     else:
+    #         movie.watched_by = []
 
     if movie_dto.runtime:
         movie.runtime = movie_dto.runtime
