@@ -4,6 +4,7 @@ from .infra import (
     GoogleSheetsMovieRepository,
     ExternalAPIMovieRepository,
     GoogleSheetsUserRepository,
+    GoogleSheetsWatchEventRepository,
 )
 from .application.auth import JWTHandler
 from fastapi import Depends, HTTPException, status
@@ -13,13 +14,17 @@ client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
 spreadsheet = client.open(settings.SHEET_NAME)
 movies_sheet = spreadsheet.get_worksheet(0)
 watch_events_sheet = spreadsheet.get_worksheet(2)
+
+watch_event_repo = GoogleSheetsWatchEventRepository(watch_events_sheet)
 movie_repo = GoogleSheetsMovieRepository(movies_sheet, watch_events_sheet)
+
 external_api_movie_repo = ExternalAPIMovieRepository(
     settings.MOVIE_API_URL, settings.MOVIE_API_KEY
 )
 
 users_sheet = spreadsheet.get_worksheet(1)
 user_repo = GoogleSheetsUserRepository(users_sheet)
+
 
 jwt_handler = JWTHandler(
     settings.JWT_SECRET_KEY,
@@ -39,6 +44,10 @@ def get_external_api_movie_repo():
 
 def get_user_repo():
     return user_repo
+
+
+def get_watch_event_repo():
+    return watch_event_repo
 
 
 def get_jwt_handler():
