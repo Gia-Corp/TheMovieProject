@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Body
 from typing import Optional
 from src.application.dtos import CreateWatchEventDTO
 from src.dependencies import (
@@ -84,22 +84,24 @@ async def delete_watch_event(
     return watch_event
 
 
-# @watch_events_controller.put("/movies/{movie_id}/watch-events")
-# async def update_watch_events(
-#     movie_id: int = Path(
-#         ..., gt=0, description="El ID de la película debe ser mayor a 0"
-#     ),
-#     user_ids: list[int] = Body(...),
-#     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
-#     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
-#     current_user=Depends(get_current_user),
-# ):
-#     movie = movie_repo.get_by_id(movie_id)
-#     if not movie:
-#         raise MovieNotFoundError(movie_id)
+@watch_events_controller.put("/movies/{movie_id}/watch-events")
+async def update_watch_events_from_movie(
+    movie_id: int = Path(
+        ..., gt=0, description="El ID de la película debe ser mayor a 0"
+    ),
+    user_ids: list[int] = Body(...),
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
+    current_user=Depends(get_current_user),
+):
+    movie = movie_repo.get_by_id(movie_id)
+    if not movie:
+        raise MovieNotFoundError(movie_id)
 
-#     if not user_ids:
-#         print("BORRO TODOS LOS ASOCIADOS A ESTA PELI")
+    if not user_ids:
+        return watch_event_repo.delete_by_movie_id(movie_id)
+
 
 #     users_exist = user_repo.all_exist(user_ids)
 #     if not users_exist:

@@ -122,6 +122,27 @@ class GoogleSheetsWatchEventRepository:
             return
         self.sheet.delete_rows(cell.row)
 
+    def delete_by_movie_id(self, movie_id):
+        cells = self.sheet.findall(str(movie_id), in_column=2)
+        if not cells:
+            return cells
+
+        rows_to_delete = [cell.row for cell in cells]
+        requests = [
+            {
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": self.sheet.id,
+                        "dimension": "ROWS",
+                        "startIndex": i - 1,
+                        "endIndex": i,
+                    }
+                }
+            }
+            for i in sorted(rows_to_delete, reverse=True)
+        ]
+        self.sheet.spreadsheet.batch_update({"requests": requests})
+
 
 class WatchEventNotFoundError(ApiException):
     NOT_FOUND = 404
