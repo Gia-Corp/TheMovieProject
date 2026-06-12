@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Path
+from typing import Optional
 from src.application.dtos import CreateWatchEventDTO
 from src.dependencies import (
     get_movie_repo,
@@ -20,6 +21,27 @@ watch_events_controller = APIRouter(
     prefix="/api",
     tags=["Watch Events"],
 )
+
+
+@watch_events_controller.get("/watch-events")
+async def get_watch_events(
+    movie_id: Optional[int] = None,
+    user_id: Optional[int] = None,
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
+):
+    if movie_id:
+        watch_events = watch_event_repo.find_by_movie_id(movie_id)
+        if not watch_events:
+            raise WatchEventNotFoundError()
+        return watch_events
+
+    if user_id:
+        watch_events = watch_event_repo.find_by_user_id(user_id)
+        if not watch_events:
+            raise WatchEventNotFoundError()
+        return watch_events
+
+    return watch_event_repo.get_all()
 
 
 @watch_events_controller.post("/watch-events")

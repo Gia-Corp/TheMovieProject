@@ -17,6 +17,12 @@ class GoogleSheetsWatchEventRepository:
         watch_events = self._dicts_to_watch_events(raw_watch_events)
         return watch_events[0]
 
+    def get_all(self):
+        raw_watch_events = self.sheet.get_all_records(
+            expected_headers=["id", "movie_id", "user_id", "watched_at"]
+        )
+        return list(map(self._transform_into_watch_event, raw_watch_events))
+
     def find_all_by_movies(self, movies):
         filas = self.sheet.get_all_records(
             expected_headers=["id", "movie_id", "user_id", "watched_at"]
@@ -27,6 +33,17 @@ class GoogleSheetsWatchEventRepository:
 
     def find_by_movie_id(self, movie_id):
         cells = self.sheet.findall(str(movie_id), in_column=2)
+        if not cells:
+            return []
+
+        row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
+
+        rows = self.sheet.batch_get(row_ranges)
+        raw_watch_events = [row[0] for row in rows]
+        return self._dicts_to_watch_events(raw_watch_events)
+
+    def find_by_user_id(self, user_id):
+        cells = self.sheet.findall(str(user_id), in_column=3)
         if not cells:
             return []
 
