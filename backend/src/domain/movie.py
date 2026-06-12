@@ -1,7 +1,6 @@
 from src.application.exceptions import ApiException
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
-from .watch_event import WatchEvent
 
 
 @dataclass
@@ -13,7 +12,6 @@ class Movie:
     runtime: Optional[str] = None
     plot: Optional[str] = None
     poster_url: Optional[str] = None
-    watched_by: list[WatchEvent] = field(default_factory=list)
 
     def __post_init__(self):
         self.validate()

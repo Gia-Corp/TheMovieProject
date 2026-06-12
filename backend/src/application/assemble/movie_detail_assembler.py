@@ -7,8 +7,9 @@ from src.application.dtos import (
 
 
 class MovieDetailAssembler:
-    def __init__(self, users):
+    def __init__(self, users, watch_events):
         self._users = {u.id: u for u in users}
+        self._watch_events = watch_events
 
     def assemble(self, movie):
         watch_events = [
@@ -17,7 +18,7 @@ class MovieDetailAssembler:
                 watched_at=w.watched_at,
                 user=UserSummaryDTO.model_validate(self._users[w.user_id]),
             )
-            for w in movie.watched_by
+            for w in self._watch_events
         ]
 
         watched_by = DetailWatchedByDTO(

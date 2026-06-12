@@ -7,6 +7,7 @@ from src.infra import (
     MovieAlreadyExistsError,
     GoogleSheetsUserRepository,
     UserNotFoundError,
+    GoogleSheetsWatchEventRepository,
 )
 from src.application.pagination import Page, PageMetadataCalculator
 from src.application.assemble import MovieSummaryAssembler, MovieDetailAssembler
@@ -16,6 +17,7 @@ from src.dependencies import (
     get_external_api_movie_repo,
     get_user_repo,
     get_current_user,
+    get_watch_event_repo,
 )
 from src.application.dtos import CreateMovieDTO, UpdateMovieDTO, GetMoviesResponseDTO
 from typing import Optional
@@ -70,6 +72,7 @@ async def get_movie(
     ),
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
 ):
     movie = movie_repo.get_by_id(movie_id)
 
@@ -77,7 +80,8 @@ async def get_movie(
         raise MovieNotFoundError(movie_id)
 
     users = user_repo.get_all()
-    return MovieDetailAssembler(users).assemble(movie)
+    watch_events = watch_event_repo.find_by_movie_id(movie_id)
+    return MovieDetailAssembler(users, watch_events).assemble(movie)
 
 
 @movies_controller.post("/movies")

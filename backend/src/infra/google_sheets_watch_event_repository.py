@@ -1,9 +1,40 @@
 from src.application.exceptions import ApiException
+from gspread import utils
+from src.domain import WatchEvent
+from datetime import datetime
 
 
 class GoogleSheetsWatchEventRepository:
     def __init__(self, sheet):
         self.sheet = sheet
+
+    def find_by_movie_id(self, movie_id):
+        cells = self.sheet.findall(str(movie_id), in_column=2)
+        if not cells:
+            return []
+
+        row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
+
+        rows = self.sheet.batch_get(row_ranges)
+        raw_watch_events = [row[0] for row in rows]
+        return self._dicts_to_watch_events(raw_watch_events)
+
+    def _dicts_to_watch_events(self, dicts):
+        raw_watch_events = utils.to_records(
+            ["id", "movie_id", "user_id", "watched_at"],
+            dicts,
+        )
+        return list(map(self._transform_into_watch_event, raw_watch_events))
+
+    def _transform_into_watch_event(self, raw_watch_event):
+        return WatchEvent(
+            id=int(raw_watch_event["id"]),
+            user_id=int(raw_watch_event["user_id"]),
+            movie_id=int(raw_watch_event["movie_id"]),
+            watched_at=datetime.strptime(
+                raw_watch_event["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
+            ),
+        )
 
     def add(self, watch_event):
         cells_movie = self.sheet.findall(str(watch_event.movie_id), in_column=2)

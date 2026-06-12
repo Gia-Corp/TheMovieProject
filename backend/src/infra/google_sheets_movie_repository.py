@@ -39,14 +39,6 @@ class GoogleSheetsMovieRepository:
         return list(map(self._transform_into_movie, raw_movies))
 
     def _transform_into_movie(self, raw_movie):
-        watched_by = []
-        # cells = self.watch_events_sheet.findall(raw_movie["id"], in_column=2)
-        # if cells:
-        #     row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
-        #     rows = self.watch_events_sheet.batch_get(row_ranges)
-        #     raw_watch_events = [row[0] for row in rows]
-        #     watched_by = self._dicts_to_watch_events(raw_watch_events)
-
         movie = Movie(
             id=int(raw_movie["id"]),
             title=raw_movie["title"],
@@ -55,26 +47,8 @@ class GoogleSheetsMovieRepository:
             plot=raw_movie["plot"] if "plot" in raw_movie else None,
             runtime=raw_movie["runtime"] if "runtime" in raw_movie else None,
             poster_url=raw_movie["poster_url"] if "poster_url" in raw_movie else None,
-            watched_by=watched_by,
         )
         return movie
-
-    # def _dicts_to_watch_events(self, dicts):
-    #     raw_watch_events = utils.to_records(
-    #         ["id", "movie_id", "user_id", "watched_at"],
-    #         dicts,
-    #     )
-    #     return list(map(self._transform_into_watch_event, raw_watch_events))
-
-    # def _transform_into_watch_event(self, raw_watch_event):
-    #     watch_event = WatchEvent(
-    #         id=int(raw_watch_event["id"]),
-    #         user_id=int(raw_watch_event["user_id"]),
-    #         watched_at=datetime.strptime(
-    #             raw_watch_event["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
-    #         ),
-    #     )
-    #     return watch_event
 
     def get_movie_count(self):
         return self._next_available_row() - 2
