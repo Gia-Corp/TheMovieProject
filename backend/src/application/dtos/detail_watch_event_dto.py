@@ -4,5 +4,6 @@ from datetime import datetime
 
 
 class DetailWatchEventDTO(BaseModel):
+    id: int
     user: UserSummaryDTO
     watched_at: datetime
