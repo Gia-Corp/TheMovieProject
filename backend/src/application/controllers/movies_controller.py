@@ -94,6 +94,7 @@ async def create_movie(
         get_external_api_movie_repo
     ),
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user=Depends(get_current_user),
 ):
     movie_exists = movie_repo.exists_by_title(movie_dto.title)
@@ -117,9 +118,15 @@ async def create_movie(
         runtime=movie_info["Runtime"] if movie_info["Runtime"] != "N/A" else None,
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
-        watched_by=[WatchEvent(user_id=user_id) for user_id in movie_dto.watched_by],
     )
-    return movie_repo.add(movie)
+    movie = movie_repo.add(movie)
+
+    watch_events = [
+        WatchEvent(movie_id=movie.id, user_id=u) for u in movie_dto.watched_by
+    ]
+    watch_event_repo.add_many(watch_events)
+
+    return movie
 
 
 @movies_controller.patch("/movies/{movie_id}")

@@ -70,6 +70,26 @@ class GoogleSheetsWatchEventRepository:
         watch_event.id = next_id
         return watch_event
 
+    def add_many(self, watch_events):
+        last_id = int(self.sheet.get("last_watch_event_id")[0][0])
+        next_id = None
+
+        for watch_event in watch_events:
+            next_id = last_id + 1
+            watch_event_as_list = [
+                next_id,
+                watch_event.movie_id,
+                watch_event.user_id,
+                str(watch_event.watched_at),
+            ]
+
+            self.sheet.append_row(watch_event_as_list)
+            watch_event.id = next_id
+            last_id = next_id
+
+        if next_id:
+            self.sheet.update([[next_id]], "last_watch_event_id")
+
 
 class WatchEventAlreadyExistsError(ApiException):
     CONFLICT = 409
