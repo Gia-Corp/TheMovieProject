@@ -143,6 +143,33 @@ class GoogleSheetsWatchEventRepository:
         ]
         self.sheet.spreadsheet.batch_update({"requests": requests})
 
+    def delete_by_movie_and_user_ids(self, movie_id, user_ids):
+        filas = self.sheet.get_all_records(expected_headers=["user_id", "movie_id"])
+        ids = {str(id) for id in user_ids}
+        rows_to_delete = [
+            i + 2
+            for i, f in enumerate(filas)
+            if str(f["movie_id"]) == str(movie_id) and str(f["user_id"]) in ids
+        ]
+
+        if not rows_to_delete:
+            return
+
+        requests = [
+            {
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": self.sheet.id,
+                        "dimension": "ROWS",
+                        "startIndex": i - 1,
+                        "endIndex": i,
+                    }
+                }
+            }
+            for i in sorted(rows_to_delete, reverse=True)
+        ]
+        self.sheet.spreadsheet.batch_update({"requests": requests})
+
 
 class WatchEventNotFoundError(ApiException):
     NOT_FOUND = 404

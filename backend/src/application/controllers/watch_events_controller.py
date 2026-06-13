@@ -93,7 +93,7 @@ async def update_watch_events_from_movie(
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
-    current_user=Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     movie = movie_repo.get_by_id(movie_id)
     if not movie:
@@ -102,22 +102,25 @@ async def update_watch_events_from_movie(
     if not user_ids:
         return watch_event_repo.delete_by_movie_id(movie_id)
 
+    users_exist = user_repo.all_exist(user_ids)
+    if not users_exist:
+        raise UserNotFoundError()
 
-#     users_exist = user_repo.all_exist(user_ids)
-#     if not users_exist:
-#         raise UserNotFoundError()
+    watch_events = watch_event_repo.find_by_movie_id(movie_id)
 
-#     # TENGO QUE DISTINGUIR SI HAY QUE AGREGAR NUEVOS WATCH EVENTS, BORRAR EXISTENTES O AMBAS COSAS
+    new_user_ids = set(user_ids)
+    current_user_ids = set([w.user_id for w in watch_events])
+    user_ids_to_add = new_user_ids.difference(current_user_ids)
 
-#     new_user_ids = set(user_ids)
-#     current_user_ids = set([w.user_id for w in movie.watched_by])
-#     user_ids_to_add = new_user_ids.difference(current_user_ids)
+    if user_ids_to_add:
+        watch_events_to_add = [
+            WatchEvent(user_id=u, movie_id=movie_id) for u in user_ids_to_add
+        ]
+        watch_event_repo.add_many(watch_events_to_add)
 
-#     if not user_ids_to_add:
-#         if len(new_user_ids) < len(current_user_ids):
-#             print(f"HAY QUE BORRAR TODOS MENOS {new_user_ids}")
-#         else:
-#             print("NO HAY QUE CAMBIAR NADA")
+    user_ids_to_delete = current_user_ids.difference(new_user_ids)
 
-#     watch_events_to_add = [WatchEvent(user_id=w) for w in user_ids_to_add]
-#     movie.watched_by.extend(watch_events_to_add)
+    if user_ids_to_delete:
+        return watch_event_repo.delete_by_movie_and_user_ids(
+            movie_id, user_ids_to_delete
+        )
