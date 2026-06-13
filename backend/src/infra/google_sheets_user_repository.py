@@ -20,22 +20,30 @@ class GoogleSheetsUserRepository:
         if not cell:
             return
 
-        raw_users = self.sheet.get(f"A{cell.row}:F{cell.row}")
+        raw_users = self.sheet.get(f"A{cell.row}:G{cell.row}")
         users = self._dicts_to_users(raw_users)
         return users[0]
 
     def get_by_email(self, email):
-        cell = self.sheet.find(str(email), in_column=2)
+        cell = self.sheet.find(str(email), in_column=3)
         if not cell:
             return
 
-        raw_users = self.sheet.get(f"A{cell.row}:F{cell.row}")
+        raw_users = self.sheet.get(f"A{cell.row}:G{cell.row}")
         users = self._dicts_to_users(raw_users)
         return users[0]
 
     def _dicts_to_users(self, dicts):
         raw_users = utils.to_records(
-            ["id", "email", "hashed_password", "role", "is_active", "created_at"],
+            [
+                "id",
+                "nickname",
+                "email",
+                "hashed_password",
+                "role",
+                "is_active",
+                "created_at",
+            ],
             dicts,
         )
         return list(map(self._transform_into_user, raw_users))
@@ -43,6 +51,7 @@ class GoogleSheetsUserRepository:
     def _transform_into_user(self, raw_user):
         user = User(
             id=int(raw_user["id"]),
+            nickname=raw_user["nickname"],
             email=raw_user["email"],
             hashed_password=raw_user["hashed_password"],
             role=raw_user["role"],
