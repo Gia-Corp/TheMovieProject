@@ -176,6 +176,7 @@ async def delete_movie(
         ..., gt=0, description="El ID de la película debe ser mayor a 0"
     ),
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user=Depends(get_current_user),
 ):
     movie = movie_repo.get_by_id(movie_id)
@@ -184,5 +185,6 @@ async def delete_movie(
         raise MovieNotFoundError(movie_id)
 
     movie_repo.delete(movie_id)
+    watch_event_repo.delete_by_movie_id(movie_id)
 
     return movie
