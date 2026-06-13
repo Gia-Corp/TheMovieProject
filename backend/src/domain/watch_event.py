@@ -11,4 +11,5 @@ class WatchEvent:
     watched_at: Optional[datetime] = None
 
     def __post_init__(self):
-        self.watched_at = datetime.now()
+        if not self.watched_at:
+            self.watched_at = datetime.now()
