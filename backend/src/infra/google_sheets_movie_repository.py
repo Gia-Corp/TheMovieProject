@@ -61,7 +61,6 @@ class GoogleSheetsMovieRepository:
             movie.director,
             movie.title,
             movie.year,
-            False,
             next_id,
             movie.runtime,
             movie.plot,
@@ -71,42 +70,7 @@ class GoogleSheetsMovieRepository:
         self.movies_sheet.update([[next_id]], "last_id")
         movie.id = next_id
 
-        # self._save_watch_events(movie)
-
         return movie
-
-    # def _save_watch_events(self, movie):
-    #     last_id = int(self.watch_events_sheet.get("last_watch_event_id")[0][0])
-    #     next_id = None
-
-    #     # if not movie.watched_by:
-    #     #     cells = self.watch_events_sheet.findall(str(movie.id), in_column=2)
-    #     #     if cells:
-    #     #         rows_to_delete = [cell.row for cell in cells]
-    #     #         requests = [
-    #     #             {"deleteDimension": {"range": {"sheetId": self.watch_events_sheet.id, "dimension": "ROWS", "startIndex": i - 1, "endIndex": i}}}
-    #     #             for i in sorted(rows_to_delete, reverse=True)
-    #     #         ]
-    #     #         self.watch_events_sheet.spreadsheet.batch_update({"requests": requests})
-
-    #     for watch_event in movie.watched_by:
-    #         if watch_event.id:
-    #             continue
-
-    #         next_id = last_id + 1
-    #         watch_event_as_list = [
-    #             next_id,
-    #             movie.id,
-    #             watch_event.user_id,
-    #             str(watch_event.watched_at),
-    #         ]
-
-    #         self.watch_events_sheet.append_row(watch_event_as_list)
-    #         watch_event.id = next_id
-    #         last_id = next_id
-
-    #     if next_id:
-    #         self.watch_events_sheet.update([[next_id]], "last_watch_event_id")
 
     def get_by_id(self, id):
         cell = self.movies_sheet.find(str(id), in_column=4)
@@ -143,24 +107,6 @@ class GoogleSheetsMovieRepository:
         if not cell:
             return
         self.movies_sheet.delete_rows(cell.row)
-
-        cells = self.watch_events_sheet.findall(str(id), in_column=2)
-        if cells:
-            rows_to_delete = [cell.row for cell in cells]
-            requests = [
-                {
-                    "deleteDimension": {
-                        "range": {
-                            "sheetId": self.watch_events_sheet.id,
-                            "dimension": "ROWS",
-                            "startIndex": i - 1,
-                            "endIndex": i,
-                        }
-                    }
-                }
-                for i in sorted(rows_to_delete, reverse=True)
-            ]
-            self.watch_events_sheet.spreadsheet.batch_update({"requests": requests})
 
     def find_by_title(self, title):
         cells = self.movies_sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
