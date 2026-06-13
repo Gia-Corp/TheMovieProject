@@ -6,3 +6,4 @@ class UserSummaryDTO(BaseModel):
 
     id: int
     nickname: str
+    profile_pic: str

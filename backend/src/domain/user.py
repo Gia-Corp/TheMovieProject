@@ -8,3 +8,4 @@ class User:
     email: str
     hashed_password: str
     role: str
+    profile_pic: str

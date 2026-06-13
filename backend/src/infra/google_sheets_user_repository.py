@@ -41,8 +41,8 @@ class GoogleSheetsUserRepository:
                 "email",
                 "hashed_password",
                 "role",
+                "profile_pic",
                 "is_active",
-                "created_at",
             ],
             dicts,
         )
@@ -55,6 +55,7 @@ class GoogleSheetsUserRepository:
             email=raw_user["email"],
             hashed_password=raw_user["hashed_password"],
             role=raw_user["role"],
+            profile_pic=raw_user["profile_pic"],
         )
         return user
 
