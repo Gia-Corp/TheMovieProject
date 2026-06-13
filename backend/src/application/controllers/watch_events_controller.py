@@ -66,24 +66,6 @@ async def create_watch_event(
     return watch_event_repo.add(watch_event)
 
 
-@watch_events_controller.delete("/watch-events/{watch_event_id}")
-async def delete_watch_event(
-    watch_event_id: int = Path(
-        ..., gt=0, description="El ID del watch event debe ser mayor a 0"
-    ),
-    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
-    current_user: User = Depends(get_current_user),
-):
-    watch_event = watch_event_repo.get_by_id(watch_event_id)
-
-    if not watch_event:
-        raise WatchEventNotFoundError(watch_event_id)
-
-    watch_event_repo.delete(watch_event_id)
-
-    return watch_event
-
-
 @watch_events_controller.put("/movies/{movie_id}/watch-events")
 async def update_watch_events_from_movie(
     movie_id: int = Path(
@@ -124,3 +106,21 @@ async def update_watch_events_from_movie(
         return watch_event_repo.delete_by_movie_and_user_ids(
             movie_id, user_ids_to_delete
         )
+
+
+@watch_events_controller.delete("/watch-events/{watch_event_id}")
+async def delete_watch_event(
+    watch_event_id: int = Path(
+        ..., gt=0, description="El ID del watch event debe ser mayor a 0"
+    ),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
+    current_user: User = Depends(get_current_user),
+):
+    watch_event = watch_event_repo.get_by_id(watch_event_id)
+
+    if not watch_event:
+        raise WatchEventNotFoundError(watch_event_id)
+
+    watch_event_repo.delete(watch_event_id)
+
+    return watch_event
