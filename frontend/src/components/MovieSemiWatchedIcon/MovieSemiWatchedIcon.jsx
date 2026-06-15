@@ -16,9 +16,9 @@ function MovieSemiWatchedIcon({
         style={{
           fill: "none",
           stroke: color,
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-          "stroke-width": 2,
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          strokeWidth: 2,
         }}
       />
     </svg>
