@@ -7,17 +7,23 @@ import { useAuth } from "@/hooks/useAuth";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 import DeleteMovieButton from "@/components/movie_crud/DeleteMovieButton/DeleteMovieButton";
 import EditMovieButton from "@/components/movie_crud/EditMovieButton/EditMovieButton";
+import Tooltip from "@/components/Tooltip/Tooltip";
+import WatchersList from "@/components/WatchersList/WatchersList";
 
 function MovieDetail() {
   const { state } = useLocation();
   const { id } = useParams();
   const { movieRepo } = useRepos();
   const [movie, setMovie] = useState(state?.movie ?? null);
-  const [isWatched, setIsWatched] = useState(movie?.watched ?? false);
+  const { accessToken, userId } = useAuth();
+
+  const watchedByMe =
+    movie.watched_by.watch_events?.some((we) => we.user.id === userId) ?? false;
+
+  const [isWatched, setIsWatched] = useState(watchedByMe);
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(!movie?.plot);
-  const { accessToken } = useAuth();
 
   useEffect(() => {
     if (movie?.plot) return;
@@ -26,7 +32,10 @@ function MovieDetail() {
       .getMovie(id)
       .then((res) => {
         setMovie(res);
-        setIsWatched(res.watched);
+        const watchedByMe =
+          res.watched_by.watch_events?.some((we) => we.user.id === userId) ??
+          false;
+        setIsWatched(watchedByMe);
         setIsLoading(false);
       })
       .catch(setError);
@@ -111,7 +120,16 @@ function MovieDetail() {
                 onClick={handleOnClick}
                 disabled={!accessToken}
               />
-              <p>{isWatched ? "Vista" : "No vista aún"}</p>
+              <Tooltip
+                content={
+                  <WatchersList
+                    watchers={movie.watched_by.watch_events}
+                    yourId={userId}
+                  />
+                }
+              >
+                <p>{isWatched ? "Vista" : "No vista aún"}</p>
+              </Tooltip>
             </div>
             {accessToken ? (
               <>
