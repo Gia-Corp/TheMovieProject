@@ -34,8 +34,12 @@ function MovieCard({ movie }) {
       {showIcon && (
         <div className="movie-card-icon">
           <Tooltip
-            text={
-              isFullyWatched ? "Todos la han visto" : "Al menos uno la ha visto"
+            content={
+              <span>
+                {isFullyWatched
+                  ? "Todos la han visto"
+                  : "Al menos uno la ha visto"}
+              </span>
             }
           >
             {isFullyWatched ? <MovieWatchedIcon /> : <MovieSemiWatchedIcon />}

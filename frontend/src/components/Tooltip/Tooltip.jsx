@@ -1,10 +1,12 @@
 import "./Tooltip.css";
 
-function Tooltip({ text, children }) {
+function Tooltip({ children, content, nowrap = true }) {
   return (
     <div className="tooltip-wrapper">
       {children}
-      <span className="tooltip">{text}</span>
+      <div className={`tooltip ${nowrap ? "tooltip--nowrap" : ""}`}>
+        {content}
+      </div>
     </div>
   );
 }

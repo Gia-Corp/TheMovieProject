@@ -9,17 +9,22 @@
   left: 50%;
   transform: translateX(-50%);
   
-  background: var(--main-ghost-clr);
+  background: var(--purple-contrast);
   color: var(--text-clr);
-  font-size: 0.75rem;
-  white-space: nowrap;
-  padding: 4px 8px;
+  font-size: 0.85rem;
+  padding: 6px;
   border-radius: 4px;
+  max-width: 200px;
   
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
   z-index: 200;
+}
+
+.tooltip--nowrap {
+  white-space: nowrap;
+  width: max-content;
 }
 
 /* Flecha */
