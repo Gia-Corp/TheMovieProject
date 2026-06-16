@@ -25,7 +25,9 @@ export function buildApiFetch(setAccessToken) {
         ? await response.json()
         : await response.text();
 
-      const error = new Error(body?.detail ?? body?.message ?? body ?? "Error desconocido");
+      const error = new Error(
+        body?.detail ?? body?.message ?? body ?? "Error desconocido",
+      );
       error.status = response.status;
       throw error;
     }
