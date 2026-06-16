@@ -43,9 +43,24 @@ function MovieDetail() {
   }, []);
 
   const handleOnClick = () => {
+    var userIds = movie.watched_by.watch_events.map((we) => we.user.id);
+    if (isWatched) {
+      userIds = userIds.filter((u) => u !== userId);
+    } else {
+      userIds.push(userId);
+    }
     setIsWatched(!isWatched);
     movieRepo
-      .updateMovie(movie.id, { watched: !isWatched }, accessToken)
+      .updateWatchEvents(movie.id, userIds, accessToken)
+      .then((res) => {
+        setMovie((prev) => ({
+          ...prev,
+          watched_by: {
+            ...prev.watched_by,
+            watch_events: res,
+          },
+        }));
+      })
       .catch(() => setIsWatched(isWatched));
   };
 
@@ -128,7 +143,7 @@ function MovieDetail() {
                   />
                 }
               >
-                <p>{isWatched ? "Vista" : "No vista aún"}</p>
+                <p>{isWatched ? "Ya la viste" : "No la viste aún"}</p>
               </Tooltip>
             </div>
             {accessToken ? (
