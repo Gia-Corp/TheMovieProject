@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends, Path, Body
 from typing import Optional
-from src.application.dtos import CreateWatchEventDTO
+from src.application.dtos import (
+    CreateWatchEventDTO,
+    DetailWatchEventDTO,
+    UserSummaryDTO,
+)
 from src.dependencies import (
     get_movie_repo,
     get_user_repo,
@@ -82,7 +86,8 @@ async def update_watch_events_from_movie(
         raise MovieNotFoundError(movie_id)
 
     if not user_ids:
-        return watch_event_repo.delete_by_movie_id(movie_id)
+        watch_event_repo.delete_by_movie_id(movie_id)
+        return []
 
     users_exist = user_repo.all_exist(user_ids)
     if not users_exist:
@@ -103,9 +108,19 @@ async def update_watch_events_from_movie(
     user_ids_to_delete = current_user_ids.difference(new_user_ids)
 
     if user_ids_to_delete:
-        return watch_event_repo.delete_by_movie_and_user_ids(
-            movie_id, user_ids_to_delete
+        watch_event_repo.delete_by_movie_and_user_ids(movie_id, user_ids_to_delete)
+
+    users = user_repo.get_all()
+    users_dict = {u.id: u for u in users}
+    watch_events = watch_event_repo.find_by_movie_id(movie_id)
+    return [
+        DetailWatchEventDTO(
+            id=w.id,
+            watched_at=w.watched_at,
+            user=UserSummaryDTO.model_validate(users_dict[w.user_id]),
         )
+        for w in watch_events
+    ]
 
 
 @watch_events_controller.delete("/watch-events/{watch_event_id}")
