@@ -1,6 +1,6 @@
 import "./WatchersList.css";
 
-function WatchersList({ watchers, yourId }) {
+function WatchersList({ watchers }) {
   return (
     <ul className="watchers-list">
       {watchers.length > 0 ? <p>Vista por:</p> : <p>Nadie la ha visto</p>}
