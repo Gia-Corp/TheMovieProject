@@ -6,11 +6,6 @@ export class MovieRepository {
   }
 
   async getBodyContent(response) {
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message);
-    }
-
     return response.json();
   }
 
