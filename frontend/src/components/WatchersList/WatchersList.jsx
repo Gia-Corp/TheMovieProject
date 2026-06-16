@@ -8,7 +8,7 @@ function WatchersList({ watchers, yourId }) {
         return (
           <li key={w.user.id} className="watchers-list-item">
             <img src={w.user.profile_pic} alt="" />
-            {w.user.id === yourId ? <span>Yo</span> : <p>{w.user.nickname}</p>}
+            <p>{w.user.nickname}</p>
           </li>
         );
       })}
