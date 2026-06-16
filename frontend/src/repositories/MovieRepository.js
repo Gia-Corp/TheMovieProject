@@ -72,6 +72,24 @@ export class MovieRepository {
     return this.getBodyContent(response);
   }
 
+  async updateWatchEvents(id, userIds, accessToken) {
+    const url = new URL(
+      `${MovieRepository.#MOVIES_PATH}/${id}/watch-events`,
+      window.location.origin,
+    );
+
+    const response = await this.fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(userIds),
+    });
+
+    return this.getBodyContent(response);
+  }
+
   async deleteMovie(id, accessToken) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${id}`,
