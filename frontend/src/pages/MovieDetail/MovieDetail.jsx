@@ -18,7 +18,8 @@ function MovieDetail() {
   const { accessToken, userId } = useAuth();
 
   const watchedByMe =
-    movie.watched_by.watch_events?.some((we) => we.user.id === userId) ?? false;
+    movie?.watched_by.watch_events?.some((we) => we.user.id === userId) ??
+    false;
 
   const [isWatched, setIsWatched] = useState(watchedByMe);
   const [isImageReady, setIsImageReady] = useState(false);
