@@ -35,7 +35,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: var(--main-ghost-clr);
+  border-top-color: var(--purple-contrast);
 }
 
 .tooltip-wrapper:hover .tooltip {
