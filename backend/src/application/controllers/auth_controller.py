@@ -65,7 +65,9 @@ async def refresh(
     if not payload:
         raise HTTPException(status_code=401, detail="Refresh token inválido o expirado")
 
-    new_access_token = jwt_handler.create_access_token({"sub": payload["sub"], "role": payload["role"]})
+    new_access_token = jwt_handler.create_access_token(
+        {"sub": payload["sub"], "role": payload["role"]}
+    )
     return {"access_token": new_access_token, "token_type": "bearer"}
 
 
