@@ -29,6 +29,7 @@ movies_controller = APIRouter(
 )
 
 
+# MIN = 4 CALLS, MAX = 5 CALLS
 @movies_controller.get("/movies", response_model=GetMoviesResponseDTO)
 async def get_movies(
     page: int = Query(..., gt=0),
@@ -41,7 +42,7 @@ async def get_movies(
     page = Page(page, size)
 
     if title:
-        movies = movie_repo.find_by_title(title)
+        movies = movie_repo.find_by_title(title) # 2 CALLS
         if not movies:
             raise MovieNotFoundError()
 
@@ -55,18 +56,19 @@ async def get_movies(
 
         movies = movies[start:end]
     else:
-        movies = movie_repo.get_movies_by_page(page)
-        movie_count = movie_repo.get_movie_count()
+        movies = movie_repo.get_movies_by_page(page) # 2 CALLS
+        movie_count = movie_repo.get_movie_count() # 1 CALL
 
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
 
-    user_count = user_repo.get_user_count()
-    watch_events = watch_event_repo.find_all_by_movies(movies)
+    user_count = user_repo.get_user_count() # 1 CALL
+    watch_events = watch_event_repo.find_all_by_movies(movies) # 1 CALL
     movies = MovieSummaryAssembler(user_count, watch_events).assemble_many(movies)
 
     return {"metadata": metadata, "movies": movies}
 
 
+# 5 CALLS
 @movies_controller.get("/movies/{movie_id}")
 async def get_movie(
     movie_id: int = Path(
@@ -76,16 +78,17 @@ async def get_movie(
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
 ):
-    movie = movie_repo.get_by_id(movie_id)
+    movie = movie_repo.get_by_id(movie_id) # 2 CALLS
 
     if not movie:
         raise MovieNotFoundError(movie_id)
 
-    users = user_repo.get_all()
-    watch_events = watch_event_repo.find_by_movie_id(movie_id)
+    users = user_repo.get_all() # 1 CALL
+    watch_events = watch_event_repo.find_by_movie_id(movie_id) # 2 CALLS
     return MovieDetailAssembler(users, watch_events).assemble(movie)
 
 
+# N + 8 CALLS
 @movies_controller.post("/movies")
 async def create_movie(
     movie_dto: CreateMovieDTO,
@@ -97,16 +100,16 @@ async def create_movie(
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user=Depends(get_current_user),
 ):
-    movie_exists = movie_repo.exists_by_title(movie_dto.title)
+    movie_exists = movie_repo.exists_by_title(movie_dto.title) # 1 CALL
     if movie_exists:
         raise MovieAlreadyExistsError()
 
     movie_info = await external_api_movie_repo.get_by_title_and_year(
         movie_dto.title, movie_dto.year
-    )
+    ) # 1 CALL
 
     if movie_dto.watched_by:
-        users_exist = user_repo.all_exist(movie_dto.watched_by)
+        users_exist = user_repo.all_exist(movie_dto.watched_by) # 1 CALL
         if not users_exist:
             raise UserNotFoundError()
 
@@ -119,16 +122,17 @@ async def create_movie(
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
     )
-    movie = movie_repo.add(movie)
+    movie = movie_repo.add(movie) # 3 CALLS
 
     watch_events = [
         WatchEvent(movie_id=movie.id, user_id=u) for u in movie_dto.watched_by
     ]
-    watch_event_repo.add_many(watch_events)
+    watch_event_repo.add_many(watch_events) # N + 2 CALLS
 
     return movie
 
 
+# 4 CALLS
 @movies_controller.patch("/movies/{movie_id}")
 async def update_movie(
     movie_id: int = Path(
@@ -138,7 +142,7 @@ async def update_movie(
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
     current_user=Depends(get_current_user),
 ):
-    movie = movie_repo.get_by_id(movie_id)
+    movie = movie_repo.get_by_id(movie_id) # 2 CALLS
 
     if not movie:
         raise MovieNotFoundError(movie_id)
@@ -163,13 +167,14 @@ async def update_movie(
 
     movie.validate()
 
-    movie = movie_repo.save(movie)
+    movie = movie_repo.save(movie) # 2 CALLS
     if not movie:
         raise MovieNotFoundError(movie_id)
 
     return movie
 
 
+# 6 CALLS
 @movies_controller.delete("/movies/{movie_id}")
 async def delete_movie(
     movie_id: int = Path(
@@ -179,12 +184,12 @@ async def delete_movie(
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user=Depends(get_current_user),
 ):
-    movie = movie_repo.get_by_id(movie_id)
+    movie = movie_repo.get_by_id(movie_id) # 2 CALLS
 
     if not movie:
         raise MovieNotFoundError(movie_id)
 
-    movie_repo.delete(movie_id)
-    watch_event_repo.delete_by_movie_id(movie_id)
+    movie_repo.delete(movie_id) # 2 CALLS
+    watch_event_repo.delete_by_movie_id(movie_id) # 2 CALLS
 
     return movie
