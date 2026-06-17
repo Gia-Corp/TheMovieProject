@@ -8,6 +8,7 @@ class GoogleSheetsWatchEventRepository:
     def __init__(self, sheet):
         self.sheet = sheet
 
+    # 2 CALLS
     def get_by_id(self, id):
         cell = self.sheet.find(str(id), in_column=1)
         if not cell:
@@ -17,12 +18,14 @@ class GoogleSheetsWatchEventRepository:
         watch_events = self._dicts_to_watch_events(raw_watch_events)
         return watch_events[0]
 
+    # 1 CALL
     def get_all(self):
         raw_watch_events = self.sheet.get_all_records(
             expected_headers=["id", "movie_id", "user_id", "watched_at"]
         )
         return list(map(self._transform_into_watch_event, raw_watch_events))
 
+    # 1 CALL
     def find_all_by_movies(self, movies):
         filas = self.sheet.get_all_records(
             expected_headers=["id", "movie_id", "user_id", "watched_at"]
@@ -31,6 +34,7 @@ class GoogleSheetsWatchEventRepository:
         raw_watch_events = [f for f in filas if f["movie_id"] in ids]
         return list(map(self._transform_into_watch_event, raw_watch_events))
 
+    # 2 CALLS
     def find_by_movie_id(self, movie_id):
         cells = self.sheet.findall(str(movie_id), in_column=2)
         if not cells:
@@ -42,6 +46,7 @@ class GoogleSheetsWatchEventRepository:
         raw_watch_events = [row[0] for row in rows]
         return self._dicts_to_watch_events(raw_watch_events)
 
+    # 2 CALLS
     def find_by_user_id(self, user_id):
         cells = self.sheet.findall(str(user_id), in_column=3)
         if not cells:
@@ -70,6 +75,7 @@ class GoogleSheetsWatchEventRepository:
             ),
         )
 
+    # 5 CALLS
     def add(self, watch_event):
         cells_movie = self.sheet.findall(str(watch_event.movie_id), in_column=2)
         cells_user = self.sheet.findall(str(watch_event.user_id), in_column=3)
@@ -96,6 +102,7 @@ class GoogleSheetsWatchEventRepository:
         watch_event.id = next_id
         return watch_event
 
+    # MIN = 1 CALL, MAX = N + 2 CALLS
     def add_many(self, watch_events):
         last_id = int(self.sheet.get("last_watch_event_id")[0][0])
         next_id = None
@@ -116,12 +123,14 @@ class GoogleSheetsWatchEventRepository:
         if next_id:
             self.sheet.update([[next_id]], "last_watch_event_id")
 
+    # 2 CALLS
     def delete(self, id):
         cell = self.sheet.find(str(id), in_column=1)
         if not cell:
             return
         self.sheet.delete_rows(cell.row)
 
+    # 2 CALLS
     def delete_by_movie_id(self, movie_id):
         cells = self.sheet.findall(str(movie_id), in_column=2)
         if not cells:
@@ -143,6 +152,7 @@ class GoogleSheetsWatchEventRepository:
         ]
         self.sheet.spreadsheet.batch_update({"requests": requests})
 
+    # 2 CALLS
     def delete_by_movie_and_user_ids(self, movie_id, user_ids):
         filas = self.sheet.get_all_records(expected_headers=["user_id", "movie_id"])
         ids = {str(id) for id in user_ids}

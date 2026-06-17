@@ -9,6 +9,7 @@ class GoogleSheetsMovieRepository:
         self.movies_sheet = movies_sheet
         self.watch_events_sheet = watch_events_sheet
 
+    # 2 CALLS
     def get_movies_by_page(self, page):
         page_first_row = page.get_first_index() + 1
         page_last_row = page.get_last_index() + 1
@@ -20,6 +21,7 @@ class GoogleSheetsMovieRepository:
         movies = self._dicts_to_movies(raw_movies)
         return movies
 
+    # 1 CALL
     def _next_available_row(self):
         return len(list(filter(None, self.movies_sheet.col_values(1)))) + 1
 
@@ -50,9 +52,11 @@ class GoogleSheetsMovieRepository:
         )
         return movie
 
+    # 1 CALL
     def get_movie_count(self):
         return self._next_available_row() - 2
 
+    # 3 CALLS
     def add(self, movie):
         last_id = int(self.movies_sheet.get("last_id")[0][0])
         next_id = last_id + 1
@@ -72,6 +76,7 @@ class GoogleSheetsMovieRepository:
 
         return movie
 
+    # 2 CALLS
     def get_by_id(self, id):
         cell = self.movies_sheet.find(str(id), in_column=4)
         if not cell:
@@ -81,6 +86,7 @@ class GoogleSheetsMovieRepository:
         movies = self._dicts_to_movies(raw_movies)
         return movies[0]
 
+    # 2 CALLS
     def save(self, movie):
         cell = self.movies_sheet.find(str(movie.id), in_column=4)
         if not cell:
@@ -102,12 +108,14 @@ class GoogleSheetsMovieRepository:
         )
         return movie
 
+    # 2 CALLS
     def delete(self, id):
         cell = self.movies_sheet.find(str(id), in_column=4)
         if not cell:
             return
         self.movies_sheet.delete_rows(cell.row)
 
+    # 2 CALLS
     def find_by_title(self, title):
         cells = self.movies_sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
         if not cells:
@@ -120,6 +128,7 @@ class GoogleSheetsMovieRepository:
         movies = self._dicts_to_movies(raw_movies)
         return movies
 
+    # 1 CALL
     def exists_by_title(self, title):
         pattern = re.compile(r"^\s*" + re.escape(title) + r"\s*$", re.IGNORECASE)
         return self.movies_sheet.findall(pattern, in_column=2)
