@@ -34,11 +34,7 @@ class GoogleSheetsWatchEventRepository:
     def get_all_by_movies(self, movies):
         ids = set([m.id for m in movies])
         watch_events = self.get_all()
-        filtered_watch_events = [we for we in watch_events if we.movie_id in ids]
-
-        if not filtered_watch_events:
-            raise WatchEventNotFoundError()
-        return filtered_watch_events
+        return [we for we in watch_events if we.movie_id in ids]
 
     # 1 CALL
     def get_all_by_movie_id(self, movie_id):
