@@ -1,5 +1,4 @@
 from src.application.exceptions import ApiException
-from gspread import utils
 from src.domain import WatchEvent
 from datetime import datetime
 
@@ -7,134 +6,118 @@ from datetime import datetime
 class GoogleSheetsWatchEventRepository:
     def __init__(self, sheet):
         self.sheet = sheet
+        self._last_id = None
 
-    # 2 CALLS
+    def _get_next_id(self):
+        if self._last_id is None:
+            self._last_id = int(self.sheet.get("last_watch_event_id")[0][0])
+        self._last_id += 1
+        return self._last_id
+
+    # 1 CALL
     def get_by_id(self, id):
-        cell = self.sheet.find(str(id), in_column=1)
-        if not cell:
-            return
+        watch_events = self.get_all()
+        for we in watch_events:
+            if we.id == id:
+                return we
 
-        raw_watch_events = self.sheet.get(f"A{cell.row}:D{cell.row}")
-        watch_events = self._dicts_to_watch_events(raw_watch_events)
-        return watch_events[0]
+        raise WatchEventNotFoundError()
 
     # 1 CALL
     def get_all(self):
-        raw_watch_events = self.sheet.get_all_records(
+        watch_event_dicts = self.sheet.get_all_records(
             expected_headers=["id", "movie_id", "user_id", "watched_at"]
         )
-        return list(map(self._transform_into_watch_event, raw_watch_events))
+        return list(map(self._watch_event_from_dict, watch_event_dicts))
 
     # 1 CALL
-    def find_all_by_movies(self, movies):
-        filas = self.sheet.get_all_records(
-            expected_headers=["id", "movie_id", "user_id", "watched_at"]
-        )
+    def get_all_by_movies(self, movies):
         ids = set([m.id for m in movies])
-        raw_watch_events = [f for f in filas if f["movie_id"] in ids]
-        return list(map(self._transform_into_watch_event, raw_watch_events))
+        watch_events = self.get_all()
+        filtered_watch_events = [we for we in watch_events if we.movie_id in ids]
 
-    # 2 CALLS
-    def find_by_movie_id(self, movie_id):
-        cells = self.sheet.findall(str(movie_id), in_column=2)
-        if not cells:
-            return []
+        if not filtered_watch_events:
+            raise WatchEventNotFoundError()
+        return filtered_watch_events
 
-        row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
+    # 1 CALL
+    def get_all_by_movie_id(self, movie_id):
+        watch_events = self.get_all()
+        filtered_watch_events = [we for we in watch_events if we.movie_id == movie_id]
 
-        rows = self.sheet.batch_get(row_ranges)
-        raw_watch_events = [row[0] for row in rows]
-        return self._dicts_to_watch_events(raw_watch_events)
+        if not filtered_watch_events:
+            raise WatchEventNotFoundError()
+        return filtered_watch_events
 
-    # 2 CALLS
-    def find_by_user_id(self, user_id):
-        cells = self.sheet.findall(str(user_id), in_column=3)
-        if not cells:
-            return []
+    # 1 CALL
+    def get_all_by_user_id(self, user_id):
+        watch_events = self.get_all()
+        filtered_watch_events = [we for we in watch_events if we.user_id == user_id]
 
-        row_ranges = [f"A{cell.row}:D{cell.row}" for cell in cells]
+        if not filtered_watch_events:
+            raise WatchEventNotFoundError()
+        return filtered_watch_events
 
-        rows = self.sheet.batch_get(row_ranges)
-        raw_watch_events = [row[0] for row in rows]
-        return self._dicts_to_watch_events(raw_watch_events)
-
-    def _dicts_to_watch_events(self, dicts):
-        raw_watch_events = utils.to_records(
-            ["id", "movie_id", "user_id", "watched_at"],
-            dicts,
-        )
-        return list(map(self._transform_into_watch_event, raw_watch_events))
-
-    def _transform_into_watch_event(self, raw_watch_event):
+    def _watch_event_from_dict(self, watch_event_dict):
         return WatchEvent(
-            id=int(raw_watch_event["id"]),
-            user_id=int(raw_watch_event["user_id"]),
-            movie_id=int(raw_watch_event["movie_id"]),
+            id=int(watch_event_dict["id"]),
+            user_id=int(watch_event_dict["user_id"]),
+            movie_id=int(watch_event_dict["movie_id"]),
             watched_at=datetime.strptime(
-                raw_watch_event["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
+                watch_event_dict["watched_at"], "%Y-%m-%d %H:%M:%S.%f"
             ),
         )
 
-    # 5 CALLS
-    def add(self, watch_event):
-        cells_movie = self.sheet.findall(str(watch_event.movie_id), in_column=2)
-        cells_user = self.sheet.findall(str(watch_event.user_id), in_column=3)
-
-        rows_movie = {cell.row for cell in cells_movie}
-        rows_user = {cell.row for cell in cells_user}
-        already_exists = bool(rows_user & rows_movie)
-
-        if already_exists:
-            raise WatchEventAlreadyExistsError()
-
-        last_id = int(self.sheet.get("last_watch_event_id")[0][0])
-        next_id = last_id + 1
-
-        watch_event_as_list = [
-            next_id,
+    def _watch_event_to_list(self, watch_event):
+        return [
+            watch_event.id,
             watch_event.movie_id,
             watch_event.user_id,
             str(watch_event.watched_at),
         ]
 
+    # 3 CALLS
+    def add(self, watch_event):
+        watch_events = self.get_all()
+        already_exists = any(
+            we.movie_id == watch_event.movie_id and we.user_id == watch_event.user_id
+            for we in watch_events
+        )
+
+        if already_exists:
+            raise WatchEventAlreadyExistsError()
+
+        watch_event.id = self._get_next_id()
+        watch_event_as_list = self._watch_event_to_list(watch_event)
         self.sheet.append_row(watch_event_as_list)
-        self.sheet.update([[next_id]], "last_watch_event_id")
-        watch_event.id = next_id
+        self.sheet.update([[watch_event.id]], "last_watch_event_id")
         return watch_event
 
-    # MIN = 1 CALL, MAX = N + 2 CALLS
+    # 2 CALLS (3 en el primer add_many)
     def add_many(self, watch_events):
-        last_id = int(self.sheet.get("last_watch_event_id")[0][0])
-        next_id = None
+        if not watch_events:
+            return
 
+        rows = []
         for watch_event in watch_events:
-            next_id = last_id + 1
-            watch_event_as_list = [
-                next_id,
-                watch_event.movie_id,
-                watch_event.user_id,
-                str(watch_event.watched_at),
-            ]
+            watch_event.id = self._get_next_id()
+            rows.append(self._watch_event_to_list(watch_event))
 
-            self.sheet.append_row(watch_event_as_list)
-            watch_event.id = next_id
-            last_id = next_id
-
-        if next_id:
-            self.sheet.update([[next_id]], "last_watch_event_id")
+        self.sheet.append_rows(rows)
+        self.sheet.update([[self._last_id]], "last_watch_event_id")
 
     # 2 CALLS
     def delete(self, id):
         cell = self.sheet.find(str(id), in_column=1)
         if not cell:
-            return
+            raise WatchEventNotFoundError()
         self.sheet.delete_rows(cell.row)
 
     # 2 CALLS
     def delete_by_movie_id(self, movie_id):
         cells = self.sheet.findall(str(movie_id), in_column=2)
         if not cells:
-            return cells
+            raise WatchEventNotFoundError()
 
         rows_to_delete = [cell.row for cell in cells]
         requests = [
@@ -154,16 +137,16 @@ class GoogleSheetsWatchEventRepository:
 
     # 2 CALLS
     def delete_by_movie_and_user_ids(self, movie_id, user_ids):
-        filas = self.sheet.get_all_records(expected_headers=["user_id", "movie_id"])
+        rows = self.sheet.get_all_records(expected_headers=["user_id", "movie_id"])
         ids = {str(id) for id in user_ids}
         rows_to_delete = [
             i + 2
-            for i, f in enumerate(filas)
+            for i, f in enumerate(rows)
             if str(f["movie_id"]) == str(movie_id) and str(f["user_id"]) in ids
         ]
 
         if not rows_to_delete:
-            return
+            raise WatchEventNotFoundError()
 
         requests = [
             {

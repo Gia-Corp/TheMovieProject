@@ -59,7 +59,7 @@ async def get_movies(
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
 
     user_count = user_repo.total_users()  # 1 CALL
-    watch_events = watch_event_repo.find_all_by_movies(movies)  # 1 CALL
+    watch_events = watch_event_repo.get_all_by_movies(movies)  # 1 CALL
     movies = MovieSummaryAssembler(user_count, watch_events).assemble_many(movies)
 
     return {"metadata": metadata, "movies": movies}
@@ -78,7 +78,7 @@ async def get_movie(
     movie = movie_repo.get_by_id(movie_id)  # 1 CALL
 
     users = user_repo.get_all()  # 1 CALL
-    watch_events = watch_event_repo.find_by_movie_id(movie_id)  # 2 CALLS
+    watch_events = watch_event_repo.get_all_by_movie_id(movie_id)  # 2 CALLS
     return MovieDetailAssembler(users, watch_events).assemble(movie)
 
 
