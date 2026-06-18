@@ -9,7 +9,7 @@ class GoogleSheetsMovieRepository:
         self.sheet = sheet
 
     # 2 CALLS
-    def get_movies_by_page(self, page):
+    def get_all_by_page(self, page):
         page_first_row = page.get_first_index() + 1
         page_last_row = page.get_last_index() + 1
 
@@ -17,8 +17,7 @@ class GoogleSheetsMovieRepository:
             raise PageOutOfBoundsError
 
         raw_movies = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
-        movies = self._dicts_to_movies(raw_movies)
-        return movies
+        return self._dicts_to_movies(raw_movies)
 
     # 1 CALL
     def _next_available_row(self):
