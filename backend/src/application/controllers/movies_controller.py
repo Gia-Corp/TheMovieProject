@@ -160,12 +160,7 @@ async def update_movie(
         movie.poster_url = movie_dto.poster_url
 
     movie.validate()
-
-    movie = movie_repo.save(movie)  # 2 CALLS
-    if not movie:
-        raise MovieNotFoundError(movie_id)
-
-    return movie
+    return movie_repo.save(movie)  # 2 CALLS
 
 
 # 5 CALLS

@@ -56,26 +56,27 @@ class GoogleSheetsMovieRepository:
             poster_url=movie_dict["poster_url"] if "poster_url" in movie_dict else None,
         )
 
+    def _movie_to_list(self, movie):
+        return [
+            movie.director,
+            movie.title,
+            movie.year,
+            movie.id,
+            movie.runtime,
+            movie.plot,
+            movie.poster_url,
+        ]
+
     # 1 CALL
     def total_movies(self):
         return self.last_row() - 1
 
     # 2 CALLS
     def add(self, movie):
-        next_id = self._get_next_id()
-
-        movie_as_list = [
-            movie.director,
-            movie.title,
-            movie.year,
-            next_id,
-            movie.runtime,
-            movie.plot,
-            movie.poster_url,
-        ]
+        movie.id = self._get_next_id()
+        movie_as_list = self._movie_to_list(movie)
         self.sheet.append_row(movie_as_list)
-        self.sheet.update([[next_id]], "last_id")
-        movie.id = next_id
+        self.sheet.update([[movie.id]], "last_id")
         return movie
 
     # 1 CALL
@@ -96,20 +97,10 @@ class GoogleSheetsMovieRepository:
     def save(self, movie):
         cell = self.sheet.find(str(movie.id), in_column=4)
         if not cell:
-            return
+            raise MovieNotFoundError()
 
         self.sheet.update(
-            [
-                [
-                    movie.director,
-                    movie.title,
-                    movie.year,
-                    movie.id,
-                    movie.runtime,
-                    movie.plot,
-                    movie.poster_url,
-                ]
-            ],
+            [self._movie_to_list(movie)],
             f"A{cell.row}:G{cell.row}",
         )
         return movie
