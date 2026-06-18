@@ -16,7 +16,7 @@ movies_sheet = spreadsheet.get_worksheet(0)
 watch_events_sheet = spreadsheet.get_worksheet(2)
 
 watch_event_repo = GoogleSheetsWatchEventRepository(watch_events_sheet)
-movie_repo = GoogleSheetsMovieRepository(movies_sheet, watch_events_sheet)
+movie_repo = GoogleSheetsMovieRepository(movies_sheet)
 
 external_api_movie_repo = ExternalAPIMovieRepository(
     settings.MOVIE_API_URL, settings.MOVIE_API_KEY

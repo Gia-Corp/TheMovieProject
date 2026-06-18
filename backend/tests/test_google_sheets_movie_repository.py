@@ -26,10 +26,7 @@ class TestGoogleSheetsMovieRepository:
             Movie(id=2, title="Cars", director="John Lasseter", year=2006),
         ]
 
-        watch_events_sheet = Mock()
-        watch_events_sheet.findall.return_value = []
-
-        repo = GoogleSheetsMovieRepository(movies_sheet, watch_events_sheet)
+        repo = GoogleSheetsMovieRepository(movies_sheet)
         movies = repo.get_movies_by_page(Page(1, 2))
         assert movies == expected_movies
 
@@ -49,10 +46,7 @@ class TestGoogleSheetsMovieRepository:
             ["John Lasseter", "Cars", "2006", "2", "", "", ""],
         ]
 
-        watch_events_sheet = Mock()
-        watch_events_sheet.findall.return_value = []
-
-        repo = GoogleSheetsMovieRepository(movies_sheet, watch_events_sheet)
+        repo = GoogleSheetsMovieRepository(movies_sheet)
         repo.get_movies_by_page(Page(2, 2))
         movies_sheet.get.assert_called_with("A4:G5")
 
@@ -101,10 +95,7 @@ class TestGoogleSheetsMovieRepository:
             ],
         ]
 
-        watch_events_sheet = Mock()
-        watch_events_sheet.findall.return_value = []
-
-        repo = GoogleSheetsMovieRepository(movies_sheet, watch_events_sheet)
+        repo = GoogleSheetsMovieRepository(movies_sheet)
         repo.get_movies_by_page(Page(2, 10))
         movies_sheet.get.assert_called_with("A12:G21")
 
@@ -118,10 +109,7 @@ class TestGoogleSheetsMovieRepository:
                 "",
             ]
 
-            watch_events_sheet = Mock()
-            watch_events_sheet.findall.return_value = []
-
-            repo = GoogleSheetsMovieRepository(movies_sheet, watch_events_sheet)
+            repo = GoogleSheetsMovieRepository(movies_sheet)
             repo.get_movies_by_page(Page(3, 2))
         assert "Selected page is out of bounds" in str(error)
 
@@ -132,15 +120,11 @@ class TestGoogleSheetsMovieRepository:
             "James Cameron",
             "John Lasseter",
         ]
-        movie_count = GoogleSheetsMovieRepository(
-            movies_sheet, Mock()
-        ).get_movie_count()
+        movie_count = GoogleSheetsMovieRepository(movies_sheet).get_movie_count()
         assert movie_count == 2
 
     def test_get_movie_count_with_no_movies(self):
         movies_sheet = Mock()
         movies_sheet.col_values.return_value = ["Director", ""]
-        movie_count = GoogleSheetsMovieRepository(
-            movies_sheet, Mock()
-        ).get_movie_count()
+        movie_count = GoogleSheetsMovieRepository(movies_sheet).get_movie_count()
         assert movie_count == 0

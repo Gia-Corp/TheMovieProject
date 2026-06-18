@@ -5,9 +5,8 @@ import re
 
 
 class GoogleSheetsMovieRepository:
-    def __init__(self, movies_sheet, watch_events_sheet):
-        self.movies_sheet = movies_sheet
-        self.watch_events_sheet = watch_events_sheet
+    def __init__(self, sheet):
+        self.sheet = sheet
 
     # 2 CALLS
     def get_movies_by_page(self, page):
@@ -17,13 +16,13 @@ class GoogleSheetsMovieRepository:
         if self._next_available_row() <= page_first_row:
             raise PageOutOfBoundsError
 
-        raw_movies = self.movies_sheet.get(f"A{page_first_row}:G{page_last_row}")
+        raw_movies = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
         movies = self._dicts_to_movies(raw_movies)
         return movies
 
     # 1 CALL
     def _next_available_row(self):
-        return len(list(filter(None, self.movies_sheet.col_values(1)))) + 1
+        return len(list(filter(None, self.sheet.col_values(1)))) + 1
 
     def _dicts_to_movies(self, dicts):
         raw_movies = utils.to_records(
@@ -58,7 +57,7 @@ class GoogleSheetsMovieRepository:
 
     # 3 CALLS
     def add(self, movie):
-        last_id = int(self.movies_sheet.get("last_id")[0][0])
+        last_id = int(self.sheet.get("last_id")[0][0])
         next_id = last_id + 1
 
         movie_as_list = [
@@ -70,29 +69,29 @@ class GoogleSheetsMovieRepository:
             movie.plot,
             movie.poster_url,
         ]
-        self.movies_sheet.append_row(movie_as_list)
-        self.movies_sheet.update([[next_id]], "last_id")
+        self.sheet.append_row(movie_as_list)
+        self.sheet.update([[next_id]], "last_id")
         movie.id = next_id
 
         return movie
 
     # 2 CALLS
     def get_by_id(self, id):
-        cell = self.movies_sheet.find(str(id), in_column=4)
+        cell = self.sheet.find(str(id), in_column=4)
         if not cell:
             return
 
-        raw_movies = self.movies_sheet.get(f"A{cell.row}:G{cell.row}")
+        raw_movies = self.sheet.get(f"A{cell.row}:G{cell.row}")
         movies = self._dicts_to_movies(raw_movies)
         return movies[0]
 
     # 2 CALLS
     def save(self, movie):
-        cell = self.movies_sheet.find(str(movie.id), in_column=4)
+        cell = self.sheet.find(str(movie.id), in_column=4)
         if not cell:
             return
 
-        self.movies_sheet.update(
+        self.sheet.update(
             [
                 [
                     movie.director,
@@ -110,20 +109,20 @@ class GoogleSheetsMovieRepository:
 
     # 2 CALLS
     def delete(self, id):
-        cell = self.movies_sheet.find(str(id), in_column=4)
+        cell = self.sheet.find(str(id), in_column=4)
         if not cell:
             return
-        self.movies_sheet.delete_rows(cell.row)
+        self.sheet.delete_rows(cell.row)
 
     # 2 CALLS
     def find_by_title(self, title):
-        cells = self.movies_sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
+        cells = self.sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
         if not cells:
             return
 
         row_ranges = [f"A{cell.row}:G{cell.row}" for cell in cells]
 
-        rows = self.movies_sheet.batch_get(row_ranges)
+        rows = self.sheet.batch_get(row_ranges)
         raw_movies = [row[0] for row in rows]
         movies = self._dicts_to_movies(raw_movies)
         return movies
@@ -131,7 +130,7 @@ class GoogleSheetsMovieRepository:
     # 1 CALL
     def exists_by_title(self, title):
         pattern = re.compile(r"^\s*" + re.escape(title) + r"\s*$", re.IGNORECASE)
-        return self.movies_sheet.findall(pattern, in_column=2)
+        return self.sheet.findall(pattern, in_column=2)
 
 
 class PageOutOfBoundsError(ApiException):
