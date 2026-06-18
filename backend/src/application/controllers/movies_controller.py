@@ -41,7 +41,7 @@ async def get_movies(
     page = Page(page, size)
 
     if title:
-        movies = movie_repo.get_all_by_title(title)  # 1 CALLS
+        movies = movie_repo.get_all_by_title(title)  # 1 CALL
 
         start = page.number * page.size - page.size
         end = page.number * page.size
@@ -58,7 +58,7 @@ async def get_movies(
 
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
 
-    user_count = user_repo.get_user_count()  # 1 CALL
+    user_count = user_repo.total_users()  # 1 CALL
     watch_events = watch_event_repo.find_all_by_movies(movies)  # 1 CALL
     movies = MovieSummaryAssembler(user_count, watch_events).assemble_many(movies)
 
@@ -160,7 +160,7 @@ async def update_movie(
     return movie_repo.save(movie)  # 2 CALLS
 
 
-# 5 CALLS
+# 4 CALLS
 @movies_controller.delete("/movies/{movie_id}")
 async def delete_movie(
     movie_id: int = Path(
@@ -170,8 +170,5 @@ async def delete_movie(
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user=Depends(get_current_user),
 ):
-    movie = movie_repo.get_by_id(movie_id)  # 1 CALL
-
     movie_repo.delete(movie_id)  # 2 CALLS
     watch_event_repo.delete_by_movie_id(movie_id)  # 2 CALLS
-    return movie
