@@ -57,7 +57,7 @@ async def get_movies(
         movies = movies[start:end]
     else:
         movies = movie_repo.get_all_by_page(page)  # 2 CALLS
-        movie_count = movie_repo.get_movie_count()  # 1 CALL
+        movie_count = movie_repo.total_movies()  # 1 CALL
 
     metadata = PageMetadataCalculator().calculate(page, movie_count, "/api/movies")
 

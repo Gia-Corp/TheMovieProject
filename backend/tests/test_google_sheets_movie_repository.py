@@ -113,18 +113,18 @@ class TestGoogleSheetsMovieRepository:
             repo.get_all_by_page(Page(3, 2))
         assert "Selected page is out of bounds" in str(error)
 
-    def test_get_movie_count_with_existing_movies(self):
+    def test_total_movies_with_existing_movies(self):
         movies_sheet = Mock()
         movies_sheet.col_values.return_value = [
             "Director",
             "James Cameron",
             "John Lasseter",
         ]
-        movie_count = GoogleSheetsMovieRepository(movies_sheet).get_movie_count()
+        movie_count = GoogleSheetsMovieRepository(movies_sheet).total_movies()
         assert movie_count == 2
 
-    def test_get_movie_count_with_no_movies(self):
+    def test_total_movies_with_no_movies(self):
         movies_sheet = Mock()
         movies_sheet.col_values.return_value = ["Director", ""]
-        movie_count = GoogleSheetsMovieRepository(movies_sheet).get_movie_count()
+        movie_count = GoogleSheetsMovieRepository(movies_sheet).total_movies()
         assert movie_count == 0

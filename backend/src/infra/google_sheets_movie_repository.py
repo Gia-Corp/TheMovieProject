@@ -13,18 +13,18 @@ class GoogleSheetsMovieRepository:
         page_first_row = page.get_first_index() + 1
         page_last_row = page.get_last_index() + 1
 
-        if self._next_available_row() <= page_first_row:
+        if self.last_row() < page_first_row:
             raise PageOutOfBoundsError
 
-        raw_movies = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
-        return self._dicts_to_movies(raw_movies)
+        rows = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
+        return self._movies_from_rows(rows)
 
     # 1 CALL
-    def _next_available_row(self):
-        return len(list(filter(None, self.sheet.col_values(1)))) + 1
+    def last_row(self):
+        return len(self.sheet.col_values(1))
 
-    def _dicts_to_movies(self, dicts):
-        raw_movies = utils.to_records(
+    def _movies_from_rows(self, rows):
+        dicts = utils.to_records(
             [
                 "director",
                 "title",
@@ -34,25 +34,24 @@ class GoogleSheetsMovieRepository:
                 "plot",
                 "poster_url",
             ],
-            dicts,
+            rows,
         )
-        return list(map(self._transform_into_movie, raw_movies))
+        return list(map(self._movie_from_dict, dicts))
 
-    def _transform_into_movie(self, raw_movie):
-        movie = Movie(
-            id=int(raw_movie["id"]),
-            title=raw_movie["title"],
-            director=raw_movie["director"],
-            year=int(raw_movie["year"]),
-            plot=raw_movie["plot"] if "plot" in raw_movie else None,
-            runtime=raw_movie["runtime"] if "runtime" in raw_movie else None,
-            poster_url=raw_movie["poster_url"] if "poster_url" in raw_movie else None,
+    def _movie_from_dict(self, movie_dict):
+        return Movie(
+            id=int(movie_dict["id"]),
+            title=movie_dict["title"],
+            director=movie_dict["director"],
+            year=int(movie_dict["year"]),
+            plot=movie_dict["plot"] if "plot" in movie_dict else None,
+            runtime=movie_dict["runtime"] if "runtime" in movie_dict else None,
+            poster_url=movie_dict["poster_url"] if "poster_url" in movie_dict else None,
         )
-        return movie
 
     # 1 CALL
-    def get_movie_count(self):
-        return self._next_available_row() - 2
+    def total_movies(self):
+        return self.last_row() - 1
 
     # 3 CALLS
     def add(self, movie):
@@ -81,7 +80,7 @@ class GoogleSheetsMovieRepository:
             return
 
         raw_movies = self.sheet.get(f"A{cell.row}:G{cell.row}")
-        movies = self._dicts_to_movies(raw_movies)
+        movies = self._movies_from_rows(raw_movies)
         return movies[0]
 
     # 2 CALLS
@@ -123,7 +122,7 @@ class GoogleSheetsMovieRepository:
 
         rows = self.sheet.batch_get(row_ranges)
         raw_movies = [row[0] for row in rows]
-        movies = self._dicts_to_movies(raw_movies)
+        movies = self._movies_from_rows(raw_movies)
         return movies
 
     # 1 CALL
