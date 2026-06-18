@@ -9,7 +9,7 @@ from .application.controllers import (
     watch_events_controller,
 )
 from .application.exceptions import (
-    ApiException,
+    APIException,
     validation_exception_handler,
     http_exception_handler,
     generic_exception_handler,
@@ -33,7 +33,7 @@ api.add_middleware(
 
 api.add_exception_handler(RequestValidationError, validation_exception_handler)
 api.add_exception_handler(StarletteHTTPException, http_exception_handler)
-api.add_exception_handler(ApiException, generic_exception_handler)
+api.add_exception_handler(APIException, generic_exception_handler)
 
 api.include_router(auth_controller)
 api.include_router(movies_controller)

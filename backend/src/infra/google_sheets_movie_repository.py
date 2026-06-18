@@ -1,5 +1,5 @@
 from gspread import utils
-from src.application.exceptions import ApiException
+from src.application.exceptions import APIException
 from src.domain import Movie
 import re
 
@@ -127,7 +127,7 @@ class GoogleSheetsMovieRepository:
         return self.sheet.findall(pattern, in_column=2)
 
 
-class PageOutOfBoundsError(ApiException):
+class PageOutOfBoundsError(APIException):
     NOT_FOUND = 400
 
     def build_message(self, parameter):
@@ -137,7 +137,7 @@ class PageOutOfBoundsError(ApiException):
         return self.NOT_FOUND
 
 
-class MovieNotFoundError(ApiException):
+class MovieNotFoundError(APIException):
     NOT_FOUND = 404
 
     def build_message(self, parameter):
@@ -147,7 +147,7 @@ class MovieNotFoundError(ApiException):
         return self.NOT_FOUND
 
 
-class MovieAlreadyExistsError(ApiException):
+class MovieAlreadyExistsError(APIException):
     CONFLICT = 409
 
     def build_message(self, parameter):

@@ -1,4 +1,4 @@
-from src.application.exceptions import ApiException
+from src.application.exceptions import APIException
 from src.domain import WatchEvent
 from datetime import datetime
 
@@ -164,7 +164,7 @@ class GoogleSheetsWatchEventRepository:
         self.sheet.spreadsheet.batch_update({"requests": requests})
 
 
-class WatchEventNotFoundError(ApiException):
+class WatchEventNotFoundError(APIException):
     NOT_FOUND = 404
 
     def build_message(self, parameter):
@@ -174,7 +174,7 @@ class WatchEventNotFoundError(ApiException):
         return self.NOT_FOUND
 
 
-class WatchEventAlreadyExistsError(ApiException):
+class WatchEventAlreadyExistsError(APIException):
     CONFLICT = 409
 
     def build_message(self, parameter):

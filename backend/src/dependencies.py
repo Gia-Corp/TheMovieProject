@@ -12,19 +12,18 @@ from fastapi.security import OAuth2PasswordBearer
 
 client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
 spreadsheet = client.open(settings.SHEET_NAME)
+
 movies_sheet = spreadsheet.get_worksheet(0)
+users_sheet = spreadsheet.get_worksheet(1)
 watch_events_sheet = spreadsheet.get_worksheet(2)
 
-watch_event_repo = GoogleSheetsWatchEventRepository(watch_events_sheet)
 movie_repo = GoogleSheetsMovieRepository(movies_sheet)
+user_repo = GoogleSheetsUserRepository(users_sheet)
+watch_event_repo = GoogleSheetsWatchEventRepository(watch_events_sheet)
 
 external_api_movie_repo = ExternalAPIMovieRepository(
     settings.MOVIE_API_URL, settings.MOVIE_API_KEY
 )
-
-users_sheet = spreadsheet.get_worksheet(1)
-user_repo = GoogleSheetsUserRepository(users_sheet)
-
 
 jwt_handler = JWTHandler(
     settings.JWT_SECRET_KEY,

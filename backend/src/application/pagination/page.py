@@ -1,4 +1,4 @@
-from ..exceptions import ApiException
+from ..exceptions import APIException
 
 
 class Page:
@@ -23,7 +23,7 @@ class Page:
         return self.number * self.size
 
 
-class InvalidPageNumberError(ApiException):
+class InvalidPageNumberError(APIException):
     BAD_REQUEST = 400
 
     def build_message(self, page_number):
@@ -33,7 +33,7 @@ class InvalidPageNumberError(ApiException):
         return self.BAD_REQUEST
 
 
-class InvalidPageSizeError(ApiException):
+class InvalidPageSizeError(APIException):
     BAD_REQUEST = 400
 
     def build_message(self, page_size):

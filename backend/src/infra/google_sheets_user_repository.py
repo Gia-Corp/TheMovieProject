@@ -1,5 +1,5 @@
 from src.domain import User
-from src.application.exceptions import ApiException
+from src.application.exceptions import APIException
 
 
 class GoogleSheetsUserRepository:
@@ -50,7 +50,7 @@ class GoogleSheetsUserRepository:
         return ids.issubset(existing_ids)
 
 
-class UserNotFoundError(ApiException):
+class UserNotFoundError(APIException):
     NOT_FOUND = 404
 
     def build_message(self, parameter):
