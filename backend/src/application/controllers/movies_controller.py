@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Query, Depends, Path
 from src.infra import (
     GoogleSheetsMovieRepository,
-    MovieNotFoundError,
     PageOutOfBoundsError,
     ExternalAPIMovieRepository,
     MovieAlreadyExistsError,
@@ -29,7 +28,7 @@ movies_controller = APIRouter(
 )
 
 
-# MIN = 4 CALLS, MAX = 5 CALLS
+# MIN = 3 CALLS, MAX = 5 CALLS
 @movies_controller.get("/movies", response_model=GetMoviesResponseDTO)
 async def get_movies(
     page: int = Query(..., gt=0),
@@ -42,9 +41,7 @@ async def get_movies(
     page = Page(page, size)
 
     if title:
-        movies = movie_repo.find_by_title(title)  # 2 CALLS
-        if not movies:
-            raise MovieNotFoundError()
+        movies = movie_repo.get_all_by_title(title)  # 1 CALLS
 
         start = page.number * page.size - page.size
         end = page.number * page.size
@@ -85,7 +82,7 @@ async def get_movie(
     return MovieDetailAssembler(users, watch_events).assemble(movie)
 
 
-# N + 8 CALLS
+# N + 7 CALLS
 @movies_controller.post("/movies")
 async def create_movie(
     movie_dto: CreateMovieDTO,
@@ -119,7 +116,7 @@ async def create_movie(
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
     )
-    movie = movie_repo.add(movie)  # 3 CALLS
+    movie = movie_repo.add(movie)  # 2 CALLS
 
     watch_events = [
         WatchEvent(movie_id=movie.id, user_id=u) for u in movie_dto.watched_by
@@ -177,5 +174,4 @@ async def delete_movie(
 
     movie_repo.delete(movie_id)  # 2 CALLS
     watch_event_repo.delete_by_movie_id(movie_id)  # 2 CALLS
-
     return movie

@@ -48,7 +48,7 @@ class GoogleSheetsMovieRepository:
     def _movie_from_dict(self, movie_dict):
         return Movie(
             id=int(movie_dict["id"]),
-            title=movie_dict["title"],
+            title=str(movie_dict["title"]),
             director=movie_dict["director"],
             year=int(movie_dict["year"]),
             plot=movie_dict["plot"] if "plot" in movie_dict else None,
@@ -109,21 +109,17 @@ class GoogleSheetsMovieRepository:
     def delete(self, id):
         cell = self.sheet.find(str(id), in_column=4)
         if not cell:
-            return
+            raise MovieNotFoundError()
         self.sheet.delete_rows(cell.row)
 
-    # 2 CALLS
-    def find_by_title(self, title):
-        cells = self.sheet.findall(re.compile(title, re.IGNORECASE), in_column=2)
-        if not cells:
-            return
+    # 1 CALL
+    def get_all_by_title(self, title):
+        movies = self.get_all()
+        filtered_movies = [m for m in movies if title.lower() in m.title.lower()]
 
-        row_ranges = [f"A{cell.row}:G{cell.row}" for cell in cells]
-
-        rows = self.sheet.batch_get(row_ranges)
-        raw_movies = [row[0] for row in rows]
-        movies = self._movies_from_rows(raw_movies)
-        return movies
+        if not filtered_movies:
+            raise MovieNotFoundError()
+        return filtered_movies
 
     # 1 CALL
     def exists_by_title(self, title):
