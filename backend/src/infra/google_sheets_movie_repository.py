@@ -78,15 +78,19 @@ class GoogleSheetsMovieRepository:
         movie.id = next_id
         return movie
 
-    # 2 CALLS
-    def get_by_id(self, id):
-        cell = self.sheet.find(str(id), in_column=4)
-        if not cell:
-            return
+    # 1 CALL
+    def get_all(self):
+        movies_dicts = self.sheet.get_all_records()
+        return list(map(self._movie_from_dict, movies_dicts))
 
-        raw_movies = self.sheet.get(f"A{cell.row}:G{cell.row}")
-        movies = self._movies_from_rows(raw_movies)
-        return movies[0]
+    # 1 CALL
+    def get_by_id(self, id):
+        movies = self.get_all()
+        for movie in movies:
+            if movie.id == id:
+                return movie
+
+        raise MovieNotFoundError()
 
     # 2 CALLS
     def save(self, movie):

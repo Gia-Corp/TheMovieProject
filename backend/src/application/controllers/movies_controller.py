@@ -68,7 +68,7 @@ async def get_movies(
     return {"metadata": metadata, "movies": movies}
 
 
-# 5 CALLS
+# 4 CALLS
 @movies_controller.get("/movies/{movie_id}")
 async def get_movie(
     movie_id: int = Path(
@@ -78,10 +78,7 @@ async def get_movie(
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
 ):
-    movie = movie_repo.get_by_id(movie_id)  # 2 CALLS
-
-    if not movie:
-        raise MovieNotFoundError(movie_id)
+    movie = movie_repo.get_by_id(movie_id)  # 1 CALL
 
     users = user_repo.get_all()  # 1 CALL
     watch_events = watch_event_repo.find_by_movie_id(movie_id)  # 2 CALLS
@@ -132,7 +129,7 @@ async def create_movie(
     return movie
 
 
-# 4 CALLS
+# 3 CALLS
 @movies_controller.patch("/movies/{movie_id}")
 async def update_movie(
     movie_id: int = Path(
@@ -142,10 +139,7 @@ async def update_movie(
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
     current_user=Depends(get_current_user),
 ):
-    movie = movie_repo.get_by_id(movie_id)  # 2 CALLS
-
-    if not movie:
-        raise MovieNotFoundError(movie_id)
+    movie = movie_repo.get_by_id(movie_id)  # 1 CALL
 
     if movie_dto.title:
         movie.title = movie_dto.title
@@ -174,7 +168,7 @@ async def update_movie(
     return movie
 
 
-# 6 CALLS
+# 5 CALLS
 @movies_controller.delete("/movies/{movie_id}")
 async def delete_movie(
     movie_id: int = Path(
@@ -184,10 +178,7 @@ async def delete_movie(
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user=Depends(get_current_user),
 ):
-    movie = movie_repo.get_by_id(movie_id)  # 2 CALLS
-
-    if not movie:
-        raise MovieNotFoundError(movie_id)
+    movie = movie_repo.get_by_id(movie_id)  # 1 CALL
 
     movie_repo.delete(movie_id)  # 2 CALLS
     watch_event_repo.delete_by_movie_id(movie_id)  # 2 CALLS
