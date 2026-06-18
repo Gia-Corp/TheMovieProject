@@ -76,13 +76,12 @@ async def get_movie(
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
 ):
     movie = movie_repo.get_by_id(movie_id)  # 1 CALL
-
     users = user_repo.get_all()  # 1 CALL
     watch_events = watch_event_repo.get_all_by_movie_id(movie_id)  # 2 CALLS
     return MovieDetailAssembler(users, watch_events).assemble(movie)
 
 
-# N + 7 CALLS
+# 7 CALLS
 @movies_controller.post("/movies")
 async def create_movie(
     movie_dto: CreateMovieDTO,
@@ -121,7 +120,7 @@ async def create_movie(
     watch_events = [
         WatchEvent(movie_id=movie.id, user_id=u) for u in movie_dto.watched_by
     ]
-    watch_event_repo.add_many(watch_events)  # N + 2 CALLS
+    watch_event_repo.add_many(watch_events)  # 2 CALLS
 
     return movie
 
