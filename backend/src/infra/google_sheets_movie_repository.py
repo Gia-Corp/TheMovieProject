@@ -7,6 +7,13 @@ import re
 class GoogleSheetsMovieRepository:
     def __init__(self, sheet):
         self.sheet = sheet
+        self._last_id = None
+
+    def _get_next_id(self):
+        if self._last_id is None:
+            self._last_id = int(self.sheet.get("last_id")[0][0])
+        self._last_id += 1
+        return self._last_id
 
     # 2 CALLS
     def get_all_by_page(self, page):
@@ -53,10 +60,9 @@ class GoogleSheetsMovieRepository:
     def total_movies(self):
         return self.last_row() - 1
 
-    # 3 CALLS
+    # 2 CALLS
     def add(self, movie):
-        last_id = int(self.sheet.get("last_id")[0][0])
-        next_id = last_id + 1
+        next_id = self._get_next_id()
 
         movie_as_list = [
             movie.director,
@@ -70,7 +76,6 @@ class GoogleSheetsMovieRepository:
         self.sheet.append_row(movie_as_list)
         self.sheet.update([[next_id]], "last_id")
         movie.id = next_id
-
         return movie
 
     # 2 CALLS
