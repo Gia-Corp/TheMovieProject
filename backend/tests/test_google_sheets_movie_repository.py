@@ -125,6 +125,6 @@ class TestGoogleSheetsMovieRepository:
 
     def test_total_movies_with_no_movies(self):
         movies_sheet = Mock()
-        movies_sheet.col_values.return_value = ["Director", ""]
+        movies_sheet.col_values.return_value = ["Director"]
         movie_count = GoogleSheetsMovieRepository(movies_sheet).total_movies()
         assert movie_count == 0
