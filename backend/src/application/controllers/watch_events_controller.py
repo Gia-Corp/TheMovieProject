@@ -49,7 +49,7 @@ async def get_watch_events(
     return watch_event_repo.get_all()  # 1 CALL
 
 
-# 9 CALLS
+# 7 CALLS
 @watch_events_controller.post("/watch-events")
 async def create_watch_event(
     watch_event_dto: CreateWatchEventDTO = None,
@@ -58,13 +58,8 @@ async def create_watch_event(
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user: User = Depends(get_current_user),
 ):
-    movie = movie_repo.get_by_id(watch_event_dto.movie_id)  # 2 CALLS
-    if not movie:
-        raise MovieNotFoundError(watch_event_dto.movie_id)
-
-    user = user_repo.get_by_id(watch_event_dto.user_id)  # 2 CALLS
-    if not user:
-        raise UserNotFoundError(watch_event_dto.user_id)
+    movie_repo.get_by_id(watch_event_dto.movie_id)  # 1 CALL
+    user_repo.get_by_id(watch_event_dto.user_id)  # 1 CALL
 
     watch_event = WatchEvent(
         movie_id=watch_event_dto.movie_id, user_id=watch_event_dto.user_id

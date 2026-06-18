@@ -27,9 +27,6 @@ async def login(
 ):
     user = user_repo.get_by_email(form_data.username)
 
-    if not user:
-        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
-
     if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 

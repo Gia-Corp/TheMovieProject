@@ -1,4 +1,3 @@
-from gspread import utils
 from src.domain import User
 from src.application.exceptions import ApiException
 
@@ -25,30 +24,14 @@ class GoogleSheetsUserRepository:
 
         raise UserNotFoundError()
 
-    # 2 CALLS
+    # 1 CALL
     def get_by_email(self, email):
-        cell = self.sheet.find(str(email), in_column=3)
-        if not cell:
-            return
+        users = self.get_all()
+        for user in users:
+            if user.email == email:
+                return user
 
-        raw_users = self.sheet.get(f"A{cell.row}:G{cell.row}")
-        users = self._dicts_to_users(raw_users)
-        return users[0]
-
-    def _dicts_to_users(self, dicts):
-        raw_users = utils.to_records(
-            [
-                "id",
-                "nickname",
-                "email",
-                "hashed_password",
-                "role",
-                "profile_pic",
-                "is_active",
-            ],
-            dicts,
-        )
-        return list(map(self._user_from_dict, raw_users))
+        raise UserNotFoundError()
 
     def _user_from_dict(self, user_dict):
         return User(
