@@ -8,7 +8,7 @@ function MovieWatchedButton({ isWatched, onClick, disabled }) {
       onClick={onClick}
       disabled={disabled}
     >
-      <MovieSemiWatchedIcon size={29} color={isWatched ? undefined : "grey"} />
+      <MovieSemiWatchedIcon size={28} color={isWatched ? undefined : "grey"} />
     </button>
   );
 }
