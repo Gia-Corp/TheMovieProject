@@ -1,5 +1,5 @@
 import "./MovieWatchedButton.css";
-import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
+import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWatchedIcon";
 
 function MovieWatchedButton({ isWatched, onClick, disabled }) {
   return (
@@ -8,7 +8,7 @@ function MovieWatchedButton({ isWatched, onClick, disabled }) {
       onClick={onClick}
       disabled={disabled}
     >
-      <MovieWatchedIcon size={30} color={isWatched ? undefined : "grey"} />
+      <MovieSemiWatchedIcon size={29} color={isWatched ? undefined : "grey"} />
     </button>
   );
 }

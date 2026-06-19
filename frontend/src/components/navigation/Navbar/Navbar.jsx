@@ -34,9 +34,9 @@ function Navbar() {
         <p>{`${movie.title} (${movie.year})`}</p>
         {showIcon &&
           (isFullyWatched ? (
-            <MovieWatchedIcon size={20} />
+            <MovieWatchedIcon size={19} />
           ) : (
-            <MovieSemiWatchedIcon size={20} />
+            <MovieSemiWatchedIcon size={16} />
           ))}
       </>
     );
