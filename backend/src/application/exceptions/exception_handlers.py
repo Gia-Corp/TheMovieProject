@@ -21,7 +21,14 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     messages = []
 
     for error in errors:
-        field = error.get("loc", [])[1].capitalize()
+        loc = error.get("loc", [])
+        # Tomar solo las partes que son nombres de campo (strings), ignorando "body"/"query" e índices int
+        field_parts = [
+            str(p)
+            for p in loc
+            if isinstance(p, str) and p not in ("body", "query", "path")
+        ]
+        field = ".".join(field_parts).capitalize() if field_parts else "Body"
         msg = error.get("msg", "Validation error")
         messages.append(f"{field}: {msg}")
 
