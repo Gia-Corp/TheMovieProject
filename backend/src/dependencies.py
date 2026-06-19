@@ -4,6 +4,7 @@ from .infra import (
     GoogleSheetsMovieRepository,
     ExternalAPIMovieRepository,
     GoogleSheetsUserRepository,
+    GoogleSheetsWatchEventRepository,
 )
 from .application.auth import JWTHandler
 from fastapi import Depends, HTTPException, status
@@ -11,14 +12,18 @@ from fastapi.security import OAuth2PasswordBearer
 
 client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
 spreadsheet = client.open(settings.SHEET_NAME)
+
 movies_sheet = spreadsheet.get_worksheet(0)
+users_sheet = spreadsheet.get_worksheet(1)
+watch_events_sheet = spreadsheet.get_worksheet(2)
+
 movie_repo = GoogleSheetsMovieRepository(movies_sheet)
+user_repo = GoogleSheetsUserRepository(users_sheet)
+watch_event_repo = GoogleSheetsWatchEventRepository(watch_events_sheet)
+
 external_api_movie_repo = ExternalAPIMovieRepository(
     settings.MOVIE_API_URL, settings.MOVIE_API_KEY
 )
-
-users_sheet = spreadsheet.get_worksheet(1)
-user_repo = GoogleSheetsUserRepository(users_sheet)
 
 jwt_handler = JWTHandler(
     settings.JWT_SECRET_KEY,
@@ -40,6 +45,10 @@ def get_user_repo():
     return user_repo
 
 
+def get_watch_event_repo():
+    return watch_event_repo
+
+
 def get_jwt_handler():
     return jwt_handler
 
@@ -55,7 +64,4 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user = user_repo.get_by_id(payload["sub"])
-    if not user:
-        raise HTTPException(status_code=404)
-    return user
+    return user_repo.get_by_id(int(payload["sub"]))

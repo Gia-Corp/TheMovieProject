@@ -1,41 +1,60 @@
-from gspread import utils
 from src.domain import User
+from src.application.exceptions import APIException
 
 
 class GoogleSheetsUserRepository:
     def __init__(self, sheet):
         self.sheet = sheet
 
+    # 1 CALL
+    def total_users(self):
+        return len(self.sheet.col_values(1)) - 1
+
+    # 1 CALL
+    def get_all(self):
+        users_dicts = self.sheet.get_all_records()
+        return list(map(self._user_from_dict, users_dicts))
+
+    # 1 CALL
     def get_by_id(self, id):
-        cell = self.sheet.find(str(id), in_column=1)
-        if not cell:
-            return
+        users = self.get_all()
+        for user in users:
+            if user.id == id:
+                return user
 
-        raw_users = self.sheet.get(f"A{cell.row}:F{cell.row}")
-        users = self._dicts_to_users(raw_users)
-        return users[0]
+        raise UserNotFoundError()
 
+    # 1 CALL
     def get_by_email(self, email):
-        cell = self.sheet.find(str(email), in_column=2)
-        if not cell:
-            return
+        users = self.get_all()
+        for user in users:
+            if user.email == email:
+                return user
 
-        raw_users = self.sheet.get(f"A{cell.row}:F{cell.row}")
-        users = self._dicts_to_users(raw_users)
-        return users[0]
+        raise UserNotFoundError()
 
-    def _dicts_to_users(self, dicts):
-        raw_users = utils.to_records(
-            ["id", "email", "hashed_password", "role", "is_active", "created_at"],
-            dicts,
+    def _user_from_dict(self, user_dict):
+        return User(
+            id=int(user_dict["id"]),
+            nickname=user_dict["nickname"],
+            email=user_dict["email"],
+            hashed_password=user_dict["hashed_password"],
+            role=user_dict["role"],
+            profile_pic=user_dict["profile_pic"],
         )
-        return list(map(self._transform_into_user, raw_users))
 
-    def _transform_into_user(self, raw_user):
-        user = User(
-            id=int(raw_user["id"]),
-            email=raw_user["email"],
-            hashed_password=raw_user["hashed_password"],
-            role=raw_user["role"],
-        )
-        return user
+    # 1 CALL
+    def all_exist(self, ids):
+        ids = set([str(id) for id in ids])
+        existing_ids = set(self.sheet.col_values(1))
+        return ids.issubset(existing_ids)
+
+
+class UserNotFoundError(APIException):
+    NOT_FOUND = 404
+
+    def build_message(self, parameter):
+        return "User not found"
+
+    def get_status_code(self):
+        return self.NOT_FOUND

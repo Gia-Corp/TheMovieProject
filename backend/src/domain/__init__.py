@@ -6,6 +6,7 @@ from .movie import (
 )
 
 from .user import User
+from .watch_event import WatchEvent
 
 __all__ = [
     "EmptyMovieDirectorError",
@@ -13,4 +14,5 @@ __all__ = [
     "NegativeMovieYearError",
     "Movie",
     "User",
+    "WatchEvent",
 ]

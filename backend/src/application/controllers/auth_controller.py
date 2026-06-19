@@ -27,16 +27,15 @@ async def login(
 ):
     user = user_repo.get_by_email(form_data.username)
 
-    if not user:
-        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
-
     if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 
     access_token = jwt_handler.create_access_token(
         {"sub": str(user.id), "role": user.role}
     )
-    refresh_token = jwt_handler.create_refresh_token({"sub": str(user.id)})
+    refresh_token = jwt_handler.create_refresh_token(
+        {"sub": str(user.id), "role": user.role}
+    )
 
     # Refresh token en cookie HttpOnly
     response.set_cookie(
@@ -63,7 +62,9 @@ async def refresh(
     if not payload:
         raise HTTPException(status_code=401, detail="Refresh token inválido o expirado")
 
-    new_access_token = jwt_handler.create_access_token({"sub": payload["sub"]})
+    new_access_token = jwt_handler.create_access_token(
+        {"sub": payload["sub"], "role": payload["role"]}
+    )
     return {"access_token": new_access_token, "token_type": "bearer"}
 
 

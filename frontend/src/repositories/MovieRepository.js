@@ -6,11 +6,6 @@ export class MovieRepository {
   }
 
   async getBodyContent(response) {
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message);
-    }
-
     return response.json();
   }
 
@@ -67,6 +62,24 @@ export class MovieRepository {
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(movie),
+    });
+
+    return this.getBodyContent(response);
+  }
+
+  async updateWatchEvents(id, userIds, accessToken) {
+    const url = new URL(
+      `${MovieRepository.#MOVIES_PATH}/${id}/watch-events`,
+      window.location.origin,
+    );
+
+    const response = await this.fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(userIds),
     });
 
     return this.getBodyContent(response);

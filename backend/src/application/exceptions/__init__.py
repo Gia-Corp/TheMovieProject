@@ -1,4 +1,4 @@
-from .api_exception import ApiException
+from .api_exception import APIException
 from .exception_handlers import (
     validation_exception_handler,
     http_exception_handler,
@@ -6,7 +6,7 @@ from .exception_handlers import (
 )
 
 __all__ = [
-    "ApiException",
+    "APIException",
     "validation_exception_handler",
     "http_exception_handler",
     "generic_exception_handler",

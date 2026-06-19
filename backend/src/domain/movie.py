@@ -1,4 +1,4 @@
-from src.application.exceptions import ApiException
+from src.application.exceptions import APIException
 from dataclasses import dataclass
 from typing import Optional
 
@@ -12,7 +12,6 @@ class Movie:
     runtime: Optional[str] = None
     plot: Optional[str] = None
     poster_url: Optional[str] = None
-    watched: bool = False
 
     def __post_init__(self):
         self.validate()
@@ -26,7 +25,7 @@ class Movie:
             raise EmptyMovieDirectorError()
 
 
-class EmptyMovieDirectorError(ApiException):
+class EmptyMovieDirectorError(APIException):
     BAD_REQUEST = 400
 
     def build_message(self, _):
@@ -36,7 +35,7 @@ class EmptyMovieDirectorError(ApiException):
         return self.BAD_REQUEST
 
 
-class EmptyMovieTitleError(ApiException):
+class EmptyMovieTitleError(APIException):
     BAD_REQUEST = 400
 
     def build_message(self, _):
@@ -46,7 +45,7 @@ class EmptyMovieTitleError(ApiException):
         return self.BAD_REQUEST
 
 
-class NegativeMovieYearError(ApiException):
+class NegativeMovieYearError(APIException):
     BAD_REQUEST = 400
 
     def build_message(self, movie_year):

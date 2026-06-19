@@ -12,8 +12,9 @@
   --purple-contrast: rgb(68, 39, 118);
   --white: rgb(255, 255, 255);
   --green: #31cc02;
-  --red: rgb(160, 0, 0);
+  --not-that-green: color-mix(in srgb, var(--green) 70%, black);
   --dark-green: #1a7100;
+  --red: rgb(160, 0, 0);
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);

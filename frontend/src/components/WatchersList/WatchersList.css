@@ -1,0 +1,27 @@
+.watchers-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.watchers-list-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.watchers-list-item img {
+  aspect-ratio: 1 / 1;
+  width: 30px;
+  flex-shrink: 0;
+}
+
+.watchers-list-item p {
+  flex-grow: 1;
+}
+
+.watchers-list-item span {
+  font-weight: 900;
+  text-decoration: underline dotted;
+}

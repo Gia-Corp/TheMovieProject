@@ -8,11 +8,26 @@
   justify-content: center;
   background-color: var(--main-ghost-clr);
   text-align: center;
+  z-index: 0;
 
   &:hover {
     scale: 1.08;
     cursor: pointer;
+    z-index: 10;
   }
+}
+
+.corner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at bottom right,
+    rgba(0, 0, 0, 0.7) 10%,
+    rgba(0, 0, 0, 0) 50%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .movie-card img {
@@ -21,10 +36,14 @@
   object-fit: cover;
 }
 
-.movie-card div {
+.movie-card-icon {
   position: absolute;
   bottom: 5px;
   right: 5px;
   aspect-ratio: 1 / 1;
   width: 20%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from datetime import datetime
-from .api_exception import ApiException
+from .api_exception import APIException
 
 
 def _error_response(message: str, status_code: int) -> JSONResponse:
@@ -38,7 +38,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     )
 
 
-async def generic_exception_handler(request: Request, exc: ApiException):
+async def generic_exception_handler(request: Request, exc: APIException):
     return _error_response(
         message=exc.message,
         status_code=exc.status_code,

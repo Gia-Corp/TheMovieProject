@@ -1,3 +1,7 @@
 .movie-watched-button {
   padding: 0;
 }
+
+.movie-watched-button svg {
+  overflow: visible;
+}

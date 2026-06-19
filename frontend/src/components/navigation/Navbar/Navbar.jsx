@@ -4,6 +4,7 @@ import SearchBar from "@/components/navigation/SearchBar/SearchBar";
 import AddMovieButton from "@/components/movie_crud/AddMovieButton/AddMovieButton";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
+import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWatchedIcon";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import LoginButton from "@/components/auth/LoginButton/LoginButton";
@@ -24,10 +25,19 @@ function Navbar() {
   }
 
   function renderMovieResult(movie) {
+    const showIcon = movie.watched_by.watcher_users > 0;
+    const isFullyWatched =
+      movie.watched_by.watcher_users === movie.watched_by.total_users;
+
     return (
       <>
         <p>{`${movie.title} (${movie.year})`}</p>
-        {movie.watched ? <MovieWatchedIcon size={20} /> : null}
+        {showIcon &&
+          (isFullyWatched ? (
+            <MovieWatchedIcon size={19} />
+          ) : (
+            <MovieSemiWatchedIcon size={16} />
+          ))}
       </>
     );
   }

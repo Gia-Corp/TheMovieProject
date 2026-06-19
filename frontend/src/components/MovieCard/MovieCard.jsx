@@ -2,6 +2,8 @@ import "./MovieCard.css";
 import { useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
+import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWatchedIcon";
+import Tooltip from "@/components/Tooltip/Tooltip";
 
 function MovieCard({ movie }) {
   const navigate = useNavigate();
@@ -11,11 +13,14 @@ function MovieCard({ movie }) {
     navigate(`/movies/${movie.id}`, { state: { movie } });
   }, [navigate, movie]);
 
+  const showIcon = movie.watched_by.watcher_users > 0;
+  const isFullyWatched =
+    movie.watched_by.watcher_users === movie.watched_by.total_users;
+
+  const classNames = `movie-card ${!isImageReady && "skeleton"} ${showIcon && "corner-shadow"}`;
+
   return (
-    <div
-      className={isImageReady ? "movie-card" : "movie-card skeleton"}
-      onClick={handleClick}
-    >
+    <div className={classNames} onClick={handleClick}>
       {movie.poster_url ? (
         <img
           src={movie.poster_url ?? undefined}
@@ -26,7 +31,25 @@ function MovieCard({ movie }) {
       ) : (
         <p>{movie.title}</p>
       )}
-      <div>{movie.watched && <MovieWatchedIcon />}</div>
+      {showIcon && (
+        <div className="movie-card-icon">
+          <Tooltip
+            content={
+              <span>
+                {isFullyWatched
+                  ? "Todos la han visto"
+                  : "Al menos uno la ha visto"}
+              </span>
+            }
+          >
+            {isFullyWatched ? (
+              <MovieWatchedIcon size={30} />
+            ) : (
+              <MovieSemiWatchedIcon size={26} color="var(--not-that-green)" />
+            )}
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 }

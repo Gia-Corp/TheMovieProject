@@ -19,6 +19,19 @@ export function buildApiFetch(setAccessToken) {
       return fetch(url, options);
     }
 
+    if (!response.ok) {
+      const contentType = response.headers.get("content-type");
+      const body = contentType?.includes("application/json")
+        ? await response.json()
+        : await response.text();
+
+      const error = new Error(
+        body?.detail ?? body?.message ?? body ?? "Error desconocido",
+      );
+      error.status = response.status;
+      throw error;
+    }
+
     return response;
   };
 }

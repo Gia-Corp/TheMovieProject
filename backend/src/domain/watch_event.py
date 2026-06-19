@@ -1,0 +1,15 @@
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
+
+@dataclass
+class WatchEvent:
+    movie_id: int
+    user_id: int
+    id: Optional[int] = None
+    watched_at: Optional[datetime] = None
+
+    def __post_init__(self):
+        if not self.watched_at:
+            self.watched_at = datetime.now()
