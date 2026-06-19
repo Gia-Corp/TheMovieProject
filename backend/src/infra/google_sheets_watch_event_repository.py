@@ -125,7 +125,9 @@ class GoogleSheetsWatchEventRepository:
 
     # 2 CALLS
     def delete_by_movie_and_user_ids(self, movie_id, user_ids):
-        rows = self.sheet.get_all_records(expected_headers=["user_id", "movie_id"])
+        rows = self.sheet.get_all_records(
+            expected_headers=["id", "movie_id", "user_id", "watched_at"]
+        )
         ids = {str(id) for id in user_ids}
         rows_to_delete = [
             i + 2

@@ -81,7 +81,17 @@ class GoogleSheetsMovieRepository:
 
     # 1 CALL
     def get_all(self):
-        movies_dicts = self.sheet.get_all_records()
+        movies_dicts = self.sheet.get_all_records(
+            expected_headers=[
+                "director",
+                "title",
+                "year",
+                "id",
+                "runtime",
+                "plot",
+                "poster_url",
+            ]
+        )
         return list(map(self._movie_from_dict, movies_dicts))
 
     # 1 CALL

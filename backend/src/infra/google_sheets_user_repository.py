@@ -12,7 +12,17 @@ class GoogleSheetsUserRepository:
 
     # 1 CALL
     def get_all(self):
-        users_dicts = self.sheet.get_all_records()
+        users_dicts = self.sheet.get_all_records(
+            expected_headers=[
+                "id",
+                "nickname",
+                "email",
+                "hashed_password",
+                "role",
+                "profile_pic",
+                "is_active",
+            ]
+        )
         return list(map(self._user_from_dict, users_dicts))
 
     # 1 CALL
