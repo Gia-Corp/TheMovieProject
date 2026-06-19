@@ -39,20 +39,12 @@ class GoogleSheetsWatchEventRepository:
     # 1 CALL
     def get_all_by_movie_id(self, movie_id):
         watch_events = self.get_all()
-        filtered_watch_events = [we for we in watch_events if we.movie_id == movie_id]
-
-        if not filtered_watch_events:
-            raise WatchEventNotFoundError()
-        return filtered_watch_events
+        return [we for we in watch_events if we.movie_id == movie_id]
 
     # 1 CALL
     def get_all_by_user_id(self, user_id):
         watch_events = self.get_all()
-        filtered_watch_events = [we for we in watch_events if we.user_id == user_id]
-
-        if not filtered_watch_events:
-            raise WatchEventNotFoundError()
-        return filtered_watch_events
+        return [we for we in watch_events if we.user_id == user_id]
 
     def _watch_event_from_dict(self, watch_event_dict):
         return WatchEvent(
