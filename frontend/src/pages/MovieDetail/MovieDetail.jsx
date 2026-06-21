@@ -17,14 +17,21 @@ function MovieDetail() {
   const [movie, setMovie] = useState(state?.movie ?? null);
   const { accessToken, userId } = useAuth();
 
-  const watchedByMe =
+  const computeWatchedByMe = (movie, userId) =>
     movie?.watched_by.watch_events?.some((we) => we.user.id === userId) ??
     false;
+
+  const watchedByMe = computeWatchedByMe(movie, userId);
 
   const [isWatched, setIsWatched] = useState(watchedByMe);
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(!movie?.plot);
+
+  useEffect(() => {
+    const watchedByMe = computeWatchedByMe(movie, userId);
+    setIsWatched(watchedByMe);
+  }, [userId, movie]);
 
   useEffect(() => {
     if (movie?.plot) return;
@@ -33,10 +40,6 @@ function MovieDetail() {
       .getMovie(id)
       .then((res) => {
         setMovie(res);
-        const watchedByMe =
-          res.watched_by.watch_events?.some((we) => we.user.id === userId) ??
-          false;
-        setIsWatched(watchedByMe);
         setIsLoading(false);
       })
       .catch(setError);
@@ -138,10 +141,7 @@ function MovieDetail() {
               />
               <Tooltip
                 content={
-                  <WatchersList
-                    watchers={movie.watched_by.watch_events}
-                    yourId={userId}
-                  />
+                  <WatchersList watchers={movie.watched_by.watch_events} />
                 }
               >
                 <p>{isWatched ? "Ya la viste" : "No la viste aún"}</p>

@@ -6,7 +6,7 @@ import ConfirmationModal from "@/components/modals/ConfirmationModal/Confirmatio
 
 function LogoutButton() {
   const dialogRef = useRef(null);
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, setUserId } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,6 +20,7 @@ function LogoutButton() {
     })
       .then(() => {
         setAccessToken(null);
+        setUserId(null);
         handleClose();
         navigate("/", { state: null });
       })
