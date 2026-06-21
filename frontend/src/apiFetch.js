@@ -1,4 +1,4 @@
-export function buildApiFetch(setAccessToken) {
+export function buildApiFetch(setAccessToken, setCurrentUser) {
   return async function apiFetch(url, options = {}) {
     const response = await fetch(url, options);
 
@@ -10,11 +10,13 @@ export function buildApiFetch(setAccessToken) {
 
       if (!refreshResponse.ok) {
         setAccessToken(null);
+        setCurrentUser(null);
         throw new Error("SESSION_EXPIRED");
       }
 
-      const { access_token } = await refreshResponse.json();
+      const { access_token, user } = await refreshResponse.json();
       setAccessToken(access_token);
+      setCurrentUser(user);
 
       return fetch(url, options);
     }

@@ -5,7 +5,7 @@ import SubmitButton from "@/components/SubmitButton/SubmitButton";
 function LoginForm({ onSuccess }) {
   const LOGIN_ENDPOINT = "/auth/login";
 
-  const { setAccessToken, setUserId } = useAuth();
+  const { setAccessToken, setCurrentUser } = useAuth();
 
   const [state, dispatch, isPending] = useActionState(
     async (prevState, formData) => {
@@ -22,9 +22,8 @@ function LoginForm({ onSuccess }) {
           throw new Error(data.message);
         }
 
-        const payload = JSON.parse(atob(data.access_token.split(".")[1]));
-        setUserId(Number(payload.sub));
         setAccessToken(data.access_token);
+        setCurrentUser(data.user);
 
         return { error: null, successCount: prevState.successCount + 1 };
       } catch (error) {
