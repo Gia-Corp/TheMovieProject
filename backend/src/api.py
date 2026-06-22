@@ -7,6 +7,7 @@ from .application.controllers import (
     movies_controller,
     auth_controller,
     watch_events_controller,
+    users_controller,
 )
 from .application.exceptions import (
     APIException,
@@ -36,6 +37,7 @@ api.add_exception_handler(StarletteHTTPException, http_exception_handler)
 api.add_exception_handler(APIException, generic_exception_handler)
 
 api.include_router(auth_controller)
+api.include_router(users_controller)
 api.include_router(movies_controller)
 api.include_router(watch_events_controller)
 
