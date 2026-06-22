@@ -8,7 +8,6 @@ import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWat
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import LoginButton from "@/components/auth/LoginButton/LoginButton";
-import LogoutButton from "@/components/auth/LogoutButton/LogoutButton";
 import OptionsButton from "@/components/OptionsButton/OptionsButton";
 
 function Navbar() {
@@ -67,7 +66,6 @@ function Navbar() {
         {accessToken ? (
           <>
             <AddMovieButton />
-            <LogoutButton />
             <OptionsButton user={currentUser} />
           </>
         ) : (

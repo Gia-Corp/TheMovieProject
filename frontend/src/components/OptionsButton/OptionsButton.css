@@ -1,9 +1,36 @@
+.options-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .options-button {
   padding: 0;
   aspect-ratio: 1 / 1;
   width: 30px;
 }
 
-.options-button img {
-  border-radius: 20%;
+.options-menu {
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: fit-content;
+  white-space: nowrap;
+  position: absolute;
+  top: calc(100% + 10px);
+
+  background: var(--purple-contrast);
+  color: var(--text-clr);
+  font-size: 0.85rem;
+  list-style: none;
+  z-index: 100;
+  padding: 8px;
+}
+
+.options-menu header {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
 }
