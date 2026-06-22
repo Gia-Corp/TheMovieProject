@@ -9,13 +9,18 @@ export class UserRepository {
     return response.json();
   }
 
-  async getUser(id) {
+  async getUser(id, accessToken) {
     const url = new URL(
       `${UserRepository.#USERS_PATH}/${id}`,
       window.location.origin,
     );
 
-    const response = await this.fetch(url);
+    const response = await this.fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     return this.getBodyContent(response);
   }

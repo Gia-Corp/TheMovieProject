@@ -1,27 +1,45 @@
 import "./Profile.css";
-// import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRepos } from "@/hooks/useRepos";
+import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 function Profile() {
-  const { state } = useLocation();
-  // const [error, setError] = useState(null);
-  // const [user, setUser] = useState(state?.user ?? null);
-  // const [isLoading, setIsLoading] = useState(!user?.email);
+  const { userRepo } = useRepos();
+  const { accessToken, currentUser } = useAuth();
+  const [user, setUser] = useState(currentUser);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(!user?.email);
 
-  // if (error) throw error;
+  useEffect(() => {
+    if (user?.email) return;
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="spinner-container">
-  //       <SpinnerIcon />
-  //     </div>
-  //   );
-  // }
+    userRepo
+      .getUser(user.id, accessToken)
+      .then((res) => {
+        setUser(res);
+        setIsLoading(false);
+      })
+      .catch(setError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (error) throw error;
+
+  if (isLoading) {
+    return (
+      <div className="spinner-container">
+        <SpinnerIcon />
+      </div>
+    );
+  }
 
   return (
     <div className="profile-page">
-      <img className="profile-pic" src={state?.user.profile_pic} alt="" />
-      <h2>{state?.user.nickname}</h2>
+      <img className="profile-pic" src={user.profile_pic} alt="" />
+      <h2>{user.nickname}</h2>
+      <p>{user.email}</p>
+      <p>{user.role}</p>
     </div>
   );
 }
