@@ -1,0 +1,17 @@
+.profile-page {
+  flex: 1;
+  color: var(--text-clr);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 70px;
+}
+
+.profile-page h2 {
+  font-size: 2.5rem;
+}
+
+.profile-pic {
+  aspect-ratio: 1 / 1;
+  max-width: 15dvw;
+}

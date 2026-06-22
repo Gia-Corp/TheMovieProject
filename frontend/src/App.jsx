@@ -8,6 +8,7 @@ const Home = lazy(() => import("@/pages/Home/Home"));
 const MovieDetailWrapper = lazy(
   () => import("@/pages/MovieDetail/MovieDetailWrapper"),
 );
+const Profile = lazy(() => import("@/pages/Profile/Profile"));
 
 function AppContent() {
   const location = useLocation();
@@ -36,6 +37,14 @@ function AppContent() {
             element={
               <ErrorBoundary key={location.pathname}>
                 <MovieDetailWrapper />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ErrorBoundary key={location.pathname}>
+                <Profile />
               </ErrorBoundary>
             }
           />

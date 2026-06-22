@@ -18,6 +18,7 @@
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
+  --main-contrast-clr: color-mix(in srgb, var(--purple-contrast) 90%, black);
   --main-ghost-clr: color-mix(in srgb, var(--main-clr) 50%, transparent);
   --bg-clr: color-mix(in srgb, var(--main-clr) 28%, black);
   --dot-clr: color-mix(in srgb, var(--main-clr) 30%, white);
@@ -196,6 +197,10 @@ input:-webkit-autofill:focus {
 
 .negative-button:hover {
   background-color: var(--negative-clr);
+}
+
+.dropdown-button:hover {
+  background-color: var(--main-contrast-clr);
 }
 
 .button-with-icon {

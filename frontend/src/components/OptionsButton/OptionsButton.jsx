@@ -1,10 +1,12 @@
 import "./OptionsButton.css";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import LogoutButton from "@/components/auth/LogoutButton/LogoutButton";
 
 function OptionsButton({ user }) {
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isFocused) return;
@@ -34,6 +36,14 @@ function OptionsButton({ user }) {
       {isFocused && (
         <ul className="options-menu">
           <header>{user.nickname}</header>
+          <li>
+            <button
+              onClick={() => navigate("/profile", { state: { user } })}
+              className="dropdown-button button-with-icon"
+            >
+              Mi perfil
+            </button>
+          </li>
           <li>
             <LogoutButton />
           </li>
