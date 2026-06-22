@@ -1,0 +1,9 @@
+.options-button {
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  width: 30px;
+}
+
+.options-button img {
+  border-radius: 20%;
+}

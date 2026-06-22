@@ -9,10 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import LoginButton from "@/components/auth/LoginButton/LoginButton";
 import LogoutButton from "@/components/auth/LogoutButton/LogoutButton";
+import OptionsButton from "@/components/OptionsButton/OptionsButton";
 
 function Navbar() {
   const { movieRepo } = useRepos();
-  const { accessToken } = useAuth();
+  const { accessToken, currentUser } = useAuth();
 
   function searchCall(inputTextToSearch) {
     return movieRepo
@@ -67,6 +68,7 @@ function Navbar() {
           <>
             <AddMovieButton />
             <LogoutButton />
+            <OptionsButton user={currentUser} />
           </>
         ) : (
           <LoginButton />
