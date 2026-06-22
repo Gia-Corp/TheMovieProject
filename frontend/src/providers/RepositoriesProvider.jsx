@@ -6,11 +6,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { buildApiFetch } from "@/apiFetch";
 
 export function RepositoriesProvider({ children }) {
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, setCurrentUser } = useAuth();
 
   const apiFetch = useMemo(
-    () => buildApiFetch(setAccessToken),
-    [setAccessToken],
+    () => buildApiFetch(setAccessToken, setCurrentUser),
+    [setAccessToken, setCurrentUser],
   );
 
   const repositories = useMemo(

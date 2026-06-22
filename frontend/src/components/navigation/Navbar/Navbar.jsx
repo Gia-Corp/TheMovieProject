@@ -8,11 +8,11 @@ import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWat
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import LoginButton from "@/components/auth/LoginButton/LoginButton";
-import LogoutButton from "@/components/auth/LogoutButton/LogoutButton";
+import OptionsButton from "@/components/OptionsButton/OptionsButton";
 
 function Navbar() {
   const { movieRepo } = useRepos();
-  const { accessToken } = useAuth();
+  const { accessToken, currentUser } = useAuth();
 
   function searchCall(inputTextToSearch) {
     return movieRepo
@@ -63,8 +63,14 @@ function Navbar() {
         onItemClick={handleClick}
       />
       <div className="nav-buttons">
-        <AddMovieButton disabled={!accessToken} />
-        {!accessToken ? <LoginButton /> : <LogoutButton />}
+        {accessToken ? (
+          <>
+            <AddMovieButton />
+            <OptionsButton user={currentUser} />
+          </>
+        ) : (
+          <LoginButton />
+        )}
       </div>
     </nav>
   );

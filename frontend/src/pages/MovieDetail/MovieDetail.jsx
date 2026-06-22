@@ -15,16 +15,23 @@ function MovieDetail() {
   const { id } = useParams();
   const { movieRepo } = useRepos();
   const [movie, setMovie] = useState(state?.movie ?? null);
-  const { accessToken, userId } = useAuth();
+  const { accessToken, currentUser } = useAuth();
 
-  const watchedByMe =
+  const computeWatchedByMe = (movie, userId) =>
     movie?.watched_by.watch_events?.some((we) => we.user.id === userId) ??
     false;
+
+  const watchedByMe = computeWatchedByMe(movie, currentUser?.id ?? null);
 
   const [isWatched, setIsWatched] = useState(watchedByMe);
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(!movie?.plot);
+
+  useEffect(() => {
+    const watchedByMe = computeWatchedByMe(movie, currentUser?.id ?? null);
+    setIsWatched(watchedByMe);
+  }, [currentUser, movie]);
 
   useEffect(() => {
     if (movie?.plot) return;
@@ -33,10 +40,6 @@ function MovieDetail() {
       .getMovie(id)
       .then((res) => {
         setMovie(res);
-        const watchedByMe =
-          res.watched_by.watch_events?.some((we) => we.user.id === userId) ??
-          false;
-        setIsWatched(watchedByMe);
         setIsLoading(false);
       })
       .catch(setError);
@@ -46,9 +49,9 @@ function MovieDetail() {
   const handleOnClick = () => {
     var userIds = movie.watched_by.watch_events.map((we) => we.user.id);
     if (isWatched) {
-      userIds = userIds.filter((u) => u !== userId);
+      userIds = userIds.filter((u) => u !== currentUser.id);
     } else {
-      userIds.push(userId);
+      userIds.push(currentUser.id);
     }
     setIsWatched(!isWatched);
     movieRepo
@@ -138,10 +141,7 @@ function MovieDetail() {
               />
               <Tooltip
                 content={
-                  <WatchersList
-                    watchers={movie.watched_by.watch_events}
-                    yourId={userId}
-                  />
+                  <WatchersList watchers={movie.watched_by.watch_events} />
                 }
               >
                 <p>{isWatched ? "Ya la viste" : "No la viste aún"}</p>

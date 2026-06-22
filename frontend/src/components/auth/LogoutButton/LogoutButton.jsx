@@ -1,12 +1,14 @@
 import "./LogoutButton.css";
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import ConfirmationModal from "@/components/modals/ConfirmationModal/ConfirmationModal";
 
 function LogoutButton() {
   const dialogRef = useRef(null);
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, setCurrentUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpen = () => dialogRef.current.showModal();
   const handleClose = () => dialogRef.current.close();
@@ -18,7 +20,9 @@ function LogoutButton() {
     })
       .then(() => {
         setAccessToken(null);
+        setCurrentUser(null);
         handleClose();
+        navigate("/", { state: null });
       })
       .finally(() => setIsLoading(false));
   }

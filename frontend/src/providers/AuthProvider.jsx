@@ -3,7 +3,7 @@ import { AuthContext } from "@/hooks/useAuth";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 export function AuthProvider({ children }) {
-  const [userId, setUserId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -15,9 +15,8 @@ export function AuthProvider({ children }) {
         .then((response) =>
           response.json().then((data) => {
             if (!response.ok) throw new Error(data.message);
-            const payload = JSON.parse(atob(data.access_token.split(".")[1]));
-            setUserId(Number(payload.sub));
             setAccessToken(data.access_token);
+            setCurrentUser(data.user);
           }),
         )
         .finally(() => {
@@ -36,7 +35,9 @@ export function AuthProvider({ children }) {
     );
 
   return (
-    <AuthContext.Provider value={{ userId, accessToken, setAccessToken }}>
+    <AuthContext.Provider
+      value={{ currentUser, setCurrentUser, accessToken, setAccessToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

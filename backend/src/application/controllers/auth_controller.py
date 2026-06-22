@@ -4,6 +4,7 @@ import bcrypt
 from src.dependencies import get_user_repo, get_jwt_handler
 from src.infra import GoogleSheetsUserRepository
 from src.application.auth import JWTHandler
+from src.application.dtos import AuthResponseDTO
 
 
 auth_controller = APIRouter(
@@ -18,7 +19,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     )
 
 
-@auth_controller.post("/login")
+@auth_controller.post("/login", response_model=AuthResponseDTO)
 async def login(
     response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -47,12 +48,13 @@ async def login(
         max_age=60 * 60 * 24 * 7,
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user": user}
 
 
-@auth_controller.post("/refresh")
+@auth_controller.post("/refresh", response_model=AuthResponseDTO)
 async def refresh(
     refresh_token: str = Cookie(None),
+    user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
     jwt_handler: JWTHandler = Depends(get_jwt_handler),
 ):
     if not refresh_token:
@@ -65,7 +67,10 @@ async def refresh(
     new_access_token = jwt_handler.create_access_token(
         {"sub": payload["sub"], "role": payload["role"]}
     )
-    return {"access_token": new_access_token, "token_type": "bearer"}
+
+    user = user_repo.get_by_id(int(payload["sub"]))
+
+    return {"access_token": new_access_token, "token_type": "bearer", "user": user}
 
 
 @auth_controller.post("/logout")

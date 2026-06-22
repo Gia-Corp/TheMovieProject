@@ -204,6 +204,7 @@ input:-webkit-autofill:focus {
   gap: 6px;
 
   svg {
+    flex-shrink: 0;
     stroke: var(--text-clr);
     fill: none;
     stroke-width: 2;
