@@ -37,9 +37,14 @@ function Profile() {
   return (
     <div className="profile-page">
       <img className="profile-pic" src={user.profile_pic} alt="" />
-      <h2>{user.nickname}</h2>
-      <p>{user.email}</p>
-      <p>{user.role}</p>
+      <h2>
+        <span>{user.nickname}</span>
+      </h2>
+      <p>📫 {user.email}</p>
+      <p>
+        Rol:{" "}
+        <span>{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+      </p>
     </div>
   );
 }

@@ -3,12 +3,17 @@
   color: var(--text-clr);
   display: flex;
   flex-direction: column;
+  gap: 10px;
   align-items: center;
   padding-top: 70px;
 }
 
 .profile-page h2 {
   font-size: 2.5rem;
+}
+
+.profile-page span {
+  font-weight: bold;
 }
 
 .profile-pic {
