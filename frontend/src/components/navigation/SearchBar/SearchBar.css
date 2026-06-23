@@ -35,7 +35,3 @@
     background-color: var(--search-bar-hover-clr);
   }
 }
-
-.search-item svg {
-  fill: var(--check-clr);
-}

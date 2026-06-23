@@ -68,3 +68,13 @@ class UserNotFoundError(APIException):
 
     def get_status_code(self):
         return self.NOT_FOUND
+
+
+class NotOwnUserError(APIException):
+    FORBIDDEN = 403
+
+    def build_message(self, parameter):
+        return "That user is not yours"
+
+    def get_status_code(self):
+        return self.FORBIDDEN

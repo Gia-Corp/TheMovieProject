@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { MovieRepository } from "@/repositories/MovieRepository";
 import { ExternalMovieRepository } from "@/repositories/ExternalMovieRepository";
+import { UserRepository } from "@/repositories/UserRepository";
 import { RepositoriesContext } from "@/hooks/useRepos";
 import { useAuth } from "@/hooks/useAuth";
 import { buildApiFetch } from "@/apiFetch";
@@ -17,6 +18,7 @@ export function RepositoriesProvider({ children }) {
     () => ({
       movieRepo: new MovieRepository(apiFetch),
       externalMovieRepo: new ExternalMovieRepository(apiFetch),
+      userRepo: new UserRepository(apiFetch),
     }),
     [apiFetch],
   );

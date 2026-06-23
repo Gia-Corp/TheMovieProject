@@ -28,9 +28,10 @@
   padding: 8px;
 }
 
-.options-menu header {
-  font-size: 1.3rem;
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
+.options-menu button {
+  width: 100%;
+}
+
+.profile-button > svg {
+  fill: var(--text-clr);
 }
