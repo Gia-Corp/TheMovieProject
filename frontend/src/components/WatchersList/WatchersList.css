@@ -1,8 +1,13 @@
 .watchers-list {
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+  row-gap: 6px;
+  column-gap: 8px;
+}
+
+.watchers-list > header {
+  grid-column: span 2;
 }
 
 .watchers-list-item {
