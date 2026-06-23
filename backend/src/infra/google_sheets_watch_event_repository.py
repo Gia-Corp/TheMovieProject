@@ -105,7 +105,7 @@ class GoogleSheetsWatchEventRepository:
     def delete_by_movie_id(self, movie_id):
         cells = self.sheet.findall(str(movie_id), in_column=2)
         if not cells:
-            raise WatchEventNotFoundError()
+            return
 
         rows_to_delete = [cell.row for cell in cells]
         requests = [
