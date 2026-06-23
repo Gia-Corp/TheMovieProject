@@ -10,7 +10,7 @@ function AddMovieForm({ onSuccess }) {
   const [movies, setMovies] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const { accessToken } = useAuth();
+  const { accessToken, currentUser } = useAuth();
 
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
@@ -21,7 +21,7 @@ function AddMovieForm({ onSuccess }) {
         const newMovie = {
           title: selectedMovie.Title,
           year: selectedMovie.Year,
-          watched: formData.get("watched") ? true : false,
+          watched_by: formData.get("watched") ? [currentUser.id] : [],
         };
         const createdMovie = await movieRepo.createMovie(newMovie, accessToken);
         setSelectedMovie(createdMovie);
@@ -112,7 +112,7 @@ function AddMovieForm({ onSuccess }) {
       ) : null}
 
       <label htmlFor="watched">
-        <p>☝️🤓 Ya la vimos</p>
+        <p>☝️🤓 Ya la ví</p>
         <input type="checkbox" name="watched" id="watched" />
       </label>
 
