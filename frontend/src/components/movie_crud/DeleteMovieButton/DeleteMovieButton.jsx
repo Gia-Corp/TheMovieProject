@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
 import ConfirmationModal from "@/components/modals/ConfirmationModal/ConfirmationModal";
 
-function DeleteMovieButton({ movieId }) {
+function DeleteMovieButton({ movie }) {
   const formModalRef = useRef(null);
   const navigate = useNavigate();
   const { movieRepo } = useRepos();
@@ -19,10 +19,10 @@ function DeleteMovieButton({ movieId }) {
   function handleClick() {
     setIsLoading(true);
     movieRepo
-      .deleteMovie(movieId, accessToken)
-      .then((movie) => {
+      .deleteMovie(movie.id, accessToken)
+      .then(() => {
         handleClose();
-        notify(`"${movie.title}" eliminada correctamente`);
+        notify(`"${movie.title}" eliminada exitosamente`);
         navigate("/", { state: null });
       })
       .finally(() => setIsLoading(false));

@@ -13,7 +13,7 @@ function AddMovieButton({ disabled }) {
     formModalRef.current.close();
     setFormKey((prev) => prev + 1);
     if (newMovie) {
-      notify(`${newMovie.title} agregada exitosamente!`);
+      notify(`"${newMovie.title}" agregada exitosamente!`);
     }
   };
 

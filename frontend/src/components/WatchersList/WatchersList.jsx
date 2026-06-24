@@ -3,7 +3,9 @@ import "./WatchersList.css";
 function WatchersList({ watchers }) {
   return (
     <ul className="watchers-list">
-      {watchers.length > 0 ? <p>Vista por:</p> : <p>Nadie la ha visto</p>}
+      <header>
+        {watchers.length > 0 ? "Vista por:" : "Nadie la ha visto"}
+      </header>
       {watchers.map((w) => {
         return (
           <li key={w.user.id} className="watchers-list-item">
