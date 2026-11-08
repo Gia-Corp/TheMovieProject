@@ -1,0 +1,11 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "agent": {
+        "plan": {
+            "model": "opencode/crouton-alpha-free"
+        },
+        "build": {
+            "model": "opencode/flint-40b-free"
+        }
+    }
+}
