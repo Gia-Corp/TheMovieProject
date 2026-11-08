@@ -3,6 +3,17 @@ from os import getenv
 
 load_dotenv()
 
+
+def _int_env(name: str, default: int) -> int:
+    raw_value = getenv(name)
+    if raw_value is None or raw_value == "":
+        return default
+    try:
+        return int(raw_value)
+    except ValueError as error:
+        raise RuntimeError(f"{name} must be an integer, got {raw_value!r}") from error
+
+
 # General
 PORT = getenv("PORT")
 FRONTEND_URL = getenv("FRONTEND_URL")
@@ -29,6 +40,6 @@ MOVIE_API_KEY = getenv("MOVIE_API_KEY")
 
 # JWT authentication
 JWT_SECRET_KEY = getenv("JWT_SECRET_KEY")
-JWT_ALGORITHM = getenv("JWT_ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-REFRESH_TOKEN_EXPIRE_DAYS = int(getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+JWT_ALGORITHM = getenv("JWT_ALGORITHM") or "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = _int_env("ACCESS_TOKEN_EXPIRE_MINUTES", 30)
+REFRESH_TOKEN_EXPIRE_DAYS = _int_env("REFRESH_TOKEN_EXPIRE_DAYS", 7)
