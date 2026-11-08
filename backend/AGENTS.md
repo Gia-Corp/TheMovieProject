@@ -70,4 +70,4 @@ El claim `role` viaja en el token. Hoy las rutas protegidas no distinguen roles:
 
 - Dominio: construí la entidad y esperá la `APIException` concreta (`pytest.raises`).
 - Repos: `unittest.mock.Mock` como hoja. Assertá el rango o el método de `gspread` que se llamó.
-- No importes `src.dependencies` ni `src.api` en un test de unidad: abren el spreadsheet al importarse.
+- Con la composición perezosa, ya no se abre el spreadsheet al importar `src.dependencies` ni `src.api`. Igual en un test no se debe hacer red ni tocar Sheets: usar `dependency_overrides` o fakes.
