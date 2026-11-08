@@ -61,6 +61,7 @@ Flujo de una request:
 
 - Identificadores de código en inglés. Textos de la interfaz en español, con voseo.
 - Mensajes de commit en inglés, con Conventional Commits: `type(scope): description`. El `scope` es opcional. Tipos habituales: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`.
+- Nunca ejecutes `git commit` ni `git commit` + `git push` sin pedir autorización explícita antes. Mostrá los cambios y esperá la confirmación del usuario.
 - Un cambio de contrato HTTP se hace en los dos lados: DTO y controller en el backend, método del repositorio y la pantalla que lo consume en el frontend.
 - No agregues dependencias, servicios ni capas nuevas si el cambio entra en las que ya existen.
 - No commitees secretos. Están ignorados: `backend/.env`, `backend/credentials.json`, `frontend/.env`.
