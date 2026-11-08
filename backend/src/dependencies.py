@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 import gspread
 import src.settings as settings
 from .infra import (
@@ -10,53 +12,51 @@ from .application.auth import JWTHandler
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
-client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
-spreadsheet = client.open(settings.SHEET_NAME)
 
-movies_sheet = spreadsheet.get_worksheet(0)
-users_sheet = spreadsheet.get_worksheet(1)
-watch_events_sheet = spreadsheet.get_worksheet(2)
-
-movie_repo = GoogleSheetsMovieRepository(movies_sheet)
-user_repo = GoogleSheetsUserRepository(users_sheet)
-watch_event_repo = GoogleSheetsWatchEventRepository(watch_events_sheet)
-
-external_api_movie_repo = ExternalAPIMovieRepository(
-    settings.MOVIE_API_URL, settings.MOVIE_API_KEY
-)
-
-jwt_handler = JWTHandler(
-    settings.JWT_SECRET_KEY,
-    settings.JWT_ALGORITHM,
-    settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-    settings.REFRESH_TOKEN_EXPIRE_DAYS,
-)
+@lru_cache
+def _get_spreadsheet():
+    client = gspread.service_account_from_dict(settings.SHEET_CREDENTIALS)
+    return client.open(settings.SHEET_NAME)
 
 
+@lru_cache
 def get_movie_repo():
-    return movie_repo
+    return GoogleSheetsMovieRepository(_get_spreadsheet().get_worksheet(0))
 
 
+@lru_cache
 def get_external_api_movie_repo():
-    return external_api_movie_repo
+    return ExternalAPIMovieRepository(settings.MOVIE_API_URL, settings.MOVIE_API_KEY)
 
 
+@lru_cache
 def get_user_repo():
-    return user_repo
+    return GoogleSheetsUserRepository(_get_spreadsheet().get_worksheet(1))
 
 
+@lru_cache
 def get_watch_event_repo():
-    return watch_event_repo
+    return GoogleSheetsWatchEventRepository(_get_spreadsheet().get_worksheet(2))
 
 
+@lru_cache
 def get_jwt_handler():
-    return jwt_handler
+    return JWTHandler(
+        settings.JWT_SECRET_KEY,
+        settings.JWT_ALGORITHM,
+        settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+        settings.REFRESH_TOKEN_EXPIRE_DAYS,
+    )
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    jwt_handler: JWTHandler = Depends(get_jwt_handler),
+    user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
+):
     payload = jwt_handler.verify_token(token, "access")
     if not payload:
         raise HTTPException(
