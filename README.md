@@ -6,20 +6,34 @@
 🚀 To start app locally, run this:
 
 ```
-./start_app.sh
+make up
 ```
 
 ⚙️ To start development containers for backend and frontend, you can use these respectively:
 
 ```
-./start_dev_backend.sh
+make dev-backend
 ```
 ```
-./start_dev_frontend.sh
+make dev-frontend
 ```
 
-⚠️ If your OS doesn't allow you to run a certain script, execute this and try running it again:
+Available make targets: `make help` (default), `make up`, `make start`, `make stop`, `make down`, `make dev-backend`, `make dev-frontend`.
+
+To stop the app:
 
 ```
-chmod +x <your_script_file>
+make down
+```
+
+To stop without removing the containers (so the next `make up` reuses them):
+
+```
+make stop
+```
+
+To start again without recreating the containers:
+
+```
+make start
 ```

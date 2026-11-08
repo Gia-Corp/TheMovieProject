@@ -21,12 +21,16 @@ backend/      API (FastAPI, Python 3.13). Se publica en Render.
 Desde la raíz del repo:
 
 ```bash
-./start_app.sh              # docker compose up (frontend :3000, backend :5000)
-./start_dev_backend.sh      # contenedor de backend y shell
-./start_dev_frontend.sh     # ambos contenedores; shell en el frontend
+make help                # lista los targets disponibles
+make up                  # docker compose up (frontend :3000, backend :5000)
+make start               # levanta los contenedores parados
+make stop                # docker compose stop (conserva los contenedores)
+make down                # docker compose down (elimina los contenedores)
+make dev-backend         # contenedor de backend y shell
+make dev-frontend        # ambos contenedores; shell en el frontend
 ```
 
-Si un script no corre, `chmod +x <script>`.
+Si no tenés `make` instalado, instalalo según tu sistema operativo.
 
 Dentro del contenedor de backend, el server de desarrollo es `./start_dev.sh` (`fastapi dev src/api.py --host backend --port 5000`). Producción usa `./start_prod.sh`.
 
