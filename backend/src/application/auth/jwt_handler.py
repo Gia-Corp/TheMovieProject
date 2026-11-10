@@ -1,5 +1,5 @@
 from jose import JWTError, jwt
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 
 class JWTHandler:
@@ -16,7 +16,7 @@ class JWTHandler:
         self.refresh_token_expire_days = refresh_token_expire_days
 
     def create_access_token(self, data: dict):
-        expire = datetime.utcnow() + timedelta(minutes=self.access_token_expire_minutes)
+        expire = datetime.now(UTC) + timedelta(minutes=self.access_token_expire_minutes)
         return jwt.encode(
             {**data, "exp": expire, "type": "access"},
             self.secret_key,
@@ -24,7 +24,7 @@ class JWTHandler:
         )
 
     def create_refresh_token(self, data: dict):
-        expire = datetime.utcnow() + timedelta(days=self.refresh_token_expire_days)
+        expire = datetime.now(UTC) + timedelta(days=self.refresh_token_expire_days)
         return jwt.encode(
             {**data, "exp": expire, "type": "refresh"},
             self.secret_key,

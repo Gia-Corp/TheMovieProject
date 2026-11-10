@@ -313,7 +313,7 @@ def client(
     )
     api.dependency_overrides[get_jwt_handler] = override_get_jwt_handler
 
-    with TestClient(api) as test_client:
+    with TestClient(api, base_url="https://testserver") as test_client:
         yield test_client
 
     api.dependency_overrides.clear()
