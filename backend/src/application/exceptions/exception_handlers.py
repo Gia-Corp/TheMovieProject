@@ -1,9 +1,13 @@
+import logging
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from datetime import datetime
 from .api_exception import APIException
+from src.infra.logging.context import get_request_id
+
+logger = logging.getLogger("api.errors")
 
 
 def _error_response(message: str, status_code: int) -> JSONResponse:
@@ -14,6 +18,22 @@ def _error_response(message: str, status_code: int) -> JSONResponse:
             "timestamp": str(datetime.now()),
         },
     )
+
+
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.error(
+        "unhandled_exception",
+        exc_info=exc,
+        extra={
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": 500,
+        },
+    )
+
+    response = _error_response(message="Internal server error", status_code=500)
+    response.headers["X-Request-ID"] = get_request_id()
+    return response
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):

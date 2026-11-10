@@ -3,6 +3,7 @@ from .exception_handlers import (
     validation_exception_handler,
     http_exception_handler,
     generic_exception_handler,
+    unhandled_exception_handler,
 )
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "validation_exception_handler",
     "http_exception_handler",
     "generic_exception_handler",
+    "unhandled_exception_handler",
 ]

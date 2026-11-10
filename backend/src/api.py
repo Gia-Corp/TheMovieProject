@@ -14,7 +14,12 @@ from .application.exceptions import (
     validation_exception_handler,
     http_exception_handler,
     generic_exception_handler,
+    unhandled_exception_handler,
 )
+from .infra.logging import configure_logging
+from .infra.logging.middleware import LoggingMiddleware
+
+configure_logging()
 
 api = FastAPI(
     title="The Movie Project API",
@@ -32,9 +37,12 @@ api.add_middleware(
     allow_headers=["*"],
 )
 
+api.add_middleware(LoggingMiddleware)
+
 api.add_exception_handler(RequestValidationError, validation_exception_handler)
 api.add_exception_handler(StarletteHTTPException, http_exception_handler)
 api.add_exception_handler(APIException, generic_exception_handler)
+api.add_exception_handler(Exception, unhandled_exception_handler)
 
 api.include_router(auth_controller)
 api.include_router(users_controller)
