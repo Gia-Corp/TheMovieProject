@@ -269,7 +269,7 @@ def fake_repos() -> FakeRepositories:
 
 @pytest.fixture
 def jwt_handler() -> JWTHandler:
-    return JWTHandler("test-secret", "HS256", 30, 7)
+    return JWTHandler("test-secret-long-enough-0123456789", "HS256", 30, 7)
 
 
 @pytest.fixture

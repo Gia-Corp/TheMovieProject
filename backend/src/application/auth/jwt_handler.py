@@ -1,5 +1,5 @@
-from jose import JWTError, jwt
 from datetime import UTC, datetime, timedelta
+from jwt import PyJWTError, decode, encode
 
 
 class JWTHandler:
@@ -17,27 +17,27 @@ class JWTHandler:
 
     def create_access_token(self, data: dict):
         expire = datetime.now(UTC) + timedelta(minutes=self.access_token_expire_minutes)
-        return jwt.encode(
-            {**data, "exp": expire, "type": "access"},
+        return encode(
+            {**data, "exp": int(expire.timestamp()), "type": "access"},
             self.secret_key,
-            self.hash_algorithm,
+            algorithm=self.hash_algorithm,
         )
 
     def create_refresh_token(self, data: dict):
         expire = datetime.now(UTC) + timedelta(days=self.refresh_token_expire_days)
-        return jwt.encode(
-            {**data, "exp": expire, "type": "refresh"},
+        return encode(
+            {**data, "exp": int(expire.timestamp()), "type": "refresh"},
             self.secret_key,
-            self.hash_algorithm,
+            algorithm=self.hash_algorithm,
         )
 
     def verify_token(self, token: str, token_type: str):
         try:
-            payload = jwt.decode(
+            payload = decode(
                 token, self.secret_key, algorithms=[self.hash_algorithm]
             )
             if payload.get("type") != token_type:
                 return None
             return payload
-        except JWTError:
+        except PyJWTError:
             return None
