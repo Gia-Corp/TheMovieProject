@@ -33,9 +33,7 @@ class JWTHandler:
 
     def verify_token(self, token: str, token_type: str):
         try:
-            payload = decode(
-                token, self.secret_key, algorithms=[self.hash_algorithm]
-            )
+            payload = decode(token, self.secret_key, algorithms=[self.hash_algorithm])
             if payload.get("type") != token_type:
                 return None
             return payload
