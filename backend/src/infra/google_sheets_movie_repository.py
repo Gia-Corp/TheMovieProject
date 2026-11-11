@@ -1,7 +1,12 @@
+import logging
+import re
+import time
+
 from gspread import utils
 from src.application.exceptions import APIException
 from src.domain import Movie
-import re
+
+logger = logging.getLogger("api.db")
 
 
 class GoogleSheetsMovieRepository:
@@ -23,8 +28,29 @@ class GoogleSheetsMovieRepository:
         if self.last_row() < page_first_row:
             raise PageOutOfBoundsError
 
-        rows = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
-        return self._movies_from_rows(rows)
+        start_time = time.perf_counter()
+        try:
+            rows = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "get_all_by_page",
+                    "sheet": "movies",
+                    "rows": len(rows),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return self._movies_from_rows(rows)
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "get_all_by_page",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 1 CALL
     def last_row(self):
@@ -69,15 +95,58 @@ class GoogleSheetsMovieRepository:
 
     # 1 CALL
     def total_movies(self):
-        return self.last_row() - 1
+        start_time = time.perf_counter()
+        try:
+            total_movies = self.last_row() - 1
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "total_movies",
+                    "sheet": "movies",
+                    "rows": total_movies,
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return total_movies
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "total_movies",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS
     def add(self, movie):
-        movie.id = self._get_next_id()
-        movie_as_list = self._movie_to_list(movie)
-        self.sheet.append_row(movie_as_list)
-        self.sheet.update([[movie.id]], "last_id")
-        return movie
+        start_time = time.perf_counter()
+        try:
+            movie.id = self._get_next_id()
+            movie_as_list = self._movie_to_list(movie)
+            self.sheet.append_row(movie_as_list)
+            self.sheet.update([[movie.id]], "last_id")
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "add",
+                    "sheet": "movies",
+                    "rows": 1,
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return movie
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "add",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 1 CALL
     def get_all(self):
@@ -96,45 +165,153 @@ class GoogleSheetsMovieRepository:
 
     # 1 CALL
     def get_by_id(self, id):
-        movies = self.get_all()
-        for movie in movies:
-            if movie.id == id:
-                return movie
+        start_time = time.perf_counter()
+        try:
+            movies = self.get_all()
+            movie = next((m for m in movies if m.id == id), None)
+            if movie is None:
+                raise MovieNotFoundError()
 
-        raise MovieNotFoundError()
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "get_by_id",
+                    "sheet": "movies",
+                    "rows": len(movies),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return movie
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "get_by_id",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS
     def save(self, movie):
-        cell = self.sheet.find(str(movie.id), in_column=4)
-        if not cell:
-            raise MovieNotFoundError()
+        start_time = time.perf_counter()
+        try:
+            cell = self.sheet.find(str(movie.id), in_column=4)
+            if not cell:
+                raise MovieNotFoundError()
 
-        self.sheet.update(
-            [self._movie_to_list(movie)],
-            f"A{cell.row}:G{cell.row}",
-        )
-        return movie
+            self.sheet.update(
+                [self._movie_to_list(movie)],
+                f"A{cell.row}:G{cell.row}",
+            )
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "save",
+                    "sheet": "movies",
+                    "rows": 1,
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return movie
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "save",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS
     def delete(self, id):
-        cell = self.sheet.find(str(id), in_column=4)
-        if not cell:
-            raise MovieNotFoundError()
-        self.sheet.delete_rows(cell.row)
+        start_time = time.perf_counter()
+        try:
+            cell = self.sheet.find(str(id), in_column=4)
+            if not cell:
+                raise MovieNotFoundError()
+
+            self.sheet.delete_rows(cell.row)
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "delete",
+                    "sheet": "movies",
+                    "rows": 1,
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "delete",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 1 CALL
     def get_all_by_title(self, title):
-        movies = self.get_all()
-        filtered_movies = [m for m in movies if title.lower() in m.title.lower()]
+        start_time = time.perf_counter()
+        try:
+            movies = self.get_all()
+            filtered_movies = [m for m in movies if title.lower() in m.title.lower()]
 
-        if not filtered_movies:
-            raise MovieNotFoundError()
-        return filtered_movies
+            if not filtered_movies:
+                raise MovieNotFoundError()
+
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "get_all_by_title",
+                    "sheet": "movies",
+                    "rows": len(movies),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return filtered_movies
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "get_all_by_title",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 1 CALL
     def exists_by_title(self, title):
         pattern = re.compile(r"^\s*" + re.escape(title) + r"\s*$", re.IGNORECASE)
-        return self.sheet.findall(pattern, in_column=2)
+        start_time = time.perf_counter()
+        try:
+            existing_movies = self.sheet.findall(pattern, in_column=2)
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "exists_by_title",
+                    "sheet": "movies",
+                    "rows": len(existing_movies),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return existing_movies
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "exists_by_title",
+                    "sheet": "movies",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
 
 class PageOutOfBoundsError(APIException):

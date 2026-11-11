@@ -2,6 +2,11 @@ from src.application.exceptions import APIException
 from src.domain import WatchEvent
 from datetime import datetime
 
+import logging
+import time
+
+logger = logging.getLogger("api.db")
+
 
 class GoogleSheetsWatchEventRepository:
     def __init__(self, sheet):
@@ -17,18 +22,38 @@ class GoogleSheetsWatchEventRepository:
     # 1 CALL
     def get_by_id(self, id):
         watch_events = self.get_all()
-        for we in watch_events:
-            if we.id == id:
-                return we
-
-        raise WatchEventNotFoundError()
+        watch_event = next((we for we in watch_events if we.id == id), None)
+        if watch_event is None:
+            raise WatchEventNotFoundError()
+        return watch_event
 
     # 1 CALL
     def get_all(self):
-        watch_event_dicts = self.sheet.get_all_records(
-            expected_headers=["id", "movie_id", "user_id", "watched_at"]
-        )
-        return list(map(self._watch_event_from_dict, watch_event_dicts))
+        start_time = time.perf_counter()
+        try:
+            watch_event_dicts = self.sheet.get_all_records(
+                expected_headers=["id", "movie_id", "user_id", "watched_at"]
+            )
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "get_all",
+                    "sheet": "watch_events",
+                    "rows": len(watch_event_dicts),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return list(map(self._watch_event_from_dict, watch_event_dicts))
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "get_all",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 1 CALL
     def get_all_by_movies(self, movies):
@@ -66,92 +91,199 @@ class GoogleSheetsWatchEventRepository:
 
     # 3 CALLS
     def add(self, watch_event):
-        watch_events = self.get_all()
-        already_exists = any(
-            we.movie_id == watch_event.movie_id and we.user_id == watch_event.user_id
-            for we in watch_events
-        )
+        start_time = time.perf_counter()
+        try:
+            watch_events = self.get_all()
+            already_exists = any(
+                we.movie_id == watch_event.movie_id
+                and we.user_id == watch_event.user_id
+                for we in watch_events
+            )
 
-        if already_exists:
-            raise WatchEventAlreadyExistsError()
+            if already_exists:
+                raise WatchEventAlreadyExistsError()
 
-        watch_event.id = self._get_next_id()
-        watch_event_as_list = self._watch_event_to_list(watch_event)
-        self.sheet.append_row(watch_event_as_list)
-        self.sheet.update([[watch_event.id]], "last_watch_event_id")
-        return watch_event
+            watch_event.id = self._get_next_id()
+            watch_event_as_list = self._watch_event_to_list(watch_event)
+            self.sheet.append_row(watch_event_as_list)
+            self.sheet.update([[watch_event.id]], "last_watch_event_id")
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "add",
+                    "sheet": "watch_events",
+                    "rows": 1,
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            return watch_event
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "add",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS (3 en el primer add_many)
     def add_many(self, watch_events):
         if not watch_events:
             return
 
-        rows = []
-        for watch_event in watch_events:
-            watch_event.id = self._get_next_id()
-            rows.append(self._watch_event_to_list(watch_event))
+        start_time = time.perf_counter()
+        try:
+            rows = []
+            for watch_event in watch_events:
+                watch_event.id = self._get_next_id()
+                rows.append(self._watch_event_to_list(watch_event))
 
-        self.sheet.append_rows(rows)
-        self.sheet.update([[self._last_id]], "last_watch_event_id")
+            self.sheet.append_rows(rows)
+            self.sheet.update([[self._last_id]], "last_watch_event_id")
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "add_many",
+                    "sheet": "watch_events",
+                    "rows": len(rows),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "add_many",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS
     def delete(self, id):
-        cell = self.sheet.find(str(id), in_column=1)
-        if not cell:
-            raise WatchEventNotFoundError()
-        self.sheet.delete_rows(cell.row)
+        start_time = time.perf_counter()
+        try:
+            cell = self.sheet.find(str(id), in_column=1)
+            if not cell:
+                raise WatchEventNotFoundError()
+
+            self.sheet.delete_rows(cell.row)
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "delete",
+                    "sheet": "watch_events",
+                    "rows": 1,
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "delete",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS
     def delete_by_movie_id(self, movie_id):
-        cells = self.sheet.findall(str(movie_id), in_column=2)
-        if not cells:
-            return
+        start_time = time.perf_counter()
+        try:
+            cells = self.sheet.findall(str(movie_id), in_column=2)
+            if not cells:
+                return
 
-        rows_to_delete = [cell.row for cell in cells]
-        requests = [
-            {
-                "deleteDimension": {
-                    "range": {
-                        "sheetId": self.sheet.id,
-                        "dimension": "ROWS",
-                        "startIndex": i - 1,
-                        "endIndex": i,
+            rows_to_delete = [cell.row for cell in cells]
+            requests = [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.sheet.id,
+                            "dimension": "ROWS",
+                            "startIndex": i - 1,
+                            "endIndex": i,
+                        }
                     }
                 }
-            }
-            for i in sorted(rows_to_delete, reverse=True)
-        ]
-        self.sheet.spreadsheet.batch_update({"requests": requests})
+                for i in sorted(rows_to_delete, reverse=True)
+            ]
+            self.sheet.spreadsheet.batch_update({"requests": requests})
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "delete_by_movie_id",
+                    "sheet": "watch_events",
+                    "rows": len(cells),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "delete_by_movie_id",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
     # 2 CALLS
     def delete_by_movie_and_user_ids(self, movie_id, user_ids):
-        rows = self.sheet.get_all_records(
-            expected_headers=["id", "movie_id", "user_id", "watched_at"]
-        )
-        ids = {str(id) for id in user_ids}
-        rows_to_delete = [
-            i + 2
-            for i, f in enumerate(rows)
-            if str(f["movie_id"]) == str(movie_id) and str(f["user_id"]) in ids
-        ]
+        start_time = time.perf_counter()
+        try:
+            rows = self.sheet.get_all_records(
+                expected_headers=["id", "movie_id", "user_id", "watched_at"]
+            )
+            ids = {str(id) for id in user_ids}
+            rows_to_delete = [
+                i + 2
+                for i, f in enumerate(rows)
+                if str(f["movie_id"]) == str(movie_id) and str(f["user_id"]) in ids
+            ]
 
-        if not rows_to_delete:
-            raise WatchEventNotFoundError()
+            if not rows_to_delete:
+                raise WatchEventNotFoundError()
 
-        requests = [
-            {
-                "deleteDimension": {
-                    "range": {
-                        "sheetId": self.sheet.id,
-                        "dimension": "ROWS",
-                        "startIndex": i - 1,
-                        "endIndex": i,
+            requests = [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.sheet.id,
+                            "dimension": "ROWS",
+                            "startIndex": i - 1,
+                            "endIndex": i,
+                        }
                     }
                 }
-            }
-            for i in sorted(rows_to_delete, reverse=True)
-        ]
-        self.sheet.spreadsheet.batch_update({"requests": requests})
+                for i in sorted(rows_to_delete, reverse=True)
+            ]
+            self.sheet.spreadsheet.batch_update({"requests": requests})
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "delete_by_movie_and_user_ids",
+                    "sheet": "watch_events",
+                    "rows": len(rows_to_delete),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "delete_by_movie_and_user_ids",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
 
 
 class WatchEventNotFoundError(APIException):
