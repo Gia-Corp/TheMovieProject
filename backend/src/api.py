@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -19,7 +21,12 @@ from .application.exceptions import (
 from .infra.logging import configure_logging
 from .infra.logging.middleware import LoggingMiddleware
 
-configure_logging()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    configure_logging()
+    yield
+
 
 api = FastAPI(
     title="The Movie Project API",
@@ -27,6 +34,7 @@ api = FastAPI(
         "syntaxHighlight": {"theme": "arta"},
         "tryItOutEnabled": True,
     },
+    lifespan=lifespan,
 )
 
 api.add_middleware(
