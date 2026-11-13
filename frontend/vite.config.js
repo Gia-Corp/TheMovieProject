@@ -15,6 +15,13 @@ export default defineConfig(({ mode }) => {
         algorithm: 'gzip',
         ext: '.gz',
       }),
+      viteCompression({
+        verbose: true,
+        disable: false,
+        threshold: 10240,
+        algorithm: 'brotliCompress',
+        ext: '.br',
+      }),
     ],
     resolve: {
       alias: {
