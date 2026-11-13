@@ -10,9 +10,11 @@ function SearchBar({
   renderItem,
   onItemClick,
 }) {
+  const containerRef = useRef(null);
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
   const abortRef = useRef(null);
+  const itemRefs = useRef([]);
   const [inputText, setInputText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [results, setResults] = useState(null);
@@ -28,9 +30,9 @@ function SearchBar({
       abortRef.current = controller;
 
       searchCall(inputText, controller.signal)
-        .then((results) => {
-          setResults(results);
-          setActiveIndex(null);
+        .then((res) => {
+          setResults(res);
+          setActiveIndex(res?.length ? 0 : null);
         })
         .catch((error) => {
           if (!isAbortError(error)) {
@@ -58,35 +60,71 @@ function SearchBar({
     setIsFocused(true);
   };
 
-  const handleOnBlur = () => {
-    blurTimeout.current = setTimeout(() => setIsFocused(false), 150);
+  const handleContainerBlur = (event) => {
+    const related = event.relatedTarget;
+    if (related && containerRef.current?.contains(related)) return;
+    blurTimeout.current = setTimeout(() => {
+      if (!containerRef.current?.contains(document.activeElement)) {
+        setIsFocused(false);
+        setActiveIndex(null);
+      }
+    }, 150);
   };
 
-  const handleKeyDown = (event) => {
+  const focusItem = (index) => {
+    const el = itemRefs.current[index];
+    if (el) el.focus();
+  };
+
+  const handleInputKeyDown = (event) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (!results?.length) return;
-      setActiveIndex((prevIndex) =>
-        prevIndex == null ? 0 : (prevIndex + 1) % results.length,
-      );
+      setIsFocused(true);
+      setActiveIndex(0);
+      focusItem(0);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setIsFocused(false);
+      setActiveIndex(null);
+    }
+  };
+
+  const handleItemKeyDown = (index) => (event) => {
+    if (!results?.length) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      const next = (index + 1) % results.length;
+      setActiveIndex(next);
+      focusItem(next);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      if (!results?.length) return;
-      setActiveIndex((prevIndex) =>
-        prevIndex == null
-          ? results.length - 1
-          : (prevIndex - 1 + results.length) % results.length,
-      );
+      const prev = (index - 1 + results.length) % results.length;
+      setActiveIndex(prev);
+      focusItem(prev);
     } else if (event.key === "Enter") {
-      if (activeIndex != null && results?.[activeIndex]) {
-        event.preventDefault();
-        onItemClick(results[activeIndex]);
-      }
+      event.preventDefault();
+      onItemClick(results[index]);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setIsFocused(false);
+      setActiveIndex(null);
+      const input = containerRef.current?.querySelector("input");
+      input?.focus();
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setActiveIndex(0);
+      focusItem(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      const last = results.length - 1;
+      setActiveIndex(last);
+      focusItem(last);
     }
   };
 
   return (
-    <div className="search-bar">
+    <div className="search-bar" ref={containerRef} onBlur={handleContainerBlur}>
       <input
         placeholder={placeholder}
         id={name}
@@ -96,8 +134,7 @@ function SearchBar({
         value={inputText}
         onChange={handleInputChange}
         onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-        onKeyDown={handleKeyDown}
+        onKeyDown={handleInputKeyDown}
         required={required}
         aria-expanded={Boolean(isFocused && results)}
         aria-controls={
@@ -118,16 +155,25 @@ function SearchBar({
             onMouseDown={(e) => e.preventDefault()}
           >
             {results.length > 0 ? (
-              results.map((item) => {
+              results.map((item, index) => {
                 const optionId = `movie-search-results-option-${item.id}`;
                 return (
                   <li
+                    ref={(el) => {
+                      itemRefs.current[index] = el;
+                    }}
+                    tabIndex={activeIndex === index ? 0 : -1}
                     onMouseDown={() => onItemClick(item)}
+                    onKeyDown={handleItemKeyDown(index)}
+                    onFocus={() => {
+                      clearTimeout(blurTimeout.current);
+                      setActiveIndex(index);
+                    }}
                     className="search-item"
                     key={item.id}
                     id={optionId}
                     role="option"
-                    aria-selected={results[activeIndex]?.id === item.id}
+                    aria-selected={activeIndex === index}
                   >
                     {renderItem(item)}
                   </li>
