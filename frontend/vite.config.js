@@ -38,9 +38,12 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'build'
     },
+    define: process.env.VITEST === "true" ? {
+      "import.meta.env.VITE_MOVIE_API_URL_2": JSON.stringify("http://www.omdbapi.com"),
+      "import.meta.env.VITE_MOVIE_API_KEY_2": JSON.stringify("test-key-123"),
+    } : {},
     test: {
       environment: "jsdom",
-      setupFiles: ["./tests/setup-env.js"],
       passWithNoTests: true,
     },
   };
