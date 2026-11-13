@@ -1,14 +1,16 @@
-const CACHE_TTLS = {
-  movie: 60 * 1000,
-  user: 5 * 60 * 1000,
-  external: 24 * 60 * 60 * 1000,
+const CACHE_POLICIES = {
+  movie: { ttlMs: 60 * 1000, staleMs: 5 * 60 * 1000 },
+  user: { ttlMs: 5 * 60 * 1000, staleMs: 60 * 1000 },
+  external: { ttlMs: 24 * 60 * 60 * 1000, staleMs: 7 * 24 * 60 * 60 * 1000 },
 };
 
 const MAX_CACHE_ENTRIES = 200;
 
 const cache = new Map();
+const revalidating = new Set();
 
 let refreshPromise = null;
+let cacheEpoch = 0;
 
 function normalizeUrl(url) {
   const value = typeof url === "string" ? url : url.toString();
@@ -19,13 +21,13 @@ function cacheKey(url) {
   return normalizeUrl(url).href;
 }
 
-function getTtlMs(url) {
+function getCachePolicy(url) {
   const { origin, pathname } = normalizeUrl(url);
 
-  if (origin !== window.location.origin) return CACHE_TTLS.external;
-  if (pathname.startsWith("/api/users")) return CACHE_TTLS.user;
+  if (origin !== window.location.origin) return CACHE_POLICIES.external;
+  if (pathname.startsWith("/api/users")) return CACHE_POLICIES.user;
 
-  return CACHE_TTLS.movie;
+  return CACHE_POLICIES.movie;
 }
 
 function isCacheable(url) {
@@ -47,10 +49,12 @@ function storeInCache(url, data) {
     cache.delete(cache.keys().next().value);
   }
 
+  const { ttlMs, staleMs } = getCachePolicy(url);
   cache.set(key, {
     data,
     storedAt: Date.now(),
-    ttlMs: getTtlMs(url),
+    ttlMs,
+    staleMs,
   });
 }
 
@@ -75,16 +79,19 @@ function invalidateAfterMutation(url) {
   if (pathname.startsWith("/api/movies")) {
     const match = pathname.match(/^\/api\/movies\/([^/]+)/);
     invalidateMovieEntries(match ? match[1] : null);
+    cacheEpoch += 1;
     return;
   }
 
   if (pathname.startsWith("/api/users/")) {
     cache.delete(cacheKey(url));
+    cacheEpoch += 1;
   }
 }
 
 export function clearRequestCache() {
   cache.clear();
+  cacheEpoch += 1;
 }
 
 async function refreshSession(setAccessToken, setCurrentUser) {
@@ -108,7 +115,48 @@ async function refreshSession(setAccessToken, setCurrentUser) {
   return refreshPromise;
 }
 
+async function runRequest(url, options, setAccessToken, setCurrentUser) {
+  let response = await fetch(url, options);
+
+  if (response.status === 401) {
+    try {
+      await refreshSession(setAccessToken, setCurrentUser);
+    } catch {
+      clearRequestCache();
+      setAccessToken(null);
+      setCurrentUser(null);
+      throw new Error("SESSION_EXPIRED");
+    }
+
+    response = await fetch(url, options);
+  }
+
+  return response;
+}
+
 export function buildApiFetch(setAccessToken, setCurrentUser) {
+  function revalidateInBackground(key, url, options) {
+    if (revalidating.has(key)) return;
+    revalidating.add(key);
+
+    const epoch = cacheEpoch;
+
+    runRequest(url, options, setAccessToken, setCurrentUser)
+      .then(async (response) => {
+        if (!response.ok) return;
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType?.includes("application/json")) return;
+
+        const data = await response.json();
+        if (cacheEpoch === epoch) storeInCache(url, data);
+      })
+      .catch(() => {
+        // La revalidación es best-effort: se conserva el dato viejo.
+      })
+      .finally(() => revalidating.delete(key));
+  }
+
   return async function apiFetch(url, options = {}) {
     const method = (options.method ?? "GET").toUpperCase();
     const cacheable = method === "GET" && isCacheable(url);
@@ -116,27 +164,26 @@ export function buildApiFetch(setAccessToken, setCurrentUser) {
     const entry = cacheable ? cache.get(key) : null;
 
     if (entry) {
-      if (Date.now() - entry.storedAt < entry.ttlMs) {
+      const age = Date.now() - entry.storedAt;
+
+      if (age < entry.ttlMs) {
+        return buildJsonResponse(entry.data);
+      }
+
+      if (age < entry.ttlMs + entry.staleMs) {
+        revalidateInBackground(key, url, options);
         return buildJsonResponse(entry.data);
       }
 
       cache.delete(key);
     }
 
-    let response = await fetch(url, options);
-
-    if (response.status === 401) {
-      try {
-        await refreshSession(setAccessToken, setCurrentUser);
-      } catch {
-        clearRequestCache();
-        setAccessToken(null);
-        setCurrentUser(null);
-        throw new Error("SESSION_EXPIRED");
-      }
-
-      response = await fetch(url, options);
-    }
+    const response = await runRequest(
+      url,
+      options,
+      setAccessToken,
+      setCurrentUser,
+    );
 
     if (!response.ok) {
       const contentType = response.headers.get("content-type");
