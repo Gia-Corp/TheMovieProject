@@ -8,6 +8,7 @@ import Tooltip from "@/components/Tooltip/Tooltip";
 function MovieCard({ movie }) {
   const navigate = useNavigate();
   const [isImageReady, setIsImageReady] = useState(!movie.poster_url);
+  const [imageFailed, setImageFailed] = useState(false);
 
   const handleClick = useCallback(() => {
     navigate(`/movies/${movie.id}`, { state: { movie } });
@@ -21,12 +22,15 @@ function MovieCard({ movie }) {
 
   return (
     <div className={classNames} onClick={handleClick}>
-      {movie.poster_url ? (
+      {movie.poster_url && !imageFailed ? (
         <img
           src={movie.poster_url ?? undefined}
           style={{ display: isImageReady ? "block" : "none" }}
           onLoad={() => setIsImageReady(true)}
-          onError={() => setIsImageReady(true)}
+          onError={() => {
+            setIsImageReady(true);
+            setImageFailed(true);
+          }}
         />
       ) : (
         <p>{movie.title}</p>
