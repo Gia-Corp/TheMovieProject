@@ -1,5 +1,6 @@
 import { useActionState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { clearRequestCache } from "@/apiFetch";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function LoginForm({ onSuccess }) {
@@ -22,6 +23,7 @@ function LoginForm({ onSuccess }) {
           throw new Error(data.message);
         }
 
+        clearRequestCache();
         setAccessToken(data.access_token);
         setCurrentUser(data.user);
 

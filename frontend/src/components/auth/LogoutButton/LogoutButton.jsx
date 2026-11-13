@@ -2,6 +2,7 @@ import "./LogoutButton.css";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { clearRequestCache } from "@/apiFetch";
 import ConfirmationModal from "@/components/modals/ConfirmationModal/ConfirmationModal";
 
 function LogoutButton() {
@@ -19,6 +20,7 @@ function LogoutButton() {
       credentials: "include",
     })
       .then(() => {
+        clearRequestCache();
         setAccessToken(null);
         setCurrentUser(null);
         handleClose();

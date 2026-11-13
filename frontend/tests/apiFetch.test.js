@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { buildApiFetch } from "@/apiFetch";
+import { buildApiFetch, clearRequestCache } from "@/apiFetch";
 
 function makeResponse({
   ok = true,
@@ -19,6 +19,7 @@ function makeResponse({
 describe("buildApiFetch", () => {
   beforeEach(() => {
     vi.unstubAllGlobals();
+    clearRequestCache();
   });
 
   it("devuelve la respuesta cuando la request es exitosa", async () => {
@@ -112,5 +113,57 @@ describe("buildApiFetch", () => {
     await expect(apiFetch("/api/movies")).rejects.toThrow("SESSION_EXPIRED");
     expect(setAccessToken).toHaveBeenCalledWith(null);
     expect(setCurrentUser).toHaveBeenCalledWith(null);
+  });
+
+  it("reutiliza la respuesta cacheada para un GET idéntico", async () => {
+    const body = { movies: [{ id: 1 }], metadata: { page_count: 1 } };
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({ body }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    const first = await apiFetch("/api/movies?page=1&size=14");
+    const second = await apiFetch("/api/movies?page=1&size=14");
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(await first.json()).toEqual(body);
+    expect(await second.json()).toEqual(body);
+  });
+
+  it("no cachea requests que no son GET", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({ body: {} }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch("/api/movies", { method: "POST" });
+    await apiFetch("/api/movies", { method: "POST" });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("invalida el listado y el detalle de la peli tras una mutación", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({ body: {} }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch("/api/movies?page=1&size=14");
+    await apiFetch("/api/movies/7");
+
+    await apiFetch("/api/movies/7", { method: "PATCH" });
+
+    await apiFetch("/api/movies?page=1&size=14");
+    await apiFetch("/api/movies/7");
+
+    expect(fetchMock).toHaveBeenCalledTimes(5);
+  });
+
+  it("no cachea los endpoints de autenticación", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({ body: {} }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch("/auth/refresh");
+    await apiFetch("/auth/refresh");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
