@@ -9,7 +9,7 @@ export class MovieRepository {
     return response.json();
   }
 
-  async getMovies({ page, size, title }) {
+  async getMovies({ page, size, title, signal }) {
     const url = new URL(MovieRepository.#MOVIES_PATH, window.location.origin);
     url.searchParams.set("page", page);
     url.searchParams.set("size", size);
@@ -18,18 +18,18 @@ export class MovieRepository {
       url.searchParams.set("title", title);
     }
 
-    const response = await this.fetch(url);
+    const response = await this.fetch(url, { signal });
 
     return this.getBodyContent(response);
   }
 
-  async getMovie(id) {
+  async getMovie(id, signal) {
     const url = new URL(
       `${MovieRepository.#MOVIES_PATH}/${id}`,
       window.location.origin,
     );
 
-    const response = await this.fetch(url);
+    const response = await this.fetch(url, { signal });
 
     return this.getBodyContent(response);
   }

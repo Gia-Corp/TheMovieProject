@@ -2,6 +2,7 @@ import "./Home.css";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos.js";
+import { isAbortError } from "@/apiFetch";
 import MoviesGrid from "@/components/MoviesGrid/MoviesGrid";
 import Paginator from "@/components/pagination/Paginator";
 import PaginatorPrev from "@/components/pagination/PaginatorPrev";
@@ -22,19 +23,28 @@ function Home() {
   const hideNextButton = currentPage === totalPages || totalPages === 0;
 
   useEffect(() => {
+    const controller = new AbortController();
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     movieRepo
       .getMovies({
         page: currentPage,
         size: MOVIES_PAGE_SIZE,
+        signal: controller.signal,
       })
       .then((res) => {
         setMovies(res.movies);
         setTotalPages(res.metadata.page_count);
       })
-      .catch(setError)
-      .finally(() => setIsLoading(false));
+      .catch((error) => {
+        if (!isAbortError(error)) setError(error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setIsLoading(false);
+      });
+
+    return () => controller.abort();
   }, [currentPage, movieRepo]);
 
   const handlePageSelection = (pageNumber) =>

@@ -42,6 +42,14 @@ function buildJsonResponse(data) {
   });
 }
 
+function createAbortError() {
+  return new DOMException("The operation was aborted.", "AbortError");
+}
+
+export function isAbortError(error) {
+  return error?.name === "AbortError";
+}
+
 function storeInCache(url, data) {
   const key = cacheKey(url);
 
@@ -128,6 +136,8 @@ async function runRequest(url, options, setAccessToken, setCurrentUser) {
       throw new Error("SESSION_EXPIRED");
     }
 
+    if (options.signal?.aborted) throw createAbortError();
+
     response = await fetch(url, options);
   }
 
@@ -140,8 +150,10 @@ export function buildApiFetch(setAccessToken, setCurrentUser) {
     revalidating.add(key);
 
     const epoch = cacheEpoch;
+    const backgroundOptions = { ...options };
+    delete backgroundOptions.signal;
 
-    runRequest(url, options, setAccessToken, setCurrentUser)
+    runRequest(url, backgroundOptions, setAccessToken, setCurrentUser)
       .then(async (response) => {
         if (!response.ok) return;
 
@@ -158,6 +170,10 @@ export function buildApiFetch(setAccessToken, setCurrentUser) {
   }
 
   return async function apiFetch(url, options = {}) {
+    const { signal } = options;
+
+    if (signal?.aborted) throw createAbortError();
+
     const method = (options.method ?? "GET").toUpperCase();
     const cacheable = method === "GET" && isCacheable(url);
     const key = cacheable ? cacheKey(url) : null;

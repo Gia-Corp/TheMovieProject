@@ -2,6 +2,7 @@ import "./AddMovieForm.css";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRepos } from "@/hooks/useRepos";
 import { useAuth } from "@/hooks/useAuth";
+import { isAbortError } from "@/apiFetch";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 function AddMovieForm({ onSuccess }) {
@@ -14,6 +15,7 @@ function AddMovieForm({ onSuccess }) {
 
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
+  const abortRef = useRef(null);
 
   const [state, dispatch, isPending] = useActionState(
     async (prevState, formData) => {
@@ -42,15 +44,27 @@ function AddMovieForm({ onSuccess }) {
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       externalMovieRepo
         .getMovies({
           title: inputText,
+          signal: controller.signal,
         })
         .then((res) => {
           setMovies(res.Search ?? []);
         })
-        .catch(() => setMovies([]));
+        .catch((error) => {
+          if (!isAbortError(error)) setMovies([]);
+        });
     }, 500);
+
+    return () => {
+      clearTimeout(timerRef.current);
+      abortRef.current?.abort();
+    };
   }, [inputText, externalMovieRepo, selectedMovie]);
 
   const handleInputChange = (event) => {

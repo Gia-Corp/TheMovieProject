@@ -15,7 +15,7 @@ export class ExternalMovieRepository {
     return response.json();
   }
 
-  async getMovies({ title }) {
+  async getMovies({ title, signal }) {
     const url = new URL(ExternalMovieRepository.#BASE_URL);
     url.searchParams.set("apikey", ExternalMovieRepository.#API_KEY);
     url.searchParams.set("type", "movie");
@@ -24,7 +24,7 @@ export class ExternalMovieRepository {
       url.searchParams.set("s", title);
     }
 
-    const response = await this.fetch(url);
+    const response = await this.fetch(url, { signal });
 
     return this.getBodyContent(response);
   }

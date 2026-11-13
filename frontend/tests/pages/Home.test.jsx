@@ -64,7 +64,10 @@ describe("Home", () => {
     );
 
     expect(await screen.findByText("Peli A")).toBeTruthy();
-    expect(getMovies).toHaveBeenCalledWith({ page: 1, size: 14 });
+    expect(getMovies).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 1, size: 14 }),
+    );
+    expect(getMovies.mock.calls[0][0].signal).toBeInstanceOf(AbortSignal);
   });
 
   it("lanza el error cuando la carga falla", async () => {
@@ -101,7 +104,9 @@ describe("Home", () => {
     fireEvent.click(screen.getByText(">"));
 
     await waitFor(() =>
-      expect(getMovies).toHaveBeenLastCalledWith({ page: 2, size: 14 }),
+      expect(getMovies).toHaveBeenLastCalledWith(
+        expect.objectContaining({ page: 2, size: 14 }),
+      ),
     );
   });
 });

@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "@/components/navigation/SearchBar/SearchBar";
 import AddMovieButton from "@/components/movie_crud/AddMovieButton/AddMovieButton";
@@ -14,15 +15,18 @@ function Navbar() {
   const { movieRepo } = useRepos();
   const { accessToken, currentUser } = useAuth();
 
-  function searchCall(inputTextToSearch) {
-    return movieRepo
-      .getMovies({
-        page: 1,
-        size: 20,
-        title: inputTextToSearch,
-      })
-      .then((res) => res.movies);
-  }
+  const searchCall = useCallback(
+    (inputTextToSearch, signal) =>
+      movieRepo
+        .getMovies({
+          page: 1,
+          size: 20,
+          title: inputTextToSearch,
+          signal,
+        })
+        .then((res) => res.movies),
+    [movieRepo],
+  );
 
   function renderMovieResult(movie) {
     const showIcon = movie.watched_by.watcher_users > 0;

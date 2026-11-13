@@ -9,7 +9,7 @@ export class UserRepository {
     return response.json();
   }
 
-  async getUser(id, accessToken) {
+  async getUser(id, accessToken, signal) {
     const url = new URL(
       `${UserRepository.#USERS_PATH}/${id}`,
       window.location.origin,
@@ -20,6 +20,7 @@ export class UserRepository {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
+      signal,
     });
 
     return this.getBodyContent(response);

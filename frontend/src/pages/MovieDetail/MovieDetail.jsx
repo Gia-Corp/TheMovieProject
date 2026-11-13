@@ -2,6 +2,7 @@ import "./MovieDetail.css";
 import { useMemo, useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
+import { isAbortError } from "@/apiFetch";
 import MovieWatchedButton from "@/components/movie_crud/MovieWatchedButton/MovieWatchedButton";
 import { useAuth } from "@/hooks/useAuth";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
@@ -34,13 +35,19 @@ function MovieDetail() {
   useEffect(() => {
     if (movie?.plot) return;
 
+    const controller = new AbortController();
+
     movieRepo
-      .getMovie(id)
+      .getMovie(id, controller.signal)
       .then((res) => {
         setMovie(res);
         setIsLoading(false);
       })
-      .catch(setError);
+      .catch((error) => {
+        if (!isAbortError(error)) setError(error);
+      });
+
+    return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

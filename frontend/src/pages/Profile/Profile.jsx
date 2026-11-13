@@ -2,6 +2,7 @@ import "./Profile.css";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRepos } from "@/hooks/useRepos";
+import { isAbortError } from "@/apiFetch";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
 function Profile() {
@@ -14,13 +15,19 @@ function Profile() {
   useEffect(() => {
     if (user?.email) return;
 
+    const controller = new AbortController();
+
     userRepo
-      .getUser(user.id, accessToken)
+      .getUser(user.id, accessToken, controller.signal)
       .then((res) => {
         setUser(res);
         setIsLoading(false);
       })
-      .catch(setError);
+      .catch((error) => {
+        if (!isAbortError(error)) setError(error);
+      });
+
+    return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

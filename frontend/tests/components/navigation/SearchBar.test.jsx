@@ -55,7 +55,7 @@ describe("SearchBar", () => {
       await vi.advanceTimersByTimeAsync(500);
     });
 
-    expect(searchCall).toHaveBeenCalledWith("peli");
+    expect(searchCall).toHaveBeenCalledWith("peli", expect.anything());
     expect(screen.getByText("Peli A")).toBeTruthy();
   });
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { buildApiFetch, clearRequestCache } from "@/apiFetch";
+import { buildApiFetch, clearRequestCache, isAbortError } from "@/apiFetch";
 
 function makeResponse({
   ok = true,
@@ -165,6 +165,52 @@ describe("buildApiFetch", () => {
     await apiFetch("/auth/refresh");
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("lanza AbortError sin llamar a fetch si la señal ya está abortada", async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+
+    await expect(
+      apiFetch("/api/movies", { signal: controller.signal }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("propaga la señal al fetch y no cachea una request abortada", async () => {
+    const controller = new AbortController();
+    const abortError = new Error("Aborted");
+    abortError.name = "AbortError";
+    const fetchMock = vi.fn().mockRejectedValue(abortError);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+
+    await expect(
+      apiFetch("/api/movies", { signal: controller.signal }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+    await expect(
+      apiFetch("/api/movies", { signal: controller.signal }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/movies",
+      expect.objectContaining({ signal: controller.signal }),
+    );
+  });
+
+  it("isAbortError reconoce solo errores de aborto", () => {
+    const abortError = new Error("Aborted");
+    abortError.name = "AbortError";
+
+    expect(isAbortError(abortError)).toBe(true);
+    expect(isAbortError(new Error("otro"))).toBe(false);
+    expect(isAbortError(null)).toBe(false);
   });
 });
 

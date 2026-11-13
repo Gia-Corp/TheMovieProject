@@ -1,5 +1,6 @@
 import "./SearchBar.css";
 import { useState, useEffect, useRef } from "react";
+import { isAbortError } from "@/apiFetch";
 
 function SearchBar({
   name,
@@ -11,6 +12,7 @@ function SearchBar({
 }) {
   const timerRef = useRef(null);
   const blurTimeout = useRef(null);
+  const abortRef = useRef(null);
   const [inputText, setInputText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [results, setResults] = useState(null);
@@ -20,10 +22,21 @@ function SearchBar({
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      searchCall(inputText)
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      searchCall(inputText, controller.signal)
         .then((results) => setResults(results))
-        .catch(() => setResults([]));
+        .catch((error) => {
+          if (!isAbortError(error)) setResults([]);
+        });
     }, 500);
+
+    return () => {
+      clearTimeout(timerRef.current);
+      abortRef.current?.abort();
+    };
   }, [inputText, searchCall]);
 
   const handleInputChange = (event) => {
