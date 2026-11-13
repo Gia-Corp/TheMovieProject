@@ -11,14 +11,14 @@ export default defineConfig(({ mode }) => {
       viteCompression({
         verbose: true,
         disable: false,
-        threshold: 10240,
+        threshold: 1024,
         algorithm: 'gzip',
         ext: '.gz',
       }),
       viteCompression({
         verbose: true,
         disable: false,
-        threshold: 10240,
+        threshold: 1024,
         algorithm: 'brotliCompress',
         ext: '.br',
       }),
