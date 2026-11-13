@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildApiFetch, clearRequestCache } from "@/apiFetch";
 
 function makeResponse({
@@ -165,5 +165,163 @@ describe("buildApiFetch", () => {
     await apiFetch("/auth/refresh");
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("stale-while-revalidate", () => {
+  function flush() {
+    return new Promise((resolve) => setTimeout(resolve, 0));
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("sirve el dato viejo al instante y revalida en segundo plano", async () => {
+    const url = "/api/movies?page=1&size=14";
+    const oldBody = { movies: [{ id: 1 }] };
+    const newBody = { movies: [{ id: 2 }] };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(makeResponse({ body: oldBody }))
+      .mockResolvedValueOnce(makeResponse({ body: newBody }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+
+    const first = await apiFetch(url);
+    expect(await first.json()).toEqual(oldBody);
+
+    vi.setSystemTime(new Date("2026-01-01T00:01:01.000Z"));
+
+    const stale = await apiFetch(url);
+    expect(await stale.json()).toEqual(oldBody);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    await flush();
+
+    const fresh = await apiFetch(url);
+    expect(await fresh.json()).toEqual(newBody);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("deduplica las revalidaciones en vuelo para la misma url", async () => {
+    const url = "/api/movies?page=2&size=14";
+    const oldBody = { movies: [{ id: 1 }] };
+    const newBody = { movies: [{ id: 2 }] };
+    let resolveRevalidation;
+    const pendingRevalidation = new Promise((resolve) => {
+      resolveRevalidation = resolve;
+    });
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(makeResponse({ body: oldBody }))
+      .mockReturnValueOnce(pendingRevalidation);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch(url);
+
+    vi.setSystemTime(new Date("2026-01-01T00:01:01.000Z"));
+
+    const firstStale = await apiFetch(url);
+    const secondStale = await apiFetch(url);
+    expect(await firstStale.json()).toEqual(oldBody);
+    expect(await secondStale.json()).toEqual(oldBody);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    resolveRevalidation(makeResponse({ body: newBody }));
+    await flush();
+
+    const fresh = await apiFetch(url);
+    expect(await fresh.json()).toEqual(newBody);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("descarta la revalidación si hubo una mutación mientras estaba en vuelo", async () => {
+    const url = "/api/movies?page=3&size=14";
+    const oldBody = { movies: [{ id: 1 }] };
+    const staleBody = { movies: [{ id: 2 }] };
+    const mutatedBody = { movies: [{ id: 3 }] };
+    let resolveRevalidation;
+    const pendingRevalidation = new Promise((resolve) => {
+      resolveRevalidation = resolve;
+    });
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(makeResponse({ body: oldBody }))
+      .mockReturnValueOnce(pendingRevalidation)
+      .mockResolvedValueOnce(makeResponse({ body: {} }))
+      .mockResolvedValueOnce(makeResponse({ body: mutatedBody }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch(url);
+
+    vi.setSystemTime(new Date("2026-01-01T00:01:01.000Z"));
+    await apiFetch(url);
+
+    await apiFetch("/api/movies/7", { method: "PATCH" });
+
+    resolveRevalidation(makeResponse({ body: staleBody }));
+    await flush();
+
+    const afterMutation = await apiFetch(url);
+    expect(await afterMutation.json()).toEqual(mutatedBody);
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+  });
+
+  it("hace una request bloqueante cuando la entrada superó la ventana stale", async () => {
+    const url = "/api/movies?page=4&size=14";
+    const oldBody = { movies: [{ id: 1 }] };
+    const newBody = { movies: [{ id: 2 }] };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(makeResponse({ body: oldBody }))
+      .mockResolvedValueOnce(makeResponse({ body: newBody }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch(url);
+
+    vi.setSystemTime(new Date("2026-01-01T00:06:01.000Z"));
+
+    const response = await apiFetch(url);
+    expect(await response.json()).toEqual(newBody);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("conserva el dato viejo si la revalidación falla", async () => {
+    const url = "/api/movies?page=5&size=14";
+    const oldBody = { movies: [{ id: 1 }] };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(makeResponse({ body: oldBody }))
+      .mockRejectedValueOnce(new Error("network down"))
+      .mockRejectedValueOnce(new Error("network down again"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const apiFetch = buildApiFetch(vi.fn(), vi.fn());
+    await apiFetch(url);
+
+    vi.setSystemTime(new Date("2026-01-01T00:01:01.000Z"));
+    const stale = await apiFetch(url);
+    expect(await stale.json()).toEqual(oldBody);
+
+    await flush();
+
+    const stillStale = await apiFetch(url);
+    expect(await stillStale.json()).toEqual(oldBody);
+
+    await flush();
+
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
