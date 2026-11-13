@@ -19,6 +19,10 @@ export function AuthProvider({ children }) {
             setCurrentUser(data.user);
           }),
         )
+        .catch(() => {
+          setAccessToken(null);
+          setCurrentUser(null);
+        })
         .finally(() => {
           setIsLoading(false);
         });
