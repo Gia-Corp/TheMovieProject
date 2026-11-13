@@ -100,6 +100,7 @@ function MovieDetail() {
             <img
               src={movie.poster_url}
               alt={movie.title}
+              loading="lazy"
               style={{ display: isImageReady ? "block" : "none" }}
               onLoad={() => setIsImageReady(true)}
               onError={() => setIsImageReady(true)}

@@ -24,6 +24,7 @@ function MovieCard({ movie }) {
       {movie.poster_url ? (
         <img
           src={movie.poster_url ?? undefined}
+          loading="lazy"
           style={{ display: isImageReady ? "block" : "none" }}
           onLoad={() => setIsImageReady(true)}
           onError={() => setIsImageReady(true)}

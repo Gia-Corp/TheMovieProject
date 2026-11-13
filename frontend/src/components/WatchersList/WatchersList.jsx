@@ -9,7 +9,7 @@ function WatchersList({ watchers }) {
       {watchers.map((w) => {
         return (
           <li key={w.user.id} className="watchers-list-item">
-            <img src={w.user.profile_pic} alt="" />
+            <img src={w.user.profile_pic} alt="" loading="lazy" />
             <p>{w.user.nickname}</p>
           </li>
         );
