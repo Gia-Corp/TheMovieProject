@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       environment: "jsdom",
+      setupFiles: ["./tests/setup-env.js"],
       passWithNoTests: true,
     },
   };
