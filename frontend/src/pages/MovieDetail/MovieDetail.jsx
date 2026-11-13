@@ -1,5 +1,5 @@
 import "./MovieDetail.css";
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useRepos } from "@/hooks/useRepos";
 import MovieWatchedButton from "@/components/movie_crud/MovieWatchedButton/MovieWatchedButton";
@@ -10,6 +10,9 @@ import EditMovieButton from "@/components/movie_crud/EditMovieButton/EditMovieBu
 import Tooltip from "@/components/Tooltip/Tooltip";
 import WatchersList from "@/components/WatchersList/WatchersList";
 
+const computeWatchedByMe = (movie, userId) =>
+  movie?.watched_by.watch_events?.some((we) => we.user.id === userId) ?? false;
+
 function MovieDetail() {
   const { state } = useLocation();
   const { id } = useParams();
@@ -17,21 +20,16 @@ function MovieDetail() {
   const [movie, setMovie] = useState(state?.movie ?? null);
   const { accessToken, currentUser } = useAuth();
 
-  const computeWatchedByMe = (movie, userId) =>
-    movie?.watched_by.watch_events?.some((we) => we.user.id === userId) ??
-    false;
+  const watchedByMe = useMemo(
+    () => computeWatchedByMe(movie, currentUser?.id ?? null),
+    [movie, currentUser],
+  );
 
-  const watchedByMe = computeWatchedByMe(movie, currentUser?.id ?? null);
-
-  const [isWatched, setIsWatched] = useState(watchedByMe);
+  const [optimisticWatched, setOptimisticWatched] = useState(null);
+  const isWatched = optimisticWatched ?? watchedByMe;
   const [isImageReady, setIsImageReady] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(!movie?.plot);
-
-  useEffect(() => {
-    const watchedByMe = computeWatchedByMe(movie, currentUser?.id ?? null);
-    setIsWatched(watchedByMe);
-  }, [currentUser, movie]);
 
   useEffect(() => {
     if (movie?.plot) return;
@@ -47,13 +45,14 @@ function MovieDetail() {
   }, []);
 
   const handleOnClick = () => {
-    var userIds = movie.watched_by.watch_events.map((we) => we.user.id);
+    const nextWatched = !isWatched;
+    let userIds = movie.watched_by.watch_events.map((we) => we.user.id);
     if (isWatched) {
       userIds = userIds.filter((u) => u !== currentUser.id);
     } else {
       userIds.push(currentUser.id);
     }
-    setIsWatched(!isWatched);
+    setOptimisticWatched(nextWatched);
     movieRepo
       .updateWatchEvents(movie.id, userIds, accessToken)
       .then((res) => {
@@ -64,8 +63,9 @@ function MovieDetail() {
             watch_events: res,
           },
         }));
+        setOptimisticWatched(null);
       })
-      .catch(() => setIsWatched(isWatched));
+      .catch(() => setOptimisticWatched(null));
   };
 
   const handleOnEdit = (editedMovie) => setMovie(editedMovie);
