@@ -28,6 +28,8 @@ Los componentes no llaman `fetch`. Pasan por el repositorio de `useRepos()`:
 
 `buildApiFetch` (`src/apiFetch.js`) renueva la sesión en un 401 y lanza `Error` con `message` y `status`. Las mutaciones reciben `accessToken` y mandan `Authorization: Bearer`.
 
+Los GET se cachean en memoria con stale-while-revalidate: películas 60 s frescos + 5 min stale, usuarios 5 min + 60 s, externos (OMDb) 24 h + 7 días. Una entrada stale se sirve al instante y se revalida en segundo plano. Las mutaciones invalidan las entradas afectadas y `clearRequestCache()` limpia todo en login/logout.
+
 Sesión: `useAuth()` expone `currentUser`, `accessToken` y sus setters. El access token vive en memoria. El refresh queda en la cookie que maneja el backend.
 
 ## UI
