@@ -118,7 +118,7 @@ function MovieDetail() {
             ) : null}
             <div className="icon-text-box">
               <svg viewBox="0 0 24 24">
-                <g fill="none" stroke="#000" strokeWidth="2">
+                <g fill="none" stroke="var(--icon-clr)" strokeWidth="2">
                   <path
                     strokeLinejoin="round"
                     d="M4 6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v4H4z"

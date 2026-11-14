@@ -40,7 +40,7 @@ function Navbar() {
           (isFullyWatched ? (
             <MovieWatchedIcon size={19} />
           ) : (
-            <MovieSemiWatchedIcon size={16} color="var(--not-that-green)" />
+            <MovieSemiWatchedIcon size={16} color="var(--semi-watched-clr)" />
           ))}
       </>
     );

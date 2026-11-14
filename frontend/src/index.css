@@ -15,6 +15,7 @@
   --not-that-green: color-mix(in srgb, var(--green) 70%, black);
   --dark-green: #1a7100;
   --red: rgb(160, 0, 0);
+  --icon-clr: #000;
 
   /* GENERAL SEMANTIC TOKENS */
   --main-clr: var(--purple);
@@ -25,6 +26,7 @@
   --check-clr: var(--green);
   --positive-clr: var(--dark-green);
   --negative-clr: var(--red);
+  --semi-watched-clr: var(--not-that-green);
   
   /* TEXT SEMANTIC TOKENS */
   --text-clr: var(--white);

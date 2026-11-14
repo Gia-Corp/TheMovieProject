@@ -49,7 +49,7 @@ function MovieCard({ movie }) {
             {isFullyWatched ? (
               <MovieWatchedIcon size={30} />
             ) : (
-              <MovieSemiWatchedIcon size={26} color="var(--not-that-green)" />
+              <MovieSemiWatchedIcon size={26} color="var(--semi-watched-clr)" />
             )}
           </Tooltip>
         </div>
