@@ -11,6 +11,17 @@ class MovieWatchedDTO(BaseModel):
     watched_at: datetime
 
 
+class WatchedMoviesMetadataDTO(BaseModel):
+    movie_count: int
+    movies_watched: int
+    last_watched: MovieWatchedDTO | None = None
+
+
+class UserWatchedMoviesResponseDTO(BaseModel):
+    metadata: WatchedMoviesMetadataDTO
+    movies: list[MovieWatchedDTO]
+
+
 class MovieWatchedItemDTO(BaseModel):
     movie_id: int = Field(..., gt=0)
     watched: bool

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi.testclient import TestClient
 
 
@@ -282,12 +284,19 @@ class TestUserWatchedMoviesAcceptance:
 
         assert response.status_code == 200
         body = response.json()
-        assert len(body) == 1
-        assert body[0]["movie_id"] == 1
-        assert body[0]["title"] == "Argo"
-        assert body[0]["year"] == 2012
-        assert body[0]["poster_url"] == "argo.png"
-        assert "watched_at" in body[0]
+        assert body["metadata"]["movie_count"] == 2
+        assert body["metadata"]["movies_watched"] == 1
+        assert body["metadata"]["last_watched"]["movie_id"] == 1
+        assert (
+            body["metadata"]["last_watched"]["watched_at"]
+            == body["movies"][0]["watched_at"]
+        )
+        assert len(body["movies"]) == 1
+        assert body["movies"][0]["movie_id"] == 1
+        assert body["movies"][0]["title"] == "Argo"
+        assert body["movies"][0]["year"] == 2012
+        assert body["movies"][0]["poster_url"] == "argo.png"
+        assert "watched_at" in body["movies"][0]
 
     def test_returns_empty_list_when_user_has_not_watched_movies(
         self, client: TestClient, auth_headers, fake_repos
@@ -301,7 +310,14 @@ class TestUserWatchedMoviesAcceptance:
         )
 
         assert response.status_code == 200
-        assert response.json() == []
+        assert response.json() == {
+            "metadata": {
+                "movie_count": 1,
+                "movies_watched": 0,
+                "last_watched": None,
+            },
+            "movies": [],
+        }
 
     def test_get_watched_movies_requires_authentication(
         self, client: TestClient, fake_repos
@@ -327,5 +343,31 @@ class TestUserWatchedMoviesAcceptance:
 
         assert response.status_code == 200
         body = response.json()
-        assert len(body) == 1
-        assert body[0]["movie_id"] == 1
+        assert body["metadata"]["movie_count"] == 2
+        assert body["metadata"]["movies_watched"] == 1
+        assert body["metadata"]["last_watched"]["movie_id"] == 1
+        assert len(body["movies"]) == 1
+        assert body["movies"][0]["movie_id"] == 1
+
+    def test_last_watched_is_the_most_recently_watched_movie(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Argo")
+        fake_repos.make_movie(movie_id=2, title="Titanic")
+
+        older = fake_repos.make_watch_event(movie_id=1, user_id=1)
+        older.watched_at = datetime(2020, 1, 1, 10, 0, 0)
+        newer = fake_repos.make_watch_event(movie_id=2, user_id=1)
+        newer.watched_at = datetime(2024, 6, 1, 10, 0, 0)
+
+        response = client.get(
+            "/api/users/me/watched-movies",
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["metadata"]["movies_watched"] == 2
+        assert body["metadata"]["last_watched"]["movie_id"] == 2
+        assert body["metadata"]["last_watched"]["watched_at"] == "2024-06-01T10:00:00"

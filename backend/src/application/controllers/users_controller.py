@@ -19,6 +19,8 @@ from src.application.dtos import (
     MovieWatchedSuccessDTO,
     UpdateMoviesWatchedResponseDTO,
     UserDetailDTO,
+    UserWatchedMoviesResponseDTO,
+    WatchedMoviesMetadataDTO,
 )
 
 users_controller = APIRouter(
@@ -41,7 +43,7 @@ async def get_user(
 # 2 CALLS
 @users_controller.get(
     "/users/me/watched-movies",
-    response_model=list[MovieWatchedDTO],
+    response_model=UserWatchedMoviesResponseDTO,
 )
 async def get_my_watched_movies(
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
@@ -54,7 +56,7 @@ async def get_my_watched_movies(
     movies = movie_repo.get_all()  # 1 CALL
     movies_by_id = {movie.id: movie for movie in movies}
 
-    return [
+    watched_movies = [
         MovieWatchedDTO(
             movie_id=event.movie_id,
             title=movies_by_id[event.movie_id].title,
@@ -65,6 +67,19 @@ async def get_my_watched_movies(
         for event in watch_events
         if event.movie_id in movies_by_id
     ]
+
+    return UserWatchedMoviesResponseDTO(
+        metadata=WatchedMoviesMetadataDTO(
+            movie_count=len(movies),
+            movies_watched=len(watched_movies),
+            last_watched=(
+                max(watched_movies, key=lambda movie: movie.watched_at)
+                if watched_movies
+                else None
+            ),
+        ),
+        movies=watched_movies,
+    )
 
 
 # MIN = 1 CALL, MAX = 7 CALLS

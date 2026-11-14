@@ -15,6 +15,8 @@ from .movie_watched_dto import (
     MovieWatchedSuccessDTO,
     MovieWatchedErrorDTO,
     UpdateMoviesWatchedResponseDTO,
+    UserWatchedMoviesResponseDTO,
+    WatchedMoviesMetadataDTO,
 )
 from .auth_response_dto import AuthResponseDTO
 
@@ -34,6 +36,8 @@ __all__ = [
     "MovieWatchedSuccessDTO",
     "MovieWatchedErrorDTO",
     "UpdateMoviesWatchedResponseDTO",
+    "UserWatchedMoviesResponseDTO",
+    "WatchedMoviesMetadataDTO",
     "AuthResponseDTO",
     "UserDetailDTO",
 ]
