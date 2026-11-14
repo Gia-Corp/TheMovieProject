@@ -286,6 +286,58 @@ class GoogleSheetsWatchEventRepository:
             raise
 
 
+    # 2 CALLS
+    def delete_by_user_and_movie_ids(self, user_id, movie_ids):
+        start_time = time.perf_counter()
+        try:
+            rows = self.sheet.get_all_records(
+                expected_headers=["id", "movie_id", "user_id", "watched_at"]
+            )
+            ids = {str(id) for id in movie_ids}
+            rows_to_delete = [
+                i + 2
+                for i, f in enumerate(rows)
+                if str(f["user_id"]) == str(user_id) and str(f["movie_id"]) in ids
+            ]
+
+            if not rows_to_delete:
+                return
+
+            requests = [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.sheet.id,
+                            "dimension": "ROWS",
+                            "startIndex": i - 1,
+                            "endIndex": i,
+                        }
+                    }
+                }
+                for i in sorted(rows_to_delete, reverse=True)
+            ]
+            self.sheet.spreadsheet.batch_update({"requests": requests})
+            logger.info(
+                "db_operation",
+                extra={
+                    "operation": "delete_by_user_and_movie_ids",
+                    "sheet": "watch_events",
+                    "rows": len(rows_to_delete),
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+        except Exception:
+            logger.exception(
+                "db_operation_failed",
+                extra={
+                    "operation": "delete_by_user_and_movie_ids",
+                    "sheet": "watch_events",
+                    "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
+                },
+            )
+            raise
+
+
 class WatchEventNotFoundError(APIException):
     NOT_FOUND = 404
 

@@ -195,6 +195,17 @@ class FakeWatchEventRepository:
             raise WatchEventNotFoundError()
         self.watch_events = remaining_watch_events
 
+    def delete_by_user_and_movie_ids(self, user_id: int, movie_ids: list[int]) -> None:
+        ids_to_delete = {str(movie_id) for movie_id in movie_ids}
+        self.watch_events = [
+            watch_event
+            for watch_event in self.watch_events
+            if not (
+                watch_event.user_id == user_id
+                and str(watch_event.movie_id) in ids_to_delete
+            )
+        ]
+
 
 class FakeExternalAPIMovieRepository:
     def __init__(self) -> None:
