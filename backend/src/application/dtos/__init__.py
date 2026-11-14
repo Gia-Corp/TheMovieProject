@@ -10,6 +10,7 @@ from .user_summary_dto import UserSummaryDTO
 from .user_detail_dto import UserDetailDTO
 from .create_watch_event_dto import CreateWatchEventDTO
 from .movie_watched_dto import (
+    MovieWatchedDTO,
     MovieWatchedItemDTO,
     MovieWatchedSuccessDTO,
     MovieWatchedErrorDTO,
@@ -28,6 +29,7 @@ __all__ = [
     "DetailWatchedByDTO",
     "UserSummaryDTO",
     "CreateWatchEventDTO",
+    "MovieWatchedDTO",
     "MovieWatchedItemDTO",
     "MovieWatchedSuccessDTO",
     "MovieWatchedErrorDTO",

@@ -1,5 +1,14 @@
 from pydantic import BaseModel, Field
+from datetime import datetime
 from typing import Optional
+
+
+class MovieWatchedDTO(BaseModel):
+    movie_id: int
+    title: str
+    year: int
+    poster_url: str | None = None
+    watched_at: datetime
 
 
 class MovieWatchedItemDTO(BaseModel):

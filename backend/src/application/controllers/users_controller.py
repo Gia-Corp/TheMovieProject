@@ -13,6 +13,7 @@ from src.dependencies import (
     get_current_user,
 )
 from src.application.dtos import (
+    MovieWatchedDTO,
     MovieWatchedErrorDTO,
     MovieWatchedItemDTO,
     MovieWatchedSuccessDTO,
@@ -37,6 +38,35 @@ async def get_user(
     return user_repo.get_by_id(user_id)
 
 
+# 2 CALLS
+@users_controller.get(
+    "/users/me/watched-movies",
+    response_model=list[MovieWatchedDTO],
+)
+async def get_my_watched_movies(
+    movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.id
+
+    watch_events = watch_event_repo.get_all_by_user_id(user_id)  # 1 CALL
+    movies = movie_repo.get_all()  # 1 CALL
+    movies_by_id = {movie.id: movie for movie in movies}
+
+    return [
+        MovieWatchedDTO(
+            movie_id=event.movie_id,
+            title=movies_by_id[event.movie_id].title,
+            year=movies_by_id[event.movie_id].year,
+            poster_url=movies_by_id[event.movie_id].poster_url,
+            watched_at=event.watched_at,
+        )
+        for event in watch_events
+        if event.movie_id in movies_by_id
+    ]
+
+
 # MIN = 1 CALL, MAX = 7 CALLS
 @users_controller.patch(
     "/users/me/watched-movies",
@@ -45,9 +75,7 @@ async def get_user(
 async def update_my_watched_movies(
     items: list[MovieWatchedItemDTO] = Body(..., min_length=1, max_length=100),
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
-    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(
-        get_watch_event_repo
-    ),
+    watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
     current_user: User = Depends(get_current_user),
 ):
     user_id = current_user.id
@@ -88,21 +116,15 @@ async def update_my_watched_movies(
     if to_remove:
         watch_event_repo.delete_by_user_and_movie_ids(user_id, to_remove)  # 2 CALLS
 
-    watch_event_id_by_movie_id = {
-        event.movie_id: event.id for event in current_events
-    }
-    watch_event_id_by_movie_id.update(
-        {event.movie_id: event.id for event in to_add}
-    )
+    watch_event_id_by_movie_id = {event.movie_id: event.id for event in current_events}
+    watch_event_id_by_movie_id.update({event.movie_id: event.id for event in to_add})
 
     success = [
         MovieWatchedSuccessDTO(
             movie_id=item.movie_id,
             watched=item.watched,
             watch_event_id=(
-                watch_event_id_by_movie_id.get(item.movie_id)
-                if item.watched
-                else None
+                watch_event_id_by_movie_id.get(item.movie_id) if item.watched else None
             ),
         )
         for item in valid_items

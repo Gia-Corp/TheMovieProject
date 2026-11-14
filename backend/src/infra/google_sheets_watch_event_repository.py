@@ -285,7 +285,6 @@ class GoogleSheetsWatchEventRepository:
             )
             raise
 
-
     # 2 CALLS
     def delete_by_user_and_movie_ids(self, user_id, movie_ids):
         start_time = time.perf_counter()

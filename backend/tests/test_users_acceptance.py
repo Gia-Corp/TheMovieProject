@@ -224,9 +224,7 @@ class TestUserWatchedMoviesAcceptance:
         ]
         assert len(watch_events) == 1
 
-    def test_requires_authentication(
-        self, client: TestClient, fake_repos
-    ) -> None:
+    def test_requires_authentication(self, client: TestClient, fake_repos) -> None:
         fake_repos.make_movie(movie_id=1)
 
         response = client.patch(
@@ -266,3 +264,68 @@ class TestUserWatchedMoviesAcceptance:
         )
 
         assert response.status_code == 422
+
+    def test_returns_watched_movies_of_authenticated_user(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(
+            movie_id=1, title="Argo", year=2012, poster_url="argo.png"
+        )
+        fake_repos.make_movie(movie_id=2, title="Titanic", year=1997)
+        fake_repos.make_watch_event(movie_id=1, user_id=1)
+
+        response = client.get(
+            "/api/users/me/watched-movies",
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body) == 1
+        assert body[0]["movie_id"] == 1
+        assert body[0]["title"] == "Argo"
+        assert body[0]["year"] == 2012
+        assert body[0]["poster_url"] == "argo.png"
+        assert "watched_at" in body[0]
+
+    def test_returns_empty_list_when_user_has_not_watched_movies(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Argo")
+
+        response = client.get(
+            "/api/users/me/watched-movies",
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_get_watched_movies_requires_authentication(
+        self, client: TestClient, fake_repos
+    ) -> None:
+        response = client.get("/api/users/me/watched-movies")
+
+        assert response.status_code == 401
+
+    def test_only_returns_movies_watched_by_authenticated_user(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_user(user_id=2, nickname="two")
+        fake_repos.make_movie(movie_id=1, title="Argo")
+        fake_repos.make_movie(movie_id=2, title="Titanic")
+        fake_repos.make_watch_event(movie_id=1, user_id=1)
+        fake_repos.make_watch_event(movie_id=2, user_id=2)
+
+        response = client.get(
+            "/api/users/me/watched-movies",
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body) == 1
+        assert body[0]["movie_id"] == 1
