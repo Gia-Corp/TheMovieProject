@@ -106,6 +106,8 @@ async def create_movie(
         if not users_exist:
             raise UserNotFoundError()
 
+    genre = movie_dto.genre or movie_info.get("Genre")
+
     movie = Movie(
         id=1,
         title=movie_info["Title"],
@@ -114,6 +116,7 @@ async def create_movie(
         runtime=movie_info["Runtime"] if movie_info["Runtime"] != "N/A" else None,
         plot=movie_info["Plot"] if movie_info["Plot"] != "N/A" else None,
         poster_url=movie_info["Poster"] if movie_info["Poster"] != "N/A" else None,
+        genre=genre if genre and genre != "N/A" else None,
     )
     movie = movie_repo.add(movie)  # 2 CALLS
 
@@ -154,6 +157,9 @@ async def update_movie(
 
     if movie_dto.poster_url:
         movie.poster_url = movie_dto.poster_url
+
+    if movie_dto.genre:
+        movie.genre = movie_dto.genre
 
     movie.validate()
     return movie_repo.save(movie)  # 2 CALLS

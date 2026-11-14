@@ -12,6 +12,7 @@ class Movie:
     runtime: Optional[str] = None
     plot: Optional[str] = None
     poster_url: Optional[str] = None
+    genre: Optional[str] = None
 
     def __post_init__(self):
         self.validate()

@@ -48,7 +48,7 @@ class TestGoogleSheetsMovieRepository:
 
         repo = GoogleSheetsMovieRepository(movies_sheet)
         repo.get_all_by_page(Page(2, 2))
-        movies_sheet.get.assert_called_with("A4:G5")
+        movies_sheet.get.assert_called_with("A4:H5")
 
     def test_movie_repo_to_fetch_correct_sheet_range_when_different_page_size(self):
         movies_sheet = Mock()
@@ -97,7 +97,7 @@ class TestGoogleSheetsMovieRepository:
 
         repo = GoogleSheetsMovieRepository(movies_sheet)
         repo.get_all_by_page(Page(2, 10))
-        movies_sheet.get.assert_called_with("A12:G21")
+        movies_sheet.get.assert_called_with("A12:H21")
 
     def test_get_all_by_page_should_fail_when_is_out_of_bounds_of_the_list(self):
         with raises(PageOutOfBoundsError) as error:

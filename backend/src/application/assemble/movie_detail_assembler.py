@@ -31,6 +31,7 @@ class MovieDetailAssembler:
             title=movie.title,
             director=movie.director,
             year=movie.year,
+            genre=movie.genre,
             runtime=movie.runtime,
             plot=movie.plot,
             poster_url=movie.poster_url,

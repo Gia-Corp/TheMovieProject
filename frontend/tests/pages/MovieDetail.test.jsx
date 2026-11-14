@@ -102,6 +102,12 @@ describe("MovieDetail", () => {
     expect(screen.getByText("No tiene poster :/")).toBeTruthy();
   });
 
+  it("muestra el género cuando la película lo trae", async () => {
+    renderMovieDetail({ movie: { ...movie, genre: "Drama, Thriller" } });
+
+    expect(await screen.findByText("Drama, Thriller")).toBeTruthy();
+  });
+
   it("togglea el estado watched con updateWatchEvents y cambia el texto", async () => {
     const { updateWatchEvents } = renderMovieDetail();
 

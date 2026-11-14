@@ -6,7 +6,7 @@
   column-gap: 70px;
   max-width: 65dvw;
   align-self: center;
-  padding: 70px 0;
+  padding: 45px 0;
 }
 
 .detail-section {
@@ -48,7 +48,9 @@
   }
 }
 
-.icon-text-box:nth-of-type(3), .icon-text-box:nth-of-type(4) {
+.icon-text-box:nth-of-type(3),
+.icon-text-box:nth-of-type(4),
+.icon-text-box:nth-of-type(5) {
   grid-column: span 2;
 }
 

@@ -7,6 +7,7 @@ class MovieDetailDTO(BaseModel):
     title: str
     director: str
     year: int
+    genre: str | None
     runtime: str | None
     plot: str | None
     poster_url: str | None

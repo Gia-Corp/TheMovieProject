@@ -73,6 +73,17 @@ function EditMovieForm({ movie, onSuccess }) {
         />
       </label>
 
+      <label htmlFor="genre">
+        <p>Género/s</p>
+        <input
+          type="text"
+          maxLength="200"
+          name="genre"
+          id="genre"
+          placeholder={movie.genre ?? ""}
+        />
+      </label>
+
       <label htmlFor="runtime">
         <p>Duración (en minutos)</p>
         <input

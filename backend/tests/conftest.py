@@ -254,6 +254,7 @@ class FakeRepositories:
         runtime: str | None = None,
         plot: str | None = None,
         poster_url: str | None = None,
+        genre: str | None = None,
     ) -> Movie:
         movie = Movie(
             id=movie_id,
@@ -263,6 +264,7 @@ class FakeRepositories:
             runtime=runtime,
             plot=plot,
             poster_url=poster_url,
+            genre=genre,
         )
         self.movies.movies.append(movie)
         return movie

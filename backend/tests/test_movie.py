@@ -34,4 +34,5 @@ class TestMovie:
             and not movie.plot
             and not movie.runtime
             and not movie.poster_url
+            and not movie.genre
         )

@@ -30,7 +30,7 @@ class GoogleSheetsMovieRepository:
 
         start_time = time.perf_counter()
         try:
-            rows = self.sheet.get(f"A{page_first_row}:G{page_last_row}")
+            rows = self.sheet.get(f"A{page_first_row}:H{page_last_row}")
             logger.info(
                 "db_operation",
                 extra={
@@ -66,6 +66,7 @@ class GoogleSheetsMovieRepository:
                 "runtime",
                 "plot",
                 "poster_url",
+                "genre",
             ],
             rows,
         )
@@ -80,6 +81,7 @@ class GoogleSheetsMovieRepository:
             plot=movie_dict["plot"] if "plot" in movie_dict else None,
             runtime=movie_dict["runtime"] if "runtime" in movie_dict else None,
             poster_url=movie_dict["poster_url"] if "poster_url" in movie_dict else None,
+            genre=movie_dict["genre"] if "genre" in movie_dict else None,
         )
 
     def _movie_to_list(self, movie):
@@ -91,6 +93,7 @@ class GoogleSheetsMovieRepository:
             movie.runtime,
             movie.plot,
             movie.poster_url,
+            movie.genre,
         ]
 
     # 1 CALL
@@ -159,6 +162,7 @@ class GoogleSheetsMovieRepository:
                 "runtime",
                 "plot",
                 "poster_url",
+                "genre",
             ]
         )
         return list(map(self._movie_from_dict, movies_dicts))
@@ -203,7 +207,7 @@ class GoogleSheetsMovieRepository:
 
             self.sheet.update(
                 [self._movie_to_list(movie)],
-                f"A{cell.row}:G{cell.row}",
+                f"A{cell.row}:H{cell.row}",
             )
             logger.info(
                 "db_operation",

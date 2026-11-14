@@ -9,3 +9,4 @@ class UpdateMovieDTO(BaseModel):
     runtime: Optional[str] = Field(None, min_length=1)
     plot: Optional[str] = Field(None, min_length=1)
     poster_url: Optional[str] = Field(None, min_length=1)
+    genre: Optional[str] = Field(None, min_length=1)

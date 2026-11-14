@@ -34,7 +34,7 @@ Convenciones de los endpoints actuales:
 - Declará `response_model` con un DTO. Hace falta para que `hashed_password` no salga en las respuestas de usuario.
 - DTOs de entrada y de salida en `src/application/dtos/`. Pydantic v2. Los que se arman desde una entidad usan `ConfigDict(from_attributes=True)`.
 - Listados paginados devuelven `{"metadata", "movies"}`. `Page` valida número y tamaño; `PageMetadataCalculator` arma `links` (`first`, `previous`, `next`, `last`).
-- Alta de película: rechazar título duplicado, completar ficha con OMDb (`ExternalAPIMovieRepository`), verificar que existan los `watched_by`, persistir la peli y después los watch events. `N/A` de OMDb se guarda como `None`.
+- Alta de película: rechazar título duplicado, completar ficha con OMDb (`ExternalAPIMovieRepository`), verificar que existan los `watched_by`, persistir la peli y después los watch events. `N/A` de OMDb se guarda como `None`. El `genre` se toma de `Genre` de OMDb salvo que el DTO traiga uno.
 - Errores de dominio e infra son subclases de `APIException` con `build_message` y `get_status_code`, definidas junto a la entidad o al repo. Los handlers responden siempre `{"message", "timestamp"}`. No armes `JSONResponse` a mano en el controller.
 - Mensajes de `APIException` en inglés. `detail` de auth que ya está en español (`Credenciales incorrectas`) se mantiene en español.
 - Anotá arriba del endpoint y del método de repo cuántas llamadas a Sheets hace (`# N CALLS`), como en `movies_controller.py`.
@@ -45,7 +45,7 @@ Un spreadsheet (`SHEET_NAME`), tres hojas fijas en `dependencies.py`:
 
 | Índice | Hoja | Columnas | Id |
 | --- | --- | --- | --- |
-| 0 | movies | `director`, `title`, `year`, `id`, `runtime`, `plot`, `poster_url` (A:G) | celda `last_id` |
+| 0 | movies | `director`, `title`, `year`, `id`, `runtime`, `plot`, `poster_url`, `genre` (A:H) | celda `last_id` |
 | 1 | users | `id`, `nickname`, `email`, `hashed_password`, `role`, `profile_pic`, `is_active` | — |
 | 2 | watch events | `id`, `movie_id`, `user_id`, `watched_at` | celda `last_watch_event_id` |
 

@@ -9,6 +9,7 @@ def _seed_external_movie(fake_repos, title: str = "Argo", year: int = 2012) -> N
         "Runtime": "N/A",
         "Plot": "N/A",
         "Poster": "N/A",
+        "Genre": "Drama, Thriller",
     }
 
 
@@ -34,6 +35,7 @@ class TestMoviesAcceptance:
         assert body["runtime"] is None
         assert body["plot"] is None
         assert body["poster_url"] is None
+        assert body["genre"] == "Drama, Thriller"
 
         assert len(fake_repos.movies.movies) == 1
         movie = fake_repos.movies.movies[0]
