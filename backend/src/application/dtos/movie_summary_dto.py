@@ -6,5 +6,6 @@ class MovieSummaryDTO(BaseModel):
     id: int
     title: str
     year: int
+    genre: str | None
     poster_url: str | None
     watched_by: WatchedByDTO

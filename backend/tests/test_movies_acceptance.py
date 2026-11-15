@@ -45,6 +45,18 @@ class TestMoviesAcceptance:
         assert watch_event.movie_id == movie.id
         assert watch_event.user_id == 2
 
+    def test_get_movies_includes_genre(self, client: TestClient, fake_repos) -> None:
+        fake_repos.make_movie(
+            movie_id=1, title="Argo", genre="Drama, Thriller", poster_url="argo.png"
+        )
+
+        response = client.get("/api/movies?page=1&size=10")
+
+        assert response.status_code == 200
+        movie = response.json()["movies"][0]
+        assert movie["title"] == "Argo"
+        assert movie["genre"] == "Drama, Thriller"
+
     def test_create_movie_rejects_duplicate_title(
         self, client: TestClient, auth_headers, fake_repos
     ) -> None:

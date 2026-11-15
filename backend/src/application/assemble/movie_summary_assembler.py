@@ -27,6 +27,7 @@ class MovieSummaryAssembler:
             id=movie.id,
             title=movie.title,
             year=movie.year,
+            genre=movie.genre,
             poster_url=movie.poster_url,
             watched_by=watched_by,
         )
