@@ -1,13 +1,18 @@
 """
-Script para poblar los campos runtime, plot y poster_url de las películas
-existentes, consultando OMDB para obtener los datos faltantes.
+Script para poblar el atributo genre de las películas existentes,
+consultando OMDB para obtener el género faltante.
+
+Como GET /api/movies no devuelve genre, el script procesa todas las
+películas de la página y solo actualiza el campo genre.
 
 Uso:
     python populate_movies.py
 
 Variables de entorno requeridas (o modificar las constantes al inicio):
-    OMDB_API_URL    - URL base de OMDB (ej: http://www.omdbapi.com)
-    OMDB_API_KEY    - Tu API key de OMDB
+    API_BASE_URL    - URL base de la API, incluyendo /api (ej: http://localhost:5000/api)
+    MOVIE_API_URL   - URL base de OMDB (ej: http://www.omdbapi.com)
+    MOVIE_API_KEY   - Tu API key de OMDB
+    ACCESS_TOKEN    - Access token para autenticar el PATCH de cada película
 """
 
 import asyncio
@@ -22,27 +27,21 @@ load_dotenv()
 API_BASE_URL = os.getenv("API_BASE_URL")
 OMDB_API_URL = os.getenv("MOVIE_API_URL")
 OMDB_API_KEY = os.getenv("MOVIE_API_KEY")
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 PAGE = int(os.getenv("PAGE", 1))
 PAGE_SIZE = int(os.getenv("PAGE_SIZE", 50))
 # ─────────────────────────────────────────────────────────────────────────────
 
 
 def extract_omdb_fields(omdb_data: dict) -> dict:
-    """Extrae runtime, plot y poster_url del response de OMDB, ignorando 'N/A'."""
+    """Extrae genre del response de OMDB, ignorando 'N/A'."""
 
     def clean(value):
         return value if value and value != "N/A" else None
 
     return {
-        "runtime": clean(omdb_data.get("Runtime")),
-        "plot": clean(omdb_data.get("Plot")),
-        "poster_url": clean(omdb_data.get("Poster")),
+        "genre": clean(omdb_data.get("Genre")),
     }
-
-
-def already_populated(movie: dict) -> bool:
-    """Devuelve True si la película ya fue populada (poster_url como indicador)."""
-    return movie.get("poster_url") is not None
 
 
 async def populate_movies():
@@ -69,11 +68,6 @@ async def populate_movies():
         title = movie["title"]
         year = movie.get("year")
 
-        if already_populated(movie):
-            print(f"⏭️  [{movie_id}] '{title}' — ya tiene todos los campos, se omite.")
-            results["skipped"] += 1
-            continue
-
         print(f"🔍 [{movie_id}] '{title}' ({year}) — consultando OMDB...", end=" ")
 
         try:
@@ -90,13 +84,19 @@ async def populate_movies():
             payload = {k: v for k, v in new_fields.items() if v is not None}
 
             if not payload:
-                print("⚠️  OMDB no devolvió ningún campo nuevo con valor.")
+                print("⚠️  OMDB no devolvió genre con valor.")
                 results["skipped"] += 1
                 continue
 
+            headers = (
+                {"Authorization": f"Bearer {ACCESS_TOKEN}"} if ACCESS_TOKEN else None
+            )
+
             async with httpx.AsyncClient(timeout=10) as client:
                 response = await client.patch(
-                    f"{API_BASE_URL}/movies/{movie_id}", json=payload
+                    f"{API_BASE_URL}/movies/{movie_id}",
+                    json=payload,
+                    headers=headers,
                 )
                 response.raise_for_status()
 
