@@ -9,7 +9,9 @@ import AddMovieButton from "@/components/movie_crud/AddMovieButton/AddMovieButto
 const COLLAPSED_STORAGE_KEY = "sidebar-collapsed";
 
 function getInitialCollapsed() {
-  return localStorage.getItem(COLLAPSED_STORAGE_KEY) === "true";
+  const stored = localStorage.getItem(COLLAPSED_STORAGE_KEY);
+  if (stored === null) return true;
+  return stored === "true";
 }
 
 function SidebarPanel() {
