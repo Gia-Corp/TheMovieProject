@@ -118,9 +118,7 @@ class TestMoviesAcceptance:
             genre="Crime, Drama",
         )
 
-        response = client.get(
-            "/api/movies?page=1&size=10&director=affleck&genre=drama"
-        )
+        response = client.get("/api/movies?page=1&size=10&director=affleck&genre=drama")
 
         assert response.status_code == 200
         body = response.json()

@@ -272,9 +272,7 @@ class GoogleSheetsMovieRepository:
                 ]
             if director:
                 filtered_movies = [
-                    m
-                    for m in filtered_movies
-                    if director.lower() in m.director.lower()
+                    m for m in filtered_movies if director.lower() in m.director.lower()
                 ]
             if year is not None:
                 filtered_movies = [m for m in filtered_movies if m.year == year]

@@ -44,9 +44,7 @@ async def get_movies(
     page = Page(page, size)
 
     if title or director or year is not None or genre:
-        movies = movie_repo.get_all_by_criteria(
-            title, director, year, genre
-        )  # 1 CALL
+        movies = movie_repo.get_all_by_criteria(title, director, year, genre)  # 1 CALL
 
         start = page.number * page.size - page.size
         end = page.number * page.size
