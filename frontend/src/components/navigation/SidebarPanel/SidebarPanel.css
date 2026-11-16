@@ -1,0 +1,137 @@
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  z-index: 50;
+  width: var(--sidebar-expanded-width);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 12px;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--bg-clr) 75%, black);
+  border-right: 1px solid var(--main-ghost-clr);
+  transition: width 0.2s ease;
+}
+
+.sidebar-panel.is-collapsed {
+  width: var(--sidebar-collapsed-width);
+  padding: 12px 8px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.sidebar-title {
+  min-width: 0;
+  font-family: var(--title-font);
+  color: var(--text-clr);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-panel.is-collapsed .sidebar-header {
+  gap: 0;
+}
+
+.sidebar-panel.is-collapsed .sidebar-title {
+  flex: 1;
+  overflow: visible;
+  text-overflow: clip;
+  font-size: 0.85rem;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--text-clr);
+  background-color: transparent;
+
+  &:hover {
+    background-color: var(--main-ghost-clr);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text-clr);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+.sidebar-nav .button-with-icon,
+.sidebar-profile {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 38px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.sidebar-profile {
+  display: flex;
+  color: var(--text-clr);
+
+  &:hover {
+    background-color: var(--main-ghost-clr);
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.sidebar-panel.is-collapsed .sidebar-nav .button-with-icon,
+.sidebar-panel.is-collapsed .sidebar-profile {
+  justify-content: center;
+}
+
+.sidebar-panel.is-collapsed .sidebar-nav .button-with-icon p {
+  display: none;
+}
+
+.sidebar-panel.is-collapsed .sidebar-profile span {
+  display: none;
+}

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
-import Navbar from "@/components/navigation/Navbar/Navbar";
+import "./App.css";
+import SidebarPanel from "@/components/navigation/SidebarPanel/SidebarPanel";
 import { ErrorBoundary } from "@/error_handling/ErrorBoundary";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
 
@@ -15,41 +16,43 @@ function AppContent() {
 
   return (
     <>
-      <Navbar />
-      <Suspense
-        fallback={
-          <div className="spinner-container">
-            <SpinnerIcon />
-          </div>
-        }
-      >
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ErrorBoundary key={location.pathname}>
-                <Home />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/movies/:id"
-            element={
-              <ErrorBoundary key={location.pathname}>
-                <MovieDetailWrapper />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ErrorBoundary key={location.pathname}>
-                <Profile />
-              </ErrorBoundary>
-            }
-          />
-        </Routes>
-      </Suspense>
+      <SidebarPanel />
+      <div className="app-content">
+        <Suspense
+          fallback={
+            <div className="spinner-container">
+              <SpinnerIcon />
+            </div>
+          }
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ErrorBoundary key={location.pathname}>
+                  <Home />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/movies/:id"
+              element={
+                <ErrorBoundary key={location.pathname}>
+                  <MovieDetailWrapper />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ErrorBoundary key={location.pathname}>
+                  <Profile />
+                </ErrorBoundary>
+              }
+            />
+          </Routes>
+        </Suspense>
+      </div>
     </>
   );
 }

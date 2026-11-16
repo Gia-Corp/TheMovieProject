@@ -6,6 +6,10 @@
 
   --tile-size: 15px;
   --dot-size: 0.75px;
+
+  /* SIDEBAR */
+  --sidebar-collapsed-width: 100px;
+  --sidebar-expanded-width: 260px;
   
   /* PRIMITIVE COLORS */
   --purple: rgba(111, 66, 193, 1);
