@@ -1,9 +1,9 @@
 .filters {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 45fr 30fr 15fr 10fr;
   gap: 16px;
   width: 100%;
-  max-width: 720px;
+  max-width: 60dvw;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -16,9 +16,16 @@
   color: var(--text-clr);
 }
 
+@media (max-width: 800px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 480px) {
   .filters {
     grid-template-columns: 1fr;
+    max-width: 100%;
   }
 }
 

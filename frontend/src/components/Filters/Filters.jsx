@@ -93,17 +93,6 @@ function Filters({ filters, onChange }) {
         />
       </label>
       <label className="filters-field">
-        <span>Año</span>
-        <input
-          type="number"
-          name="year"
-          min="0"
-          placeholder="Todos"
-          value={yearInput}
-          onChange={handleYearChange}
-        />
-      </label>
-      <label className="filters-field">
         <span>Género</span>
         <select
           name="genre"
@@ -117,6 +106,17 @@ function Filters({ filters, onChange }) {
             </option>
           ))}
         </select>
+      </label>
+      <label className="filters-field">
+        <span>Año</span>
+        <input
+          type="number"
+          name="year"
+          min="0"
+          placeholder="Todos"
+          value={yearInput}
+          onChange={handleYearChange}
+        />
       </label>
     </div>
   );
