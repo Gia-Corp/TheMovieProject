@@ -1,0 +1,37 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.filters-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--text-clr);
+}
+
+@media (max-width: 480px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filters-field select {
+  width: 100%;
+  padding: 4px;
+  border: none;
+  background-color: var(--search-bar-clr);
+  color: var(--text-clr);
+  outline: none;
+
+  &:focus,
+  &:hover {
+    outline: 1px solid var(--search-bar-outline-clr);
+  }
+}

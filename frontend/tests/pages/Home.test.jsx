@@ -86,6 +86,196 @@ describe("Home", () => {
     await waitFor(() => expect(screen.getByText(/Algo salió mal/)).toBeTruthy());
   });
 
+  it("muestra un mensaje cuando ningún resultado cumple los filtros", async () => {
+    const getMovies = vi
+      .fn()
+      .mockRejectedValue(
+        Object.assign(new Error("No movies found"), { status: 404 }),
+      );
+
+    render(
+      <MemoryRouter initialEntries={["/?page=1&title=zzz"]}>
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByText(
+        "No hay películas que coincidan con los filtros",
+      ),
+    ).toBeTruthy();
+    expect(screen.getByLabelText("Título")).toBeTruthy();
+    expect(screen.queryByText(/Algo salió mal/)).toBeNull();
+  });
+
+  it("recupera la grilla al cambiar el filtro después de un 404", async () => {
+    const getMovies = vi
+      .fn()
+      .mockRejectedValueOnce(
+        Object.assign(new Error("No movies found"), { status: 404 }),
+      )
+      .mockResolvedValue({ movies: [movie], metadata: { page_count: 1 } });
+
+    render(
+      <MemoryRouter initialEntries={["/?page=1&title=zzz"]}>
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByText(
+        "No hay películas que coincidan con los filtros",
+      ),
+    ).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("Género"), {
+      target: { value: "Drama" },
+    });
+
+    expect(await screen.findByText("Peli A")).toBeTruthy();
+    expect(
+      screen.queryByText("No hay películas que coincidan con los filtros"),
+    ).toBeNull();
+  });
+
+  it("muestra los filtros de título, director, año y género", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/?page=1"]}>
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByLabelText("Título")).toBeTruthy();
+    expect(screen.getByLabelText("Director")).toBeTruthy();
+    expect(screen.getByLabelText("Año")).toBeTruthy();
+    expect(screen.getByLabelText("Género")).toBeTruthy();
+  });
+
+  it("pasa los filtros de la URL al repositorio", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          "/?page=2&title=Matrix&director=Nolan&year=2010&genre=Drama",
+        ]}
+      >
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText("Peli A")).toBeTruthy();
+    expect(getMovies).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 2,
+        size: 14,
+        title: "Matrix",
+        director: "Nolan",
+        year: "2010",
+        genre: "Drama",
+      }),
+    );
+  });
+
+  it("al cambiar el género filtra y vuelve a la página 1", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 2 },
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/?page=2"]}>
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("Peli A");
+    fireEvent.change(screen.getByLabelText("Género"), {
+      target: { value: "Drama" },
+    });
+
+    await waitFor(() =>
+      expect(getMovies).toHaveBeenLastCalledWith(
+        expect.objectContaining({ page: 1, size: 14, genre: "Drama" }),
+      ),
+    );
+  });
+
+  it("filtra por título luego del debounce", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/?page=1"]}>
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("Peli A");
+    fireEvent.change(screen.getByLabelText("Título"), {
+      target: { value: "harry" },
+    });
+
+    await waitFor(
+      () =>
+        expect(getMovies).toHaveBeenLastCalledWith(
+          expect.objectContaining({ page: 1, size: 14, title: "harry" }),
+        ),
+      { timeout: 2000 },
+    );
+  });
+
+  it("conserva los filtros al cambiar de página", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 2 },
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/?page=1&title=Matrix&genre=Drama"]}>
+        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
+          <Home />
+        </RepositoriesContext.Provider>
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("Peli A");
+    fireEvent.click(screen.getByText(">"));
+
+    await waitFor(() =>
+      expect(getMovies).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          page: 2,
+          size: 14,
+          title: "Matrix",
+          genre: "Drama",
+        }),
+      ),
+    );
+  });
+
   it("vuelve a pedir la página siguiente al hacer clic en el paginador", async () => {
     const getMovies = vi.fn().mockResolvedValue({
       movies: [movie],

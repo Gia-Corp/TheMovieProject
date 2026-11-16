@@ -9,13 +9,25 @@ export class MovieRepository {
     return response.json();
   }
 
-  async getMovies({ page, size, title, signal }) {
+  async getMovies({ page, size, title, director, year, genre, signal }) {
     const url = new URL(MovieRepository.#MOVIES_PATH, window.location.origin);
     url.searchParams.set("page", page);
     url.searchParams.set("size", size);
 
     if (title) {
       url.searchParams.set("title", title);
+    }
+
+    if (director) {
+      url.searchParams.set("director", director);
+    }
+
+    if (year) {
+      url.searchParams.set("year", year);
+    }
+
+    if (genre) {
+      url.searchParams.set("genre", genre);
     }
 
     const response = await this.fetch(url, { signal });

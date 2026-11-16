@@ -42,6 +42,35 @@ describe("MovieRepository", () => {
     expect(url.searchParams.get("title")).toBeNull();
   });
 
+  it("getMovies agrega director, year y genre cuando vienen", async () => {
+    const { apiFetch, repo } = createRepo();
+
+    await repo.getMovies({
+      page: 1,
+      size: 14,
+      director: "Nolan",
+      year: 2010,
+      genre: "Drama",
+    });
+
+    const { url } = lastCall(apiFetch);
+    expect(url.pathname).toBe("/api/movies");
+    expect(url.searchParams.get("director")).toBe("Nolan");
+    expect(url.searchParams.get("year")).toBe("2010");
+    expect(url.searchParams.get("genre")).toBe("Drama");
+  });
+
+  it("getMovies no setea director, year ni genre cuando no vienen", async () => {
+    const { apiFetch, repo } = createRepo();
+
+    await repo.getMovies({ page: 1, size: 14 });
+
+    const { url } = lastCall(apiFetch);
+    expect(url.searchParams.get("director")).toBeNull();
+    expect(url.searchParams.get("year")).toBeNull();
+    expect(url.searchParams.get("genre")).toBeNull();
+  });
+
   it("getMovie arma el path del detalle", async () => {
     const { apiFetch, repo } = createRepo();
 
