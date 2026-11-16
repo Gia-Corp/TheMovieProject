@@ -1,5 +1,5 @@
 import "./Filters.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const DEBOUNCE_MS = 500;
 
@@ -28,14 +28,12 @@ const GENRES = [
 ];
 
 function useDebouncedField(value, onCommit) {
-  const [inputValue, setInputValue] = useState(value);
+  const inputRef = useRef(null);
   const timer = useRef(null);
-  const committedValue = useRef(value);
 
   useEffect(() => {
-    if (value !== committedValue.current) {
-      committedValue.current = value;
-      setInputValue(value);
+    if (inputRef.current && inputRef.current.value !== value) {
+      inputRef.current.value = value;
     }
   }, [value]);
 
@@ -43,29 +41,26 @@ function useDebouncedField(value, onCommit) {
 
   const handleChange = (event) => {
     const nextValue = event.target.value;
-    setInputValue(nextValue);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      committedValue.current = nextValue;
       onCommit(nextValue);
     }, DEBOUNCE_MS);
   };
 
-  return [inputValue, handleChange];
+  return [inputRef, handleChange];
 }
 
 function Filters({ filters, onChange }) {
-  const [titleInput, handleTitleChange] = useDebouncedField(
+  const [titleRef, handleTitleChange] = useDebouncedField(
     filters.title,
     (value) => onChange("title", value),
   );
-  const [directorInput, handleDirectorChange] = useDebouncedField(
+  const [directorRef, handleDirectorChange] = useDebouncedField(
     filters.director,
     (value) => onChange("director", value),
   );
-  const [yearInput, handleYearChange] = useDebouncedField(
-    filters.year,
-    (value) => onChange("year", value),
+  const [yearRef, handleYearChange] = useDebouncedField(filters.year, (value) =>
+    onChange("year", value),
   );
 
   return (
@@ -73,22 +68,24 @@ function Filters({ filters, onChange }) {
       <label className="filters-field">
         <span>Título</span>
         <input
+          ref={titleRef}
           type="text"
           name="title"
           autoComplete="off"
           placeholder="Todos"
-          value={titleInput}
+          defaultValue={filters.title}
           onChange={handleTitleChange}
         />
       </label>
       <label className="filters-field">
         <span>Director</span>
         <input
+          ref={directorRef}
           type="text"
           name="director"
           autoComplete="off"
           placeholder="Todos"
-          value={directorInput}
+          defaultValue={filters.director}
           onChange={handleDirectorChange}
         />
       </label>
@@ -110,11 +107,12 @@ function Filters({ filters, onChange }) {
       <label className="filters-field">
         <span>Año</span>
         <input
+          ref={yearRef}
           type="number"
           name="year"
           min="0"
           placeholder="Todos"
-          value={yearInput}
+          defaultValue={filters.year}
           onChange={handleYearChange}
         />
       </label>
