@@ -9,7 +9,7 @@ import Paginator from "@/components/pagination/Paginator";
 import PaginatorPrev from "@/components/pagination/PaginatorPrev";
 import PaginatorNext from "@/components/pagination/PaginatorNext";
 
-const MOVIES_PAGE_SIZE = 14;
+const MOVIES_PAGE_SIZE = 12;
 
 function buildFiltersFromSearchParams(searchParams) {
   return {

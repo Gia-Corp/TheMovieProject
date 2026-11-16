@@ -46,7 +46,7 @@ describe("Home", () => {
       </MemoryRouter>,
     );
 
-    expect(container.querySelectorAll(".movie-card.skeleton").length).toBe(14);
+    expect(container.querySelectorAll(".movie-card.skeleton").length).toBe(12);
   });
 
   it("pide la página actual y renderiza las películas al cargarse", async () => {
@@ -65,7 +65,7 @@ describe("Home", () => {
 
     expect(await screen.findByText("Peli A")).toBeTruthy();
     expect(getMovies).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1, size: 14 }),
+      expect.objectContaining({ page: 1, size: 12 }),
     );
     expect(getMovies.mock.calls[0][0].signal).toBeInstanceOf(AbortSignal);
   });
@@ -184,7 +184,7 @@ describe("Home", () => {
     expect(getMovies).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 2,
-        size: 14,
+        size: 12,
         title: "Matrix",
         director: "Nolan",
         year: "2010",
@@ -214,7 +214,7 @@ describe("Home", () => {
 
     await waitFor(() =>
       expect(getMovies).toHaveBeenLastCalledWith(
-        expect.objectContaining({ page: 1, size: 14, genre: "Drama" }),
+        expect.objectContaining({ page: 1, size: 12, genre: "Drama" }),
       ),
     );
   });
@@ -241,7 +241,7 @@ describe("Home", () => {
     await waitFor(
       () =>
         expect(getMovies).toHaveBeenLastCalledWith(
-          expect.objectContaining({ page: 1, size: 14, title: "harry" }),
+          expect.objectContaining({ page: 1, size: 12, title: "harry" }),
         ),
       { timeout: 2000 },
     );
@@ -268,7 +268,7 @@ describe("Home", () => {
       expect(getMovies).toHaveBeenLastCalledWith(
         expect.objectContaining({
           page: 2,
-          size: 14,
+          size: 12,
           title: "Matrix",
           genre: "Drama",
         }),
@@ -295,7 +295,7 @@ describe("Home", () => {
 
     await waitFor(() =>
       expect(getMovies).toHaveBeenLastCalledWith(
-        expect.objectContaining({ page: 2, size: 14 }),
+        expect.objectContaining({ page: 2, size: 12 }),
       ),
     );
   });
