@@ -260,11 +260,30 @@ class GoogleSheetsMovieRepository:
             raise
 
     # 1 CALL
-    def get_all_by_title(self, title):
+    def get_all_by_criteria(self, title=None, director=None, year=None, genre=None):
         start_time = time.perf_counter()
         try:
             movies = self.get_all()
-            filtered_movies = [m for m in movies if title.lower() in m.title.lower()]
+            filtered_movies = movies
+
+            if title:
+                filtered_movies = [
+                    m for m in filtered_movies if title.lower() in m.title.lower()
+                ]
+            if director:
+                filtered_movies = [
+                    m
+                    for m in filtered_movies
+                    if director.lower() in m.director.lower()
+                ]
+            if year is not None:
+                filtered_movies = [m for m in filtered_movies if m.year == year]
+            if genre:
+                filtered_movies = [
+                    m
+                    for m in filtered_movies
+                    if m.genre and genre.lower() in m.genre.lower()
+                ]
 
             if not filtered_movies:
                 raise MovieNotFoundError()
@@ -272,7 +291,7 @@ class GoogleSheetsMovieRepository:
             logger.info(
                 "db_operation",
                 extra={
-                    "operation": "get_all_by_title",
+                    "operation": "get_all_by_criteria",
                     "sheet": "movies",
                     "rows": len(movies),
                     "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
@@ -283,7 +302,7 @@ class GoogleSheetsMovieRepository:
             logger.exception(
                 "db_operation_failed",
                 extra={
-                    "operation": "get_all_by_title",
+                    "operation": "get_all_by_criteria",
                     "sheet": "movies",
                     "duration_ms": round((time.perf_counter() - start_time) * 1000, 2),
                 },

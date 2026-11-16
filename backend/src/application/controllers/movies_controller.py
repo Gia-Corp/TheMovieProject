@@ -34,14 +34,19 @@ async def get_movies(
     page: int = Query(..., gt=0),
     size: int = Query(..., gt=0),
     title: Optional[str] = None,
+    director: Optional[str] = None,
+    year: Optional[int] = None,
+    genre: Optional[str] = None,
     movie_repo: GoogleSheetsMovieRepository = Depends(get_movie_repo),
     user_repo: GoogleSheetsUserRepository = Depends(get_user_repo),
     watch_event_repo: GoogleSheetsWatchEventRepository = Depends(get_watch_event_repo),
 ):
     page = Page(page, size)
 
-    if title:
-        movies = movie_repo.get_all_by_title(title)  # 1 CALL
+    if title or director or year is not None or genre:
+        movies = movie_repo.get_all_by_criteria(
+            title, director, year, genre
+        )  # 1 CALL
 
         start = page.number * page.size - page.size
         end = page.number * page.size

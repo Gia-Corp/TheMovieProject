@@ -57,6 +57,103 @@ class TestMoviesAcceptance:
         assert movie["title"] == "Argo"
         assert movie["genre"] == "Drama, Thriller"
 
+    def test_get_movies_filters_by_director(
+        self, client: TestClient, fake_repos
+    ) -> None:
+        fake_repos.make_movie(
+            movie_id=1, title="Argo", director="Ben Affleck", year=2012
+        )
+        fake_repos.make_movie(
+            movie_id=2, title="Heat", director="Michael Mann", year=1995
+        )
+
+        response = client.get("/api/movies?page=1&size=10&director=affleck")
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [movie["title"] for movie in body["movies"]] == ["Argo"]
+
+    def test_get_movies_filters_by_year(self, client: TestClient, fake_repos) -> None:
+        fake_repos.make_movie(movie_id=1, title="Argo", year=2012)
+        fake_repos.make_movie(movie_id=2, title="Heat", year=1995)
+
+        response = client.get("/api/movies?page=1&size=10&year=1995")
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [movie["title"] for movie in body["movies"]] == ["Heat"]
+
+    def test_get_movies_filters_by_genre(self, client: TestClient, fake_repos) -> None:
+        fake_repos.make_movie(movie_id=1, title="Argo", genre="Drama, Thriller")
+        fake_repos.make_movie(movie_id=2, title="Cars", genre="Animation")
+
+        response = client.get("/api/movies?page=1&size=10&genre=thriller")
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [movie["title"] for movie in body["movies"]] == ["Argo"]
+
+    def test_get_movies_filters_combining_criteria(
+        self, client: TestClient, fake_repos
+    ) -> None:
+        fake_repos.make_movie(
+            movie_id=1,
+            title="Argo",
+            director="Ben Affleck",
+            year=2012,
+            genre="Drama, Thriller",
+        )
+        fake_repos.make_movie(
+            movie_id=2,
+            title="The Town",
+            director="Ben Affleck",
+            year=2010,
+            genre="Crime, Drama",
+        )
+        fake_repos.make_movie(
+            movie_id=3,
+            title="Heat",
+            director="Michael Mann",
+            year=1995,
+            genre="Crime, Drama",
+        )
+
+        response = client.get(
+            "/api/movies?page=1&size=10&director=affleck&genre=drama"
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [movie["title"] for movie in body["movies"]] == ["Argo", "The Town"]
+
+    def test_get_movies_respects_pagination_after_filtering(
+        self, client: TestClient, fake_repos
+    ) -> None:
+        for movie_id in range(1, 6):
+            fake_repos.make_movie(
+                movie_id=movie_id,
+                title=f"Movie {movie_id}",
+                director="Ben Affleck",
+            )
+
+        response = client.get("/api/movies?page=2&size=2&director=affleck")
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [movie["title"] for movie in body["movies"]] == ["Movie 3", "Movie 4"]
+        assert body["metadata"]["page_count"] == 3
+        assert body["metadata"]["movie_count"] == 5
+
+    def test_get_movies_returns_404_when_filter_matches_nothing(
+        self, client: TestClient, fake_repos
+    ) -> None:
+        fake_repos.make_movie(movie_id=1, title="Argo", director="Ben Affleck")
+
+        response = client.get("/api/movies?page=1&size=10&director=nolan")
+
+        assert response.status_code == 404
+        assert response.json()["message"] == "No movies found"
+
     def test_create_movie_rejects_duplicate_title(
         self, client: TestClient, auth_headers, fake_repos
     ) -> None:

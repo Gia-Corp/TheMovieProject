@@ -36,10 +36,28 @@ class FakeMovieRepository:
 
         return self.movies[first_index - 1 : last_index]
 
-    def get_all_by_title(self, title: str) -> list[Movie]:
-        movies = [
-            movie for movie in self.movies if title.lower() in movie.title.lower()
-        ]
+    def get_all_by_criteria(
+        self,
+        title: str | None = None,
+        director: str | None = None,
+        year: int | None = None,
+        genre: str | None = None,
+    ) -> list[Movie]:
+        movies = list(self.movies)
+        if title:
+            movies = [movie for movie in movies if title.lower() in movie.title.lower()]
+        if director:
+            movies = [
+                movie for movie in movies if director.lower() in movie.director.lower()
+            ]
+        if year is not None:
+            movies = [movie for movie in movies if movie.year == year]
+        if genre:
+            movies = [
+                movie
+                for movie in movies
+                if movie.genre and genre.lower() in movie.genre.lower()
+            ]
         if not movies:
             raise MovieNotFoundError()
         return movies

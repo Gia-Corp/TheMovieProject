@@ -1,6 +1,7 @@
 from src.domain import Movie
 from src.infra import (
     GoogleSheetsMovieRepository,
+    MovieNotFoundError,
     PageOutOfBoundsError,
 )
 from src.application.pagination import Page
@@ -128,3 +129,116 @@ class TestGoogleSheetsMovieRepository:
         movies_sheet.col_values.return_value = ["Director"]
         movie_count = GoogleSheetsMovieRepository(movies_sheet).total_movies()
         assert movie_count == 0
+
+    def _movies_sheet_with(self, records):
+        movies_sheet = Mock()
+        movies_sheet.get_all_records.return_value = records
+        return movies_sheet
+
+    def _record(self, id, title, director, year, genre):
+        return {
+            "director": director,
+            "title": title,
+            "year": year,
+            "id": id,
+            "runtime": "",
+            "plot": "",
+            "poster_url": "",
+            "genre": genre,
+        }
+
+    def test_get_all_by_criteria_filters_by_title(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+                self._record(2, "Heat", "Michael Mann", 1995, "Crime, Drama"),
+            ]
+        )
+
+        movies = GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+            title="argo"
+        )
+
+        assert [movie.title for movie in movies] == ["Argo"]
+
+    def test_get_all_by_criteria_filters_by_director(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+                self._record(2, "Heat", "Michael Mann", 1995, "Crime, Drama"),
+            ]
+        )
+
+        movies = GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+            director="affleck"
+        )
+
+        assert [movie.title for movie in movies] == ["Argo"]
+
+    def test_get_all_by_criteria_filters_by_year(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+                self._record(2, "Heat", "Michael Mann", 1995, "Crime, Drama"),
+            ]
+        )
+
+        movies = GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+            year=1995
+        )
+
+        assert [movie.title for movie in movies] == ["Heat"]
+
+    def test_get_all_by_criteria_filters_by_genre(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+                self._record(2, "Cars", "John Lasseter", 2006, "Animation"),
+            ]
+        )
+
+        movies = GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+            genre="thriller"
+        )
+
+        assert [movie.title for movie in movies] == ["Argo"]
+
+    def test_get_all_by_criteria_combines_filters(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+                self._record(2, "The Town", "Ben Affleck", 2010, "Crime, Drama"),
+                self._record(3, "Heat", "Michael Mann", 1995, "Crime, Drama"),
+            ]
+        )
+
+        movies = GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+            director="affleck", genre="drama"
+        )
+
+        assert [movie.title for movie in movies] == ["Argo", "The Town"]
+
+    def test_get_all_by_criteria_fails_when_nothing_matches(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+            ]
+        )
+
+        with raises(MovieNotFoundError):
+            GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+                director="nolan"
+            )
+
+    def test_get_all_by_criteria_reads_the_sheet_once(self):
+        movies_sheet = self._movies_sheet_with(
+            [
+                self._record(1, "Argo", "Ben Affleck", 2012, "Drama, Thriller"),
+            ]
+        )
+
+        GoogleSheetsMovieRepository(movies_sheet).get_all_by_criteria(
+            title="argo", director="affleck", year=2012, genre="drama"
+        )
+
+        movies_sheet.get_all_records.assert_called_once()
