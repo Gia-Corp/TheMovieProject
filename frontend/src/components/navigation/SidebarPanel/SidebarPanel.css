@@ -89,6 +89,15 @@
   flex: 1;
 }
 
+.sidebar-nav-link {
+  color: var(--text-clr);
+  font-size: 0.9rem;
+
+  &:hover {
+    background-color: var(--main-ghost-clr);
+  }
+}
+
 .sidebar-nav .button-with-icon,
 .sidebar-profile {
   width: 100%;

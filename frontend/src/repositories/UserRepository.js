@@ -25,4 +25,21 @@ export class UserRepository {
 
     return this.getBodyContent(response);
   }
+
+  async getWatchedMovies(accessToken, signal) {
+    const url = new URL(
+      `${UserRepository.#USERS_PATH}/me/watched-movies`,
+      window.location.origin,
+    );
+
+    const response = await this.fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      signal,
+    });
+
+    return this.getBodyContent(response);
+  }
 }

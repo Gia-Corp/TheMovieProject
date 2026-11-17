@@ -20,4 +20,22 @@ describe("UserRepository", () => {
     expect(options.headers.Authorization).toBe("Bearer token-123");
     expect(res.nickname).toBe("saul");
   });
+
+  it("getWatchedMovies pega en /api/users/me/watched-movies y manda el Authorization", async () => {
+    const apiFetch = vi.fn().mockResolvedValue(
+      makeResponse({
+        metadata: { movie_count: 3, movies_watched: 1, last_watched: null },
+        movies: [],
+      }),
+    );
+    const repo = new UserRepository(apiFetch);
+
+    const res = await repo.getWatchedMovies("token-123");
+
+    expect(apiFetch).toHaveBeenCalledTimes(1);
+    const [url, options] = apiFetch.mock.calls[0];
+    expect(url.pathname).toBe("/api/users/me/watched-movies");
+    expect(options.headers.Authorization).toBe("Bearer token-123");
+    expect(res.metadata.movie_count).toBe(3);
+  });
 });

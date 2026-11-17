@@ -10,6 +10,7 @@ const MovieDetailWrapper = lazy(
   () => import("@/pages/MovieDetail/MovieDetailWrapper"),
 );
 const Profile = lazy(() => import("@/pages/Profile/Profile"));
+const WatchedMovies = lazy(() => import("@/pages/WatchedMovies/WatchedMovies"));
 
 function AppContent() {
   const location = useLocation();
@@ -47,6 +48,14 @@ function AppContent() {
               element={
                 <ErrorBoundary key={location.pathname}>
                   <Profile />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/watched-movies"
+              element={
+                <ErrorBoundary key={location.pathname}>
+                  <WatchedMovies />
                 </ErrorBoundary>
               }
             />

@@ -1,0 +1,162 @@
+.watched-movies-page {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--text-clr);
+}
+
+.watched-movies-page h1 {
+  font-family: var(--title-font);
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.watched-movies-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background-color: var(--main-ghost-clr);
+}
+
+.watched-movies-stats p {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.watched-movies-count {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.watched-movies-percentage {
+  font-weight: 700;
+  color: var(--magenta-clr);
+}
+
+.watched-movies-progress {
+  width: 100%;
+  height: 10px;
+  background-color: var(--search-bar-clr);
+}
+
+.watched-movies-progress-fill {
+  height: 100%;
+  background-color: var(--magenta-clr);
+  transition: width 0.3s ease;
+}
+
+.watched-movies-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.watched-movie-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-left: 3px solid transparent;
+  background-color: color-mix(in srgb, var(--main-clr) 10%, transparent);
+}
+
+.watched-movie-row--last {
+  background-color: color-mix(in srgb, var(--main-clr) 22%, transparent);
+  border-left-color: var(--main-clr);
+}
+
+.watched-movie-poster {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background-color: var(--main-ghost-clr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .skeleton {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.watched-movie-poster-fallback {
+  padding: 2px;
+  font-size: 0.65rem;
+  line-height: 1.15;
+  text-align: center;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.watched-movie-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.watched-movie-year {
+  color: var(--text-ghost-clr);
+}
+
+.watched-movie-date {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  text-align: right;
+  color: var(--text-ghost-clr);
+}
+
+.watched-movies-empty {
+  color: var(--text-ghost-clr);
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--text-clr);
+  background-color: var(--main-ghost-clr);
+
+  &:hover {
+    background-color: var(--main-contrast-clr);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--text-clr);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
