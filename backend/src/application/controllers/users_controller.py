@@ -52,7 +52,11 @@ async def get_my_watched_movies(
 ):
     user_id = current_user.id
 
-    watch_events = watch_event_repo.get_all_by_user_id(user_id)  # 1 CALL
+    watch_events = sorted(
+        watch_event_repo.get_all_by_user_id(user_id),  # 1 CALL
+        key=lambda event: event.watched_at,
+        reverse=True,
+    )
     movies = movie_repo.get_all()  # 1 CALL
     movies_by_id = {movie.id: movie for movie in movies}
 
@@ -72,11 +76,6 @@ async def get_my_watched_movies(
         metadata=WatchedMoviesMetadataDTO(
             movie_count=len(movies),
             movies_watched=len(watched_movies),
-            last_watched=(
-                max(watched_movies, key=lambda movie: movie.watched_at)
-                if watched_movies
-                else None
-            ),
         ),
         movies=watched_movies,
     )

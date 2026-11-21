@@ -456,11 +456,6 @@ class TestUserWatchedMoviesAcceptance:
         body = response.json()
         assert body["metadata"]["movie_count"] == 2
         assert body["metadata"]["movies_watched"] == 1
-        assert body["metadata"]["last_watched"]["movie_id"] == 1
-        assert (
-            body["metadata"]["last_watched"]["watched_at"]
-            == body["movies"][0]["watched_at"]
-        )
         assert len(body["movies"]) == 1
         assert body["movies"][0]["movie_id"] == 1
         assert body["movies"][0]["title"] == "Argo"
@@ -484,7 +479,6 @@ class TestUserWatchedMoviesAcceptance:
             "metadata": {
                 "movie_count": 1,
                 "movies_watched": 0,
-                "last_watched": None,
             },
             "movies": [],
         }
@@ -515,11 +509,10 @@ class TestUserWatchedMoviesAcceptance:
         body = response.json()
         assert body["metadata"]["movie_count"] == 2
         assert body["metadata"]["movies_watched"] == 1
-        assert body["metadata"]["last_watched"]["movie_id"] == 1
         assert len(body["movies"]) == 1
         assert body["movies"][0]["movie_id"] == 1
 
-    def test_last_watched_is_the_most_recently_watched_movie(
+    def test_most_recently_watched_movie_is_first(
         self, client: TestClient, auth_headers, fake_repos
     ) -> None:
         fake_repos.make_user(user_id=1, nickname="one")
@@ -539,5 +532,31 @@ class TestUserWatchedMoviesAcceptance:
         assert response.status_code == 200
         body = response.json()
         assert body["metadata"]["movies_watched"] == 2
-        assert body["metadata"]["last_watched"]["movie_id"] == 2
-        assert body["metadata"]["last_watched"]["watched_at"] == "2024-06-01T10:00:00"
+        assert body["movies"][0]["movie_id"] == 2
+        assert body["movies"][0]["watched_at"] == "2024-06-01T10:00:00"
+
+    def test_watched_movies_are_ordered_by_watched_at_descending(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Argo")
+        fake_repos.make_movie(movie_id=2, title="Titanic")
+        fake_repos.make_movie(movie_id=3, title="Matrix")
+
+        oldest = fake_repos.make_watch_event(movie_id=1, user_id=1)
+        oldest.watched_at = datetime(2020, 1, 1, 10, 0, 0)
+        newest = fake_repos.make_watch_event(movie_id=2, user_id=1)
+        newest.watched_at = datetime(2024, 6, 1, 10, 0, 0)
+        middle = fake_repos.make_watch_event(movie_id=3, user_id=1)
+        middle.watched_at = datetime(2022, 3, 15, 10, 0, 0)
+
+        response = client.get(
+            "/api/users/me/watched-movies",
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert [movie["movie_id"] for movie in body["movies"]] == [2, 3, 1]
+        watched_ats = [movie["watched_at"] for movie in body["movies"]]
+        assert watched_ats == sorted(watched_ats, reverse=True)

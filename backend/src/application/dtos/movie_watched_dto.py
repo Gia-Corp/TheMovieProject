@@ -14,7 +14,6 @@ class MovieWatchedDTO(BaseModel):
 class WatchedMoviesMetadataDTO(BaseModel):
     movie_count: int
     movies_watched: int
-    last_watched: MovieWatchedDTO | None = None
 
 
 class UserWatchedMoviesResponseDTO(BaseModel):

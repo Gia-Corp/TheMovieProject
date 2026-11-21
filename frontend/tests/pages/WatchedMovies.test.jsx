@@ -37,7 +37,7 @@ function renderWatchedMovies(getWatchedMovies) {
 }
 
 const watchedMovies = {
-  metadata: { movie_count: 10, movies_watched: 4, last_watched: null },
+  metadata: { movie_count: 10, movies_watched: 4 },
   movies: [
     {
       movie_id: 2,
@@ -146,7 +146,7 @@ describe("WatchedMovies", () => {
 
   it("muestra el estado vacío cuando no hay películas vistas", async () => {
     const getWatchedMovies = vi.fn().mockResolvedValue({
-      metadata: { movie_count: 0, movies_watched: 0, last_watched: null },
+      metadata: { movie_count: 0, movies_watched: 0 },
       movies: [],
     });
 

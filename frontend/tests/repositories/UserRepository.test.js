@@ -24,7 +24,7 @@ describe("UserRepository", () => {
   it("getWatchedMovies pega en /api/users/me/watched-movies y manda el Authorization", async () => {
     const apiFetch = vi.fn().mockResolvedValue(
       makeResponse({
-        metadata: { movie_count: 3, movies_watched: 1, last_watched: null },
+        metadata: { movie_count: 3, movies_watched: 1 },
         movies: [],
       }),
     );
