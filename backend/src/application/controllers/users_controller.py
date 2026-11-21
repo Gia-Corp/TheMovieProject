@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body, Depends, Path
-from src.domain import User, WatchEvent
+from src.domain import Movie, User, WatchEvent
 from src.infra import (
     GoogleSheetsMovieRepository,
     GoogleSheetsUserRepository,
@@ -95,34 +95,94 @@ async def update_my_watched_movies(
 ):
     user_id = current_user.id
 
-    existing_movie_ids = {movie.id for movie in movie_repo.get_all()}  # 1 CALL
+    all_movies = movie_repo.get_all()  # 1 CALL
+    movies_by_id = {movie.id: movie for movie in all_movies}
 
-    valid_items = [item for item in items if item.movie_id in existing_movie_ids]
-    errors = [
-        MovieWatchedErrorDTO(
-            movie_id=item.movie_id,
-            watched=item.watched,
-            error="movie_not_found",
-        )
-        for item in items
-        if item.movie_id not in existing_movie_ids
-    ]
+    valid_items: list[tuple[MovieWatchedItemDTO, Movie]] = []
+    errors: list[MovieWatchedErrorDTO] = []
 
-    if not valid_items:
-        return UpdateMoviesWatchedResponseDTO(success=[], errors=errors)
+    for item in items:
+        movie = None
+
+        if item.movie_id is not None:
+            # movie_id tiene prioridad sobre title
+            movie = movies_by_id.get(item.movie_id)
+            if movie is None:
+                errors.append(
+                    MovieWatchedErrorDTO(
+                        movie_id=item.movie_id,
+                        title=item.title or "",
+                        watched=item.watched,
+                        error=f"movie_not_found: no movie with id {item.movie_id}",
+                    )
+                )
+                continue
+        else:
+            # Priorizar coincidencia exacta (case-insensitive, trimeado)
+            pattern = (item.title or "").strip().lower()
+            exact_matches = [
+                m for m in all_movies if m.title.strip().lower() == pattern
+            ]
+
+            if len(exact_matches) > 1:
+                errors.append(
+                    MovieWatchedErrorDTO(
+                        title=item.title or "",
+                        watched=item.watched,
+                        error=(
+                            f"ambiguous_title: {len(exact_matches)} movies match "
+                            f"'{item.title}'"
+                        ),
+                        matches=[m.title for m in exact_matches[:20]],
+                    )
+                )
+                continue
+
+            if len(exact_matches) == 1:
+                movie = exact_matches[0]
+            else:
+                # Sin coincidencia exacta, buscar por substring
+                substring_matches = [
+                    m for m in all_movies if pattern in m.title.strip().lower()
+                ]
+                if not substring_matches:
+                    errors.append(
+                        MovieWatchedErrorDTO(
+                            title=item.title or "",
+                            watched=item.watched,
+                            error=f"movie_not_found: no movie matches '{item.title}'",
+                        )
+                    )
+                    continue
+                if len(substring_matches) > 1:
+                    errors.append(
+                        MovieWatchedErrorDTO(
+                            title=item.title or "",
+                            watched=item.watched,
+                            error=(
+                                f"ambiguous_title: {len(substring_matches)} movies "
+                                f"match '{item.title}'"
+                            ),
+                            matches=[m.title for m in substring_matches[:20]],
+                        )
+                    )
+                    continue
+                movie = substring_matches[0]
+
+        valid_items.append((item, movie))
 
     current_events = watch_event_repo.get_all_by_user_id(user_id)  # 1 CALL
     watched_movie_ids = {event.movie_id for event in current_events}
 
     to_add = [
-        WatchEvent(movie_id=item.movie_id, user_id=user_id)
-        for item in valid_items
-        if item.watched and item.movie_id not in watched_movie_ids
+        WatchEvent(movie_id=movie.id, user_id=user_id)
+        for item, movie in valid_items
+        if item.watched and movie.id not in watched_movie_ids
     ]
     to_remove = [
-        item.movie_id
-        for item in valid_items
-        if not item.watched and item.movie_id in watched_movie_ids
+        movie.id
+        for item, movie in valid_items
+        if not item.watched and movie.id in watched_movie_ids
     ]
 
     if to_add:
@@ -132,17 +192,19 @@ async def update_my_watched_movies(
         watch_event_repo.delete_by_user_and_movie_ids(user_id, to_remove)  # 2 CALLS
 
     watch_event_id_by_movie_id = {event.movie_id: event.id for event in current_events}
-    watch_event_id_by_movie_id.update({event.movie_id: event.id for event in to_add})
+    for event in to_add:
+        watch_event_id_by_movie_id[event.movie_id] = event.id
 
     success = [
         MovieWatchedSuccessDTO(
-            movie_id=item.movie_id,
+            movie_id=movie.id,
+            title=movie.title,
             watched=item.watched,
             watch_event_id=(
-                watch_event_id_by_movie_id.get(item.movie_id) if item.watched else None
+                watch_event_id_by_movie_id.get(movie.id) if item.watched else None
             ),
         )
-        for item in valid_items
+        for item, movie in valid_items
     ]
 
     return UpdateMoviesWatchedResponseDTO(success=success, errors=errors)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from datetime import datetime
 from typing import Optional
 
@@ -23,20 +23,30 @@ class UserWatchedMoviesResponseDTO(BaseModel):
 
 
 class MovieWatchedItemDTO(BaseModel):
-    movie_id: int = Field(..., gt=0)
+    movie_id: Optional[int] = Field(None, gt=0)
+    title: Optional[str] = Field(None, min_length=1)
     watched: bool
+
+    @model_validator(mode="after")
+    def at_least_one_identifier(self) -> "MovieWatchedItemDTO":
+        if self.movie_id is None and self.title is None:
+            raise ValueError("Either movie_id or title must be provided")
+        return self
 
 
 class MovieWatchedSuccessDTO(BaseModel):
     movie_id: int
+    title: str
     watched: bool
     watch_event_id: Optional[int] = None
 
 
 class MovieWatchedErrorDTO(BaseModel):
-    movie_id: int
+    movie_id: Optional[int] = None
+    title: str
     watched: bool
     error: str
+    matches: Optional[list[str]] = None
 
 
 class UpdateMoviesWatchedResponseDTO(BaseModel):

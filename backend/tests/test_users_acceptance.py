@@ -52,7 +52,7 @@ class TestUsersAcceptance:
 
 
 class TestUserWatchedMoviesAcceptance:
-    def test_marks_multiple_movies_as_watched(
+    def test_marks_multiple_movies_as_watched_by_title(
         self, client: TestClient, auth_headers, fake_repos
     ) -> None:
         fake_repos.make_user(user_id=1, nickname="one")
@@ -63,9 +63,9 @@ class TestUserWatchedMoviesAcceptance:
         response = client.patch(
             "/api/users/me/watched-movies",
             json=[
-                {"movie_id": 1, "watched": True},
-                {"movie_id": 2, "watched": True},
-                {"movie_id": 3, "watched": True},
+                {"title": "Argo", "watched": True},
+                {"title": "Titanic", "watched": True},
+                {"title": "Inception", "watched": True},
             ],
             headers=auth_headers(1),
         )
@@ -74,6 +74,11 @@ class TestUserWatchedMoviesAcceptance:
         body = response.json()
         assert len(body["success"]) == 3
         assert body["errors"] == []
+        assert {item["title"] for item in body["success"]} == {
+            "Argo",
+            "Titanic",
+            "Inception",
+        }
         assert {item["movie_id"] for item in body["success"]} == {1, 2, 3}
         for item in body["success"]:
             assert item["watched"] is True
@@ -85,7 +90,7 @@ class TestUserWatchedMoviesAcceptance:
         }
         assert stored == {(1, 1), (2, 1), (3, 1)}
 
-    def test_marks_multiple_movies_as_not_watched(
+    def test_marks_multiple_movies_as_not_watched_by_title(
         self, client: TestClient, auth_headers, fake_repos
     ) -> None:
         fake_repos.make_user(user_id=1, nickname="one")
@@ -97,8 +102,8 @@ class TestUserWatchedMoviesAcceptance:
         response = client.patch(
             "/api/users/me/watched-movies",
             json=[
-                {"movie_id": 1, "watched": False},
-                {"movie_id": 2, "watched": False},
+                {"title": "Argo", "watched": False},
+                {"title": "Titanic", "watched": False},
             ],
             headers=auth_headers(1),
         )
@@ -129,8 +134,8 @@ class TestUserWatchedMoviesAcceptance:
         response = client.patch(
             "/api/users/me/watched-movies",
             json=[
-                {"movie_id": 1, "watched": False},
-                {"movie_id": 2, "watched": True},
+                {"title": "Argo", "watched": False},
+                {"title": "Titanic", "watched": True},
             ],
             headers=auth_headers(1),
         )
@@ -140,11 +145,11 @@ class TestUserWatchedMoviesAcceptance:
         assert len(body["success"]) == 2
         assert body["errors"] == []
 
-        by_id = {item["movie_id"]: item for item in body["success"]}
-        assert by_id[1]["watched"] is False
-        assert by_id[1]["watch_event_id"] is None
-        assert by_id[2]["watched"] is True
-        assert by_id[2]["watch_event_id"] is not None
+        by_title = {item["title"]: item for item in body["success"]}
+        assert by_title["Argo"]["watched"] is False
+        assert by_title["Argo"]["watch_event_id"] is None
+        assert by_title["Titanic"]["watched"] is True
+        assert by_title["Titanic"]["watch_event_id"] is not None
 
     def test_partial_success_some_movies_do_not_exist(
         self, client: TestClient, auth_headers, fake_repos
@@ -155,9 +160,9 @@ class TestUserWatchedMoviesAcceptance:
         response = client.patch(
             "/api/users/me/watched-movies",
             json=[
-                {"movie_id": 1, "watched": True},
-                {"movie_id": 999, "watched": True},
-                {"movie_id": 2, "watched": False},
+                {"title": "Argo", "watched": True},
+                {"title": "Inexistente", "watched": True},
+                {"title": "Otra Inexistente", "watched": False},
             ],
             headers=auth_headers(1),
         )
@@ -165,14 +170,17 @@ class TestUserWatchedMoviesAcceptance:
         assert response.status_code == 200
         body = response.json()
         assert len(body["success"]) == 1
-        assert body["success"][0]["movie_id"] == 1
+        assert body["success"][0]["title"] == "Argo"
         assert body["success"][0]["watched"] is True
         assert body["success"][0]["watch_event_id"] is not None
 
         assert len(body["errors"]) == 2
-        assert {item["movie_id"] for item in body["errors"]} == {999, 2}
+        assert {item["title"] for item in body["errors"]} == {
+            "Inexistente",
+            "Otra Inexistente",
+        }
         for item in body["errors"]:
-            assert item["error"] == "movie_not_found"
+            assert item["error"].startswith("movie_not_found:")
 
         watch_events = fake_repos.watch_events.watch_events
         assert len(watch_events) == 1
@@ -187,8 +195,8 @@ class TestUserWatchedMoviesAcceptance:
         response = client.patch(
             "/api/users/me/watched-movies",
             json=[
-                {"movie_id": 1, "watched": True},
-                {"movie_id": 2, "watched": False},
+                {"title": "Inexistente", "watched": True},
+                {"title": "Otra Inexistente", "watched": False},
             ],
             headers=auth_headers(1),
         )
@@ -198,8 +206,157 @@ class TestUserWatchedMoviesAcceptance:
         assert body["success"] == []
         assert len(body["errors"]) == 2
         for item in body["errors"]:
-            assert item["error"] == "movie_not_found"
+            assert item["error"].startswith("movie_not_found:")
         assert fake_repos.watch_events.watch_events == []
+
+    def test_exact_title_takes_priority_over_substring(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Casino")
+        fake_repos.make_movie(movie_id=2, title="Casino Royale")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"title": "casino", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body["success"]) == 1
+        assert body["success"][0]["movie_id"] == 1
+        assert body["success"][0]["title"] == "Casino"
+        assert body["errors"] == []
+        assert [event.movie_id for event in fake_repos.watch_events.watch_events] == [1]
+
+    def test_exact_title_takes_priority_case_insensitive(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="X-Men")
+        fake_repos.make_movie(movie_id=2, title="X-Men 2")
+        fake_repos.make_movie(movie_id=3, title="X-Men: First Class")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"title": "x-men", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body["success"]) == 1
+        assert body["success"][0]["movie_id"] == 1
+        assert body["success"][0]["title"] == "X-Men"
+        assert body["errors"] == []
+
+    def test_single_substring_match_resolves_when_no_exact(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Casino Royale")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"title": "casino", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body["success"]) == 1
+        assert body["success"][0]["movie_id"] == 1
+        assert body["success"][0]["title"] == "Casino Royale"
+        assert body["errors"] == []
+
+    def test_ambiguous_title_returns_error_with_matches(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="The Matrix")
+        fake_repos.make_movie(movie_id=2, title="The Matrix Reloaded")
+        fake_repos.make_movie(movie_id=3, title="The Matrix Revolutions")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"title": "matrix", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["success"] == []
+        assert len(body["errors"]) == 1
+        error = body["errors"][0]
+        assert error["title"] == "matrix"
+        assert error["watched"] is True
+        assert error["error"].startswith("ambiguous_title:")
+        assert set(error["matches"]) == {
+            "The Matrix",
+            "The Matrix Reloaded",
+            "The Matrix Revolutions",
+        }
+        assert fake_repos.watch_events.watch_events == []
+
+    def test_matches_are_limited_to_20(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        for index in range(25):
+            fake_repos.make_movie(movie_id=index + 1, title=f"The Movie {index}")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"title": "The Movie", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body["errors"]) == 1
+        assert len(body["errors"][0]["matches"]) == 20
+        assert body["errors"][0]["error"].startswith("ambiguous_title: 25 movies")
+
+    def test_movie_id_takes_priority_over_title(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Argo")
+        fake_repos.make_movie(movie_id=2, title="X-Men")
+        fake_repos.make_movie(movie_id=3, title="X-Men 2")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"movie_id": 1, "title": "x-men", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert len(body["success"]) == 1
+        assert body["success"][0]["movie_id"] == 1
+        assert body["success"][0]["title"] == "Argo"
+        assert body["errors"] == []
+
+    def test_movie_id_not_found_does_not_fall_back_to_title(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1, nickname="one")
+        fake_repos.make_movie(movie_id=1, title="Argo")
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"movie_id": 999, "title": "Argo", "watched": True}],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["success"] == []
+        assert len(body["errors"]) == 1
+        assert body["errors"][0]["movie_id"] == 999
+        assert body["errors"][0]["error"].startswith("movie_not_found:")
 
     def test_idempotent_marking_already_watched_as_watched(
         self, client: TestClient, auth_headers, fake_repos
@@ -211,7 +368,7 @@ class TestUserWatchedMoviesAcceptance:
 
         response = client.patch(
             "/api/users/me/watched-movies",
-            json=[{"movie_id": 1, "watched": True}],
+            json=[{"title": "Argo", "watched": True}],
             headers=auth_headers(1),
         )
 
@@ -231,7 +388,7 @@ class TestUserWatchedMoviesAcceptance:
 
         response = client.patch(
             "/api/users/me/watched-movies",
-            json=[{"movie_id": 1, "watched": True}],
+            json=[{"title": "Argo", "watched": True}],
         )
 
         assert response.status_code == 401
@@ -245,7 +402,7 @@ class TestUserWatchedMoviesAcceptance:
 
         response = client.patch(
             "/api/users/me/watched-movies",
-            json=[{"movie_id": 1, "watched": True}],
+            json=[{"title": "Argo", "watched": True}],
             headers=auth_headers(1),
         )
 
@@ -262,6 +419,19 @@ class TestUserWatchedMoviesAcceptance:
         response = client.patch(
             "/api/users/me/watched-movies",
             json=[],
+            headers=auth_headers(1),
+        )
+
+        assert response.status_code == 422
+
+    def test_item_without_movie_id_or_title_returns_validation_error(
+        self, client: TestClient, auth_headers, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1)
+
+        response = client.patch(
+            "/api/users/me/watched-movies",
+            json=[{"watched": True}],
             headers=auth_headers(1),
         )
 
