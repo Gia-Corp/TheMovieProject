@@ -17,6 +17,15 @@
   }
 }
 
+.movie-card--selected::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--magenta-clr);
+  pointer-events: none;
+  z-index: 3;
+}
+
 .corner-shadow::after {
   content: '';
   position: absolute;

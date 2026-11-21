@@ -15,7 +15,7 @@ src/hooks/                   contexto y hook (useAuth, useRepos, useNotification
 
 - Componente de función, `export default`. Su CSS vive al lado: `MovieCard/MovieCard.jsx` importa `./MovieCard.css`.
 - Providers y hooks se exportan por nombre. El contexto se crea en el hook; el provider solo lo provee.
-- Árbol en `main.jsx`: `AuthProvider` → `RepositoriesProvider` → `NotificationProvider` → `App`.
+- Árbol en `main.jsx`: `AuthProvider` → `SelectionProvider` → `RepositoriesProvider` → `NotificationProvider` → `App`.
 - Rutas actuales: `/`, `/movies/:id`, `/profile`. Una ruta nueva se declara lazy en `App.jsx`, envuelta en `ErrorBoundary` y `Suspense` (el fallback es `SpinnerIcon`).
 
 ## Datos

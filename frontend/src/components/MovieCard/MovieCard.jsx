@@ -5,23 +5,52 @@ import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWatchedIcon";
 import Tooltip from "@/components/Tooltip/Tooltip";
 
-function MovieCard({ movie }) {
+function MovieCard({
+  movie,
+  isSelectionMode = false,
+  isSelected = false,
+  onToggleSelection,
+}) {
   const navigate = useNavigate();
   const [isImageReady, setIsImageReady] = useState(!movie.poster_url);
   const [imageFailed, setImageFailed] = useState(false);
 
   const handleClick = useCallback(() => {
+    if (isSelectionMode) {
+      onToggleSelection?.(movie.id);
+      return;
+    }
+
     navigate(`/movies/${movie.id}`, { state: { movie } });
-  }, [navigate, movie]);
+  }, [navigate, movie, isSelectionMode, onToggleSelection]);
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (!isSelectionMode) return;
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onToggleSelection?.(movie.id);
+      }
+    },
+    [isSelectionMode, onToggleSelection, movie.id],
+  );
 
   const showIcon = movie.watched_by.watcher_users > 0;
   const isFullyWatched =
     movie.watched_by.watcher_users === movie.watched_by.total_users;
 
-  const classNames = `movie-card ${!isImageReady && "skeleton"} ${showIcon && "corner-shadow"}`;
+  const classNames = `movie-card ${!isImageReady && "skeleton"} ${showIcon && "corner-shadow"} ${isSelected && "movie-card--selected"}`;
 
   return (
-    <div className={classNames} onClick={handleClick}>
+    <div
+      className={classNames}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role={isSelectionMode ? "checkbox" : undefined}
+      aria-checked={isSelectionMode ? isSelected : undefined}
+      tabIndex={isSelectionMode ? 0 : undefined}
+    >
       {movie.poster_url && !imageFailed ? (
         <img
           src={movie.poster_url ?? undefined}

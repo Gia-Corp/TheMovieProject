@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import MovieCard from "@/components/MovieCard/MovieCard";
@@ -16,11 +16,11 @@ const baseMovie = {
   watched_by: { watcher_users: 0, total_users: 2, watch_events: [] },
 };
 
-function renderCard(movie = baseMovie) {
+function renderCard(movie = baseMovie, props = {}) {
   return render(
     <MemoryRouter initialEntries={["/"]}>
       <Routes>
-        <Route path="/" element={<MovieCard movie={movie} />} />
+        <Route path="/" element={<MovieCard movie={movie} {...props} />} />
         <Route path="/movies/:id" element={<LocationDisplay />} />
       </Routes>
     </MemoryRouter>,
@@ -91,5 +91,29 @@ describe("MovieCard", () => {
 
     expect(container.querySelector(".movie-card-icon")).toBeTruthy();
     expect(screen.getByText("Todos la han visto")).toBeTruthy();
+  });
+
+  it("en modo selección, clickear llama onToggleSelection y no navega", () => {
+    const onToggleSelection = vi.fn();
+    renderCard(baseMovie, { isSelectionMode: true, onToggleSelection });
+
+    fireEvent.click(screen.getByText("Peli A"));
+
+    expect(onToggleSelection).toHaveBeenCalledWith(1);
+    expect(screen.queryByTestId("location")).toBeNull();
+  });
+
+  it("en modo selección, marca la card seleccionada con clase y aria-checked", () => {
+    const { container } = renderCard(baseMovie, {
+      isSelectionMode: true,
+      isSelected: true,
+      onToggleSelection: vi.fn(),
+    });
+
+    const card = container.querySelector(".movie-card");
+
+    expect(card.classList.contains("movie-card--selected")).toBe(true);
+    expect(card.getAttribute("role")).toBe("checkbox");
+    expect(card.getAttribute("aria-checked")).toBe("true");
   });
 });

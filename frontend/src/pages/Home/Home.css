@@ -28,3 +28,40 @@ main > ul {
   padding: 40px 20px;
   font-size: 1.1rem;
 }
+
+.selection-toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.selection-mode-toggle {
+  padding: 10px 18px;
+  border: 1px solid var(--magenta-clr);
+  border-radius: 999px;
+  font-weight: 700;
+  transition: background-color 0.15s ease-out;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--magenta-clr) 25%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--text-clr);
+    outline-offset: 2px;
+  }
+}
+
+.home .selection-mode-toggle--active {
+  background-color: var(--magenta-clr);
+  color: var(--icon-clr);
+}
+
+.home .selection-hint {
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-ghost-clr);
+}

@@ -38,4 +38,21 @@ describe("UserRepository", () => {
     expect(options.headers.Authorization).toBe("Bearer token-123");
     expect(res.metadata.movie_count).toBe(3);
   });
+
+  it("updateWatchedMovies manda un PATCH con los items y el Authorization", async () => {
+    const body = { success: [], errors: [] };
+    const apiFetch = vi.fn().mockResolvedValue(makeResponse(body));
+    const repo = new UserRepository(apiFetch);
+    const items = [{ movie_id: 1, watched: true }];
+
+    const res = await repo.updateWatchedMovies(items, "token-123");
+
+    expect(apiFetch).toHaveBeenCalledTimes(1);
+    const [url, options] = apiFetch.mock.calls[0];
+    expect(url.pathname).toBe("/api/users/me/watched-movies");
+    expect(options.method).toBe("PATCH");
+    expect(options.headers.Authorization).toBe("Bearer token-123");
+    expect(JSON.parse(options.body)).toEqual(items);
+    expect(res).toEqual(body);
+  });
 });

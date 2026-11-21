@@ -42,4 +42,22 @@ export class UserRepository {
 
     return this.getBodyContent(response);
   }
+
+  async updateWatchedMovies(items, accessToken) {
+    const url = new URL(
+      `${UserRepository.#USERS_PATH}/me/watched-movies`,
+      window.location.origin,
+    );
+
+    const response = await this.fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(items),
+    });
+
+    return this.getBodyContent(response);
+  }
 }

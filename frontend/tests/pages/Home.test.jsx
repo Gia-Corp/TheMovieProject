@@ -1,22 +1,28 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { ErrorBoundary } from "@/error_handling/ErrorBoundary";
+import { AuthContext } from "@/hooks/useAuth";
+import { NotificationContext } from "@/hooks/useNotification";
 import { RepositoriesContext } from "@/hooks/useRepos";
+import { SelectionProvider } from "@/providers/SelectionProvider";
 import Home from "@/pages/Home/Home";
 
-function renderHome() {
-  const getMovies = vi.fn();
+function AppLikeHome() {
+  const location = useLocation();
 
-  render(
-    <MemoryRouter initialEntries={["/?page=1"]}>
-      <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-        <Home />
-      </RepositoriesContext.Provider>
-    </MemoryRouter>,
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <ErrorBoundary key={location.pathname}>
+            <Home />
+          </ErrorBoundary>
+        }
+      />
+    </Routes>
   );
-
-  return { getMovies };
 }
 
 const movie = {
@@ -26,8 +32,57 @@ const movie = {
   watched_by: { watcher_users: 0, total_users: 0, watch_events: [] },
 };
 
+function renderHome({
+  getMovies = vi.fn(),
+  updateWatchedMovies = vi.fn(),
+  accessToken = null,
+  notify = vi.fn(),
+  initialEntries = ["/?page=1"],
+  withErrorBoundary = false,
+  withRoute = false,
+} = {}) {
+  const home = withRoute ? (
+    <AppLikeHome />
+  ) : withErrorBoundary ? (
+    <ErrorBoundary>
+      <Home />
+    </ErrorBoundary>
+  ) : (
+    <Home />
+  );
+
+  const result = render(
+    <MemoryRouter initialEntries={initialEntries}>
+      <AuthContext.Provider
+        value={{
+          accessToken,
+          currentUser: accessToken ? { id: "u1" } : null,
+          setAccessToken: vi.fn(),
+          setCurrentUser: vi.fn(),
+        }}
+      >
+        <SelectionProvider>
+          <RepositoriesContext.Provider
+            value={{
+              movieRepo: { getMovies },
+              userRepo: { updateWatchedMovies },
+            }}
+          >
+            <NotificationContext.Provider value={{ notify }}>
+              {home}
+            </NotificationContext.Provider>
+          </RepositoriesContext.Provider>
+        </SelectionProvider>
+      </AuthContext.Provider>
+    </MemoryRouter>,
+  );
+
+  return { ...result, getMovies, updateWatchedMovies, notify };
+}
+
 describe("Home", () => {
   beforeEach(() => {
+    sessionStorage.clear();
     vi.clearAllMocks();
   });
 
@@ -38,13 +93,7 @@ describe("Home", () => {
   it("muestra el spinner y los skeletons mientras carga", () => {
     const getMovies = vi.fn(() => new Promise(() => {}));
 
-    const { container } = render(
-      <MemoryRouter>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    const { container } = renderHome({ getMovies });
 
     expect(container.querySelectorAll(".movie-card.skeleton").length).toBe(14);
   });
@@ -55,13 +104,7 @@ describe("Home", () => {
       metadata: { page_count: 1 },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({ getMovies });
 
     expect(await screen.findByText("Peli A")).toBeTruthy();
     expect(getMovies).toHaveBeenCalledWith(
@@ -73,15 +116,7 @@ describe("Home", () => {
   it("lanza el error cuando la carga falla", async () => {
     const getMovies = vi.fn().mockRejectedValue(new Error("Fallo red"));
 
-    render(
-      <MemoryRouter>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <ErrorBoundary>
-            <Home />
-          </ErrorBoundary>
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({ getMovies, withErrorBoundary: true });
 
     await waitFor(() => expect(screen.getByText(/Algo salió mal/)).toBeTruthy());
   });
@@ -93,13 +128,10 @@ describe("Home", () => {
         Object.assign(new Error("No movies found"), { status: 404 }),
       );
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1&title=zzz"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({
+      getMovies,
+      initialEntries: ["/?page=1&title=zzz"],
+    });
 
     expect(
       await screen.findByText(
@@ -118,13 +150,10 @@ describe("Home", () => {
       )
       .mockResolvedValue({ movies: [movie], metadata: { page_count: 1 } });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1&title=zzz"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({
+      getMovies,
+      initialEntries: ["/?page=1&title=zzz"],
+    });
 
     expect(
       await screen.findByText(
@@ -148,13 +177,7 @@ describe("Home", () => {
       metadata: { page_count: 1 },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({ getMovies });
 
     expect(await screen.findByLabelText("Título")).toBeTruthy();
     expect(screen.getByLabelText("Director")).toBeTruthy();
@@ -168,17 +191,12 @@ describe("Home", () => {
       metadata: { page_count: 1 },
     });
 
-    render(
-      <MemoryRouter
-        initialEntries={[
-          "/?page=2&title=Matrix&director=Nolan&year=2010&genre=Drama",
-        ]}
-      >
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({
+      getMovies,
+      initialEntries: [
+        "/?page=2&title=Matrix&director=Nolan&year=2010&genre=Drama",
+      ],
+    });
 
     expect(await screen.findByText("Peli A")).toBeTruthy();
     expect(getMovies).toHaveBeenCalledWith(
@@ -199,13 +217,10 @@ describe("Home", () => {
       metadata: { page_count: 2 },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=2"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({
+      getMovies,
+      initialEntries: ["/?page=2"],
+    });
 
     await screen.findByText("Peli A");
     fireEvent.change(screen.getByLabelText("Género"), {
@@ -225,13 +240,7 @@ describe("Home", () => {
       metadata: { page_count: 1 },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({ getMovies });
 
     await screen.findByText("Peli A");
     fireEvent.change(screen.getByLabelText("Título"), {
@@ -253,13 +262,10 @@ describe("Home", () => {
       metadata: { page_count: 2 },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1&title=Matrix&genre=Drama"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({
+      getMovies,
+      initialEntries: ["/?page=1&title=Matrix&genre=Drama"],
+    });
 
     await screen.findByText("Peli A");
     fireEvent.click(screen.getByText(">"));
@@ -282,13 +288,7 @@ describe("Home", () => {
       metadata: { page_count: 2 },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/?page=1"]}>
-        <RepositoriesContext.Provider value={{ movieRepo: { getMovies } }}>
-          <Home />
-        </RepositoriesContext.Provider>
-      </MemoryRouter>,
-    );
+    renderHome({ getMovies });
 
     expect(await screen.findByText("Peli A")).toBeTruthy();
     fireEvent.click(screen.getByText(">"));
@@ -298,5 +298,163 @@ describe("Home", () => {
         expect.objectContaining({ page: 2, size: 14 }),
       ),
     );
+  });
+
+  it("no muestra el toggle de selección sin sesión", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    renderHome({ getMovies });
+
+    await screen.findByText("Peli A");
+
+    expect(
+      screen.queryByRole("button", {
+        name: "Marcar películas como vistas",
+      }),
+    ).toBeNull();
+  });
+
+  it("muestra el toggle de selección con sesión", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    renderHome({ getMovies, accessToken: "token-1" });
+
+    expect(
+      await screen.findByRole("button", {
+        name: "Marcar películas como vistas",
+      }),
+    ).toBeTruthy();
+  });
+
+  it("en modo selección, clickear una card la selecciona y muestra el FAB", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    renderHome({ getMovies, accessToken: "token-1" });
+
+    await screen.findByText("Peli A");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+    );
+    fireEvent.click(screen.getByText("Peli A"));
+
+    expect(
+      screen.getByRole("button", { name: "Marcar 1 película como vista" }),
+    ).toBeTruthy();
+  });
+
+  it("confirma la selección llamando al endpoint y notificando", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+    const updateWatchedMovies = vi.fn().mockResolvedValue({
+      success: [{ movie_id: 1, title: "Peli A", watched: true }],
+      errors: [],
+    });
+    const notify = vi.fn();
+
+    renderHome({
+      getMovies,
+      updateWatchedMovies,
+      accessToken: "token-1",
+      notify,
+    });
+
+    await screen.findByText("Peli A");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+    );
+    fireEvent.click(screen.getByText("Peli A"));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Marcar 1 película como vista" }),
+    );
+
+    await waitFor(() =>
+      expect(updateWatchedMovies).toHaveBeenCalledWith(
+        [{ movie_id: 1, watched: true }],
+        "token-1",
+      ),
+    );
+    expect(notify).toHaveBeenCalledWith("1 película marcada como vista");
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("button", {
+          name: "Marcar 1 película como vista",
+        }),
+      ).toBeNull(),
+    );
+  });
+
+  it("mantiene el modo selección y las pelis seleccionadas al cambiar de página", async () => {
+    const movie2 = { ...movie, id: 2, title: "Peli B" };
+    const getMovies = vi.fn(({ page }) =>
+      Promise.resolve({
+        movies: page === 1 ? [movie] : [movie2],
+        metadata: { page_count: 2 },
+      }),
+    );
+
+    renderHome({ getMovies, accessToken: "token-1" });
+
+    await screen.findByText("Peli A");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+    );
+    fireEvent.click(screen.getByText("Peli A"));
+
+    fireEvent.click(screen.getByText(">"));
+
+    expect(await screen.findByText("Peli B")).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Cancelar selección" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Marcar 1 película como vista" }),
+    ).toBeTruthy();
+
+    fireEvent.click(screen.getByText("<"));
+
+    expect(await screen.findByText("Peli A")).toBeTruthy();
+    expect(
+      screen.getByText("Peli A").closest(".movie-card").classList,
+    ).toContain("movie-card--selected");
+  });
+
+  it("mantiene la selección con la estructura de rutas de App", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 2 },
+    });
+
+    renderHome({ getMovies, accessToken: "token-1", withRoute: true });
+
+    await screen.findByText("Peli A");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+    );
+    fireEvent.click(screen.getByText("Peli A"));
+    fireEvent.click(screen.getByText(">"));
+
+    await waitFor(() =>
+      expect(getMovies).toHaveBeenLastCalledWith(
+        expect.objectContaining({ page: 2 }),
+      ),
+    );
+    expect(
+      screen.getByRole("button", { name: "Cancelar selección" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Marcar 1 película como vista" }),
+    ).toBeTruthy();
   });
 });
