@@ -40,11 +40,11 @@ Copy en español, voseo informal (`¿Qué peli buscás?`, `Ya la ví`).
 - Borrar abre `ConfirmationModal`. El botón de confirmar es `SubmitButton` con `isLoading`.
 - Éxito de una mutación: `useNotification().notify("...")`. El popup se cierra solo.
 - Error de una página: guardalo en estado y hacé `if (error) throw error` para que lo tome `ErrorBoundary`. No inventes otra pantalla de error.
-- Carga de página: `SpinnerIcon` dentro de `.spinner-container`. Grilla: `MovieCardSkeleton` hasta completar `maxMovies` (en Home, 12).
+- Carga de página: `SpinnerIcon` dentro de `.spinner-container`. Grilla: `MovieCardSkeleton` hasta completar `maxMovies` (en Home, 14).
 - Póster: no lo muestres hasta `onLoad`. Mientras tanto, clase `skeleton`. Sin póster, mostrá el título.
 - Vistas: ícono lleno si `watcher_users === total_users`; ícono a medias si vio alguien. Mismo criterio en la card y en la búsqueda.
 - Formularios de modal usan `useActionState` y la clase `modal-form`. Modales son `<dialog>` y se abren con `ref.showModal()`.
-- La página viaja en el query `?page=`. Home pide `size` 12.
+- La página viaja en el query `?page=`. Home pide `size` 14.
 - Ítems de lista que dependen de poco estado, como `MovieCard`, van envueltos en `memo`.
 
 ## Estilos
