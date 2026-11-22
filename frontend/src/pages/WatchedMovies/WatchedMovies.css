@@ -38,7 +38,7 @@
 
 .watched-movies-percentage {
   font-weight: 700;
-  color: var(--magenta-clr);
+  color: var(--semi-watched-clr);
 }
 
 .watched-movies-progress {
@@ -49,7 +49,7 @@
 
 .watched-movies-progress-fill {
   height: 100%;
-  background-color: var(--magenta-clr);
+  background-color: var(--semi-watched-clr);
   transition: width 0.3s ease;
 }
 

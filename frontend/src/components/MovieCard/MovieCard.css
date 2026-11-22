@@ -21,7 +21,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 3px solid var(--magenta-clr);
+  border: 3px solid var(--semi-watched-clr);
   pointer-events: none;
   z-index: 3;
 }
