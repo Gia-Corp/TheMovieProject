@@ -1,6 +1,5 @@
 import "./SelectionFab.css";
 import SpinnerIcon from "@/components/SpinnerIcon/SpinnerIcon";
-import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 
 function SelectionFab({ selectedCount, isLoading, onConfirm }) {
   const isSingle = selectedCount === 1;
@@ -21,7 +20,13 @@ function SelectionFab({ selectedCount, isLoading, onConfirm }) {
         <SpinnerIcon size={26} />
       ) : (
         <>
-          <MovieWatchedIcon size={26} color="var(--icon-clr)" />
+          <svg
+            className="selection-fab-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
           <span>
             {isSingle
               ? `Marcar ${selectedCount} como vista`

@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { ErrorBoundary } from "@/error_handling/ErrorBoundary";
 import { AuthContext } from "@/hooks/useAuth";
@@ -118,7 +124,9 @@ describe("Home", () => {
 
     renderHome({ getMovies, withErrorBoundary: true });
 
-    await waitFor(() => expect(screen.getByText(/Algo salió mal/)).toBeTruthy());
+    await waitFor(() =>
+      expect(screen.getByText(/Algo salió mal/)).toBeTruthy(),
+    );
   });
 
   it("muestra un mensaje cuando ningún resultado cumple los filtros", async () => {
@@ -134,9 +142,7 @@ describe("Home", () => {
     });
 
     expect(
-      await screen.findByText(
-        "No hay películas que coincidan con los filtros",
-      ),
+      await screen.findByText("No hay pelis que coincidan con los filtros"),
     ).toBeTruthy();
     expect(screen.getByLabelText("Título")).toBeTruthy();
     expect(screen.queryByText(/Algo salió mal/)).toBeNull();
@@ -156,9 +162,7 @@ describe("Home", () => {
     });
 
     expect(
-      await screen.findByText(
-        "No hay películas que coincidan con los filtros",
-      ),
+      await screen.findByText("No hay pelis que coincidan con los filtros"),
     ).toBeTruthy();
 
     fireEvent.change(screen.getByLabelText("Género"), {
@@ -167,7 +171,7 @@ describe("Home", () => {
 
     expect(await screen.findByText("Peli A")).toBeTruthy();
     expect(
-      screen.queryByText("No hay películas que coincidan con los filtros"),
+      screen.queryByText("No hay pelis que coincidan con los filtros"),
     ).toBeNull();
   });
 
@@ -312,7 +316,7 @@ describe("Home", () => {
 
     expect(
       screen.queryByRole("button", {
-        name: "Marcar películas como vistas",
+        name: "Marcar pelis como vistas",
       }),
     ).toBeNull();
   });
@@ -327,9 +331,30 @@ describe("Home", () => {
 
     expect(
       await screen.findByRole("button", {
-        name: "Marcar películas como vistas",
+        name: "Marcar pelis como vistas",
       }),
     ).toBeTruthy();
+  });
+
+  it("muestra el ojo en el toggle y lo oculta al entrar en modo selección", async () => {
+    const getMovies = vi.fn().mockResolvedValue({
+      movies: [movie],
+      metadata: { page_count: 1 },
+    });
+
+    renderHome({ getMovies, accessToken: "token-1" });
+
+    const toggle = await screen.findByRole("button", {
+      name: "Marcar pelis como vistas",
+    });
+    expect(toggle.querySelector(".selection-mode-toggle-icon")).toBeTruthy();
+
+    fireEvent.click(toggle);
+
+    const activeToggle = screen.getByRole("button", {
+      name: "Cancelar selección",
+    });
+    expect(activeToggle.querySelector(".selection-mode-toggle-icon")).toBeNull();
   });
 
   it("en modo selección, clickear una card la selecciona y muestra el FAB", async () => {
@@ -342,7 +367,7 @@ describe("Home", () => {
 
     await screen.findByText("Peli A");
     fireEvent.click(
-      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+      screen.getByRole("button", { name: "Marcar pelis como vistas" }),
     );
     fireEvent.click(screen.getByText("Peli A"));
 
@@ -371,7 +396,7 @@ describe("Home", () => {
 
     await screen.findByText("Peli A");
     fireEvent.click(
-      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+      screen.getByRole("button", { name: "Marcar pelis como vistas" }),
     );
     fireEvent.click(screen.getByText("Peli A"));
     fireEvent.click(
@@ -384,7 +409,7 @@ describe("Home", () => {
         "token-1",
       ),
     );
-    expect(notify).toHaveBeenCalledWith("1 película marcada como vista");
+    expect(notify).toHaveBeenCalledWith("1 peli marcada como vista");
 
     await waitFor(() =>
       expect(
@@ -408,7 +433,7 @@ describe("Home", () => {
 
     await screen.findByText("Peli A");
     fireEvent.click(
-      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+      screen.getByRole("button", { name: "Marcar pelis como vistas" }),
     );
     fireEvent.click(screen.getByText("Peli A"));
 
@@ -440,7 +465,7 @@ describe("Home", () => {
 
     await screen.findByText("Peli A");
     fireEvent.click(
-      screen.getByRole("button", { name: "Marcar películas como vistas" }),
+      screen.getByRole("button", { name: "Marcar pelis como vistas" }),
     );
     fireEvent.click(screen.getByText("Peli A"));
     fireEvent.click(screen.getByText(">"));

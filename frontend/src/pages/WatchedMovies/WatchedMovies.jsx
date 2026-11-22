@@ -117,7 +117,7 @@ function WatchedMovies() {
 
   return (
     <div className="watched-movies-page">
-      <h1>Películas vistas</h1>
+      <h1>Pelis vistas</h1>
 
       <section className="watched-movies-stats" aria-label="Tu progreso">
         <p>

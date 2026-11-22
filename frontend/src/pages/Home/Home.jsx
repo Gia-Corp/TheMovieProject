@@ -174,19 +174,19 @@ function Home() {
         notify(
           successCount > 0
             ? `${successCount} marcadas como vistas y ${errorCount} con errores`
-            : `No se pudo marcar ${errorCount === 1 ? "1 película" : `${errorCount} películas`}`,
+            : `No se pudo marcar ${errorCount === 1 ? "1 peli" : `${errorCount} pelis`}`,
         );
       } else {
         notify(
           successCount === 1
-            ? "1 película marcada como vista"
-            : `${successCount} películas marcadas como vistas`,
+            ? "1 peli marcada como vista"
+            : `${successCount} pelis marcadas como vistas`,
         );
       }
 
       clearSelection();
     } catch (error) {
-      notify(`No se pudieron marcar las películas: ${error.message}`);
+      notify(`No se pudieron marcar las pelis: ${error.message}`);
     } finally {
       setIsConfirming(false);
     }
@@ -206,20 +206,30 @@ function Home() {
               aria-pressed={isSelectionModeActive}
               onClick={toggleSelectionMode}
             >
+              {!isSelectionModeActive && (
+                <svg
+                  className="selection-mode-toggle-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
               {isSelectionModeActive
                 ? "Cancelar selección"
-                : "Marcar películas como vistas"}
+                : "Marcar pelis como vistas"}
             </button>
             {isSelectionModeActive && (
               <p className="selection-hint">
-                Tocá las películas que ya viste y después confirmá.
+                Tocá las pelis que ya viste y después confirmá.
               </p>
             )}
           </div>
         )}
         {!isLoading && noResults ? (
           <p className="no-results">
-            No hay películas que coincidan con los filtros
+            No hay pelis que coincidan con los filtros
           </p>
         ) : (
           <>

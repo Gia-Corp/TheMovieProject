@@ -6,8 +6,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 20px;
-  border-radius: 999px;
+  padding: 8px 14px;
+  border-radius: 0;
   background-color: var(--magenta-clr);
   color: var(--icon-clr);
   font-weight: 700;
@@ -21,6 +21,21 @@
   &:focus-visible {
     outline: 2px solid var(--text-clr);
     outline-offset: 3px;
+  }
+
+  .selection-fab-icon {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    stroke: var(--icon-clr);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .spinner-icon {
+    fill: var(--icon-clr);
   }
 }
 
