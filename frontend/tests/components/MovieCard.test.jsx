@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import MovieCard from "@/components/MovieCard/MovieCard";
+import { AuthContext } from "@/hooks/useAuth";
 
 function LocationDisplay() {
   const location = useLocation();
@@ -13,18 +14,31 @@ const baseMovie = {
   id: 1,
   title: "Peli A",
   poster_url: null,
-  watched_by: { watcher_users: 0, total_users: 2, watch_events: [] },
+  watched_by: { watcher_users: 0, total_users: 2, watcher_user_ids: [] },
 };
 
-function renderCard(movie = baseMovie, props = {}) {
+function renderCard(movie = baseMovie, props = {}, currentUser = null) {
   return render(
     <MemoryRouter initialEntries={["/"]}>
-      <Routes>
-        <Route path="/" element={<MovieCard movie={movie} {...props} />} />
-        <Route path="/movies/:id" element={<LocationDisplay />} />
-      </Routes>
+      <AuthContext.Provider
+        value={{
+          accessToken: currentUser ? "token-1" : null,
+          currentUser,
+          setAccessToken: vi.fn(),
+          setCurrentUser: vi.fn(),
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<MovieCard movie={movie} {...props} />} />
+          <Route path="/movies/:id" element={<LocationDisplay />} />
+        </Routes>
+      </AuthContext.Provider>
     </MemoryRouter>,
   );
+}
+
+function getIconPath(container) {
+  return container.querySelector(".movie-card-icon svg path").getAttribute("d");
 }
 
 describe("MovieCard", () => {
@@ -71,26 +85,84 @@ describe("MovieCard", () => {
     expect(container.querySelector(".movie-card-icon")).toBeNull();
   });
 
-  it("muestra ícono a medias si la vio parte de los usuarios", () => {
+  it("muestra tick sin círculo si la vio otro usuario", () => {
     const movie = {
       ...baseMovie,
-      watched_by: { watcher_users: 1, total_users: 2, watch_events: [] },
+      watched_by: {
+        watcher_users: 1,
+        total_users: 2,
+        watcher_user_ids: [2],
+      },
+    };
+    const { container } = renderCard(movie, {}, { id: 1 });
+
+    expect(container.querySelector(".movie-card-icon")).toBeTruthy();
+    expect(screen.getByText("Alguien la ha visto")).toBeTruthy();
+    expect(getIconPath(container).startsWith("M13.8711")).toBe(true);
+  });
+
+  it("muestra tick en círculo si la vio el usuario logeado", () => {
+    const movie = {
+      ...baseMovie,
+      watched_by: {
+        watcher_users: 1,
+        total_users: 2,
+        watcher_user_ids: [1],
+      },
+    };
+    const { container } = renderCard(movie, {}, { id: 1 });
+
+    expect(container.querySelector(".movie-card-icon")).toBeTruthy();
+    expect(screen.getByText("Yo la he visto")).toBeTruthy();
+    expect(getIconPath(container).startsWith("M9.5 0")).toBe(true);
+  });
+
+  it("sin sesión muestra tick sin círculo si la vio alguien", () => {
+    const movie = {
+      ...baseMovie,
+      watched_by: {
+        watcher_users: 1,
+        total_users: 2,
+        watcher_user_ids: [1],
+      },
     };
     const { container } = renderCard(movie);
 
     expect(container.querySelector(".movie-card-icon")).toBeTruthy();
-    expect(screen.getByText("Al menos uno la ha visto")).toBeTruthy();
+    expect(screen.getByText("Alguien la ha visto")).toBeTruthy();
+    expect(screen.queryByText("Yo la he visto")).toBeNull();
+    expect(getIconPath(container).startsWith("M13.8711")).toBe(true);
   });
 
   it("muestra ícono lleno si todos la vieron", () => {
     const movie = {
       ...baseMovie,
-      watched_by: { watcher_users: 2, total_users: 2, watch_events: [] },
+      watched_by: {
+        watcher_users: 2,
+        total_users: 2,
+        watcher_user_ids: [1, 2],
+      },
     };
-    const { container } = renderCard(movie);
+    const { container } = renderCard(movie, {}, { id: 1 });
 
     expect(container.querySelector(".movie-card-icon")).toBeTruthy();
     expect(screen.getByText("Todos la han visto")).toBeTruthy();
+    expect(getIconPath(container).startsWith("M24.8499")).toBe(true);
+  });
+
+  it("prioriza el estado de todos la vieron aunque el usuario la haya visto", () => {
+    const movie = {
+      ...baseMovie,
+      watched_by: {
+        watcher_users: 2,
+        total_users: 2,
+        watcher_user_ids: [1, 2],
+      },
+    };
+    renderCard(movie, {}, { id: 1 });
+
+    expect(screen.getByText("Todos la han visto")).toBeTruthy();
+    expect(screen.queryByText("Yo la he visto")).toBeNull();
   });
 
   it("en modo selección, clickear llama onToggleSelection y no navega", () => {

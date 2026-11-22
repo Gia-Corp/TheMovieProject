@@ -3,7 +3,9 @@ import { useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import MovieWatchedIcon from "@/components/MovieWatchedIcon/MovieWatchedIcon";
 import MovieSemiWatchedIcon from "@/components/MovieSemiWatchedIcon/MovieSemiWatchedIcon";
+import MovieTickIcon from "@/components/MovieTickIcon/MovieTickIcon";
 import Tooltip from "@/components/Tooltip/Tooltip";
+import { useAuth } from "@/hooks/useAuth";
 
 function MovieCard({
   movie,
@@ -12,6 +14,7 @@ function MovieCard({
   onToggleSelection,
 }) {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const [isImageReady, setIsImageReady] = useState(!movie.poster_url);
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -39,6 +42,9 @@ function MovieCard({
   const showIcon = movie.watched_by.watcher_users > 0;
   const isFullyWatched =
     movie.watched_by.watcher_users === movie.watched_by.total_users;
+  const watcherUserIds = movie.watched_by.watcher_user_ids ?? [];
+  const watchedByMe =
+    currentUser?.id != null && watcherUserIds.includes(currentUser.id);
 
   const classNames = `movie-card ${!isImageReady && "skeleton"} ${showIcon && "corner-shadow"} ${isSelected && "movie-card--selected"}`;
 
@@ -71,14 +77,18 @@ function MovieCard({
               <span>
                 {isFullyWatched
                   ? "Todos la han visto"
-                  : "Al menos uno la ha visto"}
+                  : watchedByMe
+                    ? "Yo la he visto"
+                    : "Alguien la ha visto"}
               </span>
             }
           >
             {isFullyWatched ? (
               <MovieWatchedIcon size={30} />
-            ) : (
+            ) : watchedByMe ? (
               <MovieSemiWatchedIcon size={26} color="var(--semi-watched-clr)" />
+            ) : (
+              <MovieTickIcon size={26} color="var(--semi-watched-clr)" />
             )}
           </Tooltip>
         </div>

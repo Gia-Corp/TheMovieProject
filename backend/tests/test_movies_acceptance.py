@@ -57,6 +57,26 @@ class TestMoviesAcceptance:
         assert movie["title"] == "Argo"
         assert movie["genre"] == "Drama, Thriller"
 
+    def test_get_movies_includes_watcher_user_ids(
+        self, client: TestClient, fake_repos
+    ) -> None:
+        fake_repos.make_user(user_id=1)
+        fake_repos.make_user(user_id=2)
+        fake_repos.make_user(user_id=3)
+        fake_repos.make_movie(movie_id=1, title="Argo")
+        fake_repos.make_movie(movie_id=2, title="Heat")
+        fake_repos.make_watch_event(movie_id=1, user_id=1)
+        fake_repos.make_watch_event(movie_id=1, user_id=3)
+
+        response = client.get("/api/movies?page=1&size=10")
+
+        assert response.status_code == 200
+        movies = {movie["title"]: movie for movie in response.json()["movies"]}
+        assert movies["Argo"]["watched_by"]["watcher_users"] == 2
+        assert movies["Argo"]["watched_by"]["total_users"] == 3
+        assert set(movies["Argo"]["watched_by"]["watcher_user_ids"]) == {1, 3}
+        assert movies["Heat"]["watched_by"]["watcher_user_ids"] == []
+
     def test_get_movies_filters_by_director(
         self, client: TestClient, fake_repos
     ) -> None:

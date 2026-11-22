@@ -16,12 +16,15 @@ class MovieSummaryAssembler:
 
     def assemble(self, movie):
         watcher_users = 0
+        watcher_user_ids = []
         if movie.id in self._watch_events:
-            watcher_users = len(self._watch_events[movie.id])
+            watcher_user_ids = [w.user_id for w in self._watch_events[movie.id]]
+            watcher_users = len(watcher_user_ids)
 
         watched_by = WatchedByDTO(
             total_users=self._total_users,
             watcher_users=watcher_users,
+            watcher_user_ids=watcher_user_ids,
         )
         return MovieSummaryDTO(
             id=movie.id,

@@ -35,7 +35,7 @@ const movie = {
   id: 1,
   title: "Peli A",
   poster_url: null,
-  watched_by: { watcher_users: 0, total_users: 0, watch_events: [] },
+  watched_by: { watcher_users: 0, total_users: 0, watcher_user_ids: [] },
 };
 
 function renderHome({
