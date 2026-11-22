@@ -58,7 +58,6 @@ function Home() {
 
   // Mantener filters sincronizado con la URL al navegar (atrás/adelante)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFilters((prev) => {
       const next = buildFiltersFromSearchParams(searchParams);
       if (
@@ -79,7 +78,6 @@ function Home() {
   useEffect(() => {
     const controller = new AbortController();
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     movieRepo
       .getMovies({
